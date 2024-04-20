@@ -55,7 +55,7 @@ export default {
   server: {
     port: 80, // default: 3000
     // port: 80,
-    // host: "192.168.1.97", // default: localhost
+    host: "192.168.1.97", // server tuanpda
     // host: "103.104.118.236",
   },
 
@@ -68,9 +68,9 @@ export default {
     // Thêm route catch-all
     extendRoutes(routes, resolve) {
       routes.push({
-        name: 'catch-all',
-        path: '*',
-        component: resolve(__dirname, 'pages/404.vue'), // Đường dẫn đến trang "This page could not be found"
+        name: "catch-all",
+        path: "*",
+        component: resolve(__dirname, "pages/404.vue"), // Đường dẫn đến trang "This page could not be found"
       });
     },
   },
