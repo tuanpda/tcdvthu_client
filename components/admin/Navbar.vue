@@ -54,30 +54,36 @@
               class="navbar-dropdown is-boxed"
               v-show="isDropdownOpen_danhmuc"
             >
-              <nuxt-link to="" class="navbar-item">
+              <nuxt-link to="/admin/danhmuc/city/" class="navbar-item">
                 <span style="color: #3850b7" class="icon is-small is-left">
                   <i class="fa fa-globe"></i>
                 </span>
                 &ensp; Tỉnh / Thành phố
               </nuxt-link>
-              <nuxt-link to="" class="navbar-item">
+              <nuxt-link to="/admin/danhmuc/province/" class="navbar-item">
                 <span style="color: #3850b7" class="icon is-small is-left">
                   <i class="fa fa-h-square"></i>
                 </span>
                 &ensp; Quận / Huyện
               </nuxt-link>
-              <nuxt-link to="" class="navbar-item">
+              <nuxt-link to="/admin/danhmuc/xaphuong/" class="navbar-item">
                 <span style="color: #3850b7" class="icon is-small is-left">
                   <i class="fa fa-institution"></i>
                 </span>
                 &ensp; Xã / phường
               </nuxt-link>
               <hr class="navbar-divider" />
-              <nuxt-link to="" class="navbar-item">
+              <nuxt-link to="/admin/danhmuc/baohiemxahoi/" class="navbar-item">
                 <span style="color: #3850b7" class="icon is-small is-left">
                   <i class="fa fa-building"></i>
                 </span>
                 &ensp; Bảo hiểm xã hội
+              </nuxt-link>
+              <nuxt-link to="/admin/danhmuc/tylehuong/" class="navbar-item">
+                <span style="color: #3850b7" class="icon is-small is-left">
+                  <i class="fas fa-calculator"></i>
+                </span>
+                &ensp; Tỷ lệ hưởng (Admin)
               </nuxt-link>
             </div>
           </div>
