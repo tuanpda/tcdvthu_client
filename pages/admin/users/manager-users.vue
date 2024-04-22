@@ -422,7 +422,7 @@
 
 <script>
 import { mapState, mapActions } from "vuex";
-import { viCharMap } from "@/utils/viCharMap.js";
+// import { viCharMap } from "@/utils/viCharMap.js";
 import Swal from "sweetalert2";
 export default {
   name: "AddUserAdminPage",

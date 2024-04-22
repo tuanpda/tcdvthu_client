@@ -617,6 +617,10 @@ export default {
     addRow() {
       try {
         this.items.push({
+          matochuc: this.$auth.user.matochuc,
+          tentochuc: this.$auth.user.tentochuc,
+          madaily: this.$auth.user.madaily,
+          tendaily: this.$auth.user.tendaily,
           // loại hình nhận từ props kekhai
           maloaihinh: this.maloaihinh,
           tenloaihinh: this.loaihinh,
@@ -652,7 +656,7 @@ export default {
           tenxaphuong: "",
           tothon: "",
           info_benhvien: this.dmbenhvien,
-          benhvientinh: "42",
+          benhvientinh: this.matinh,
           mabenhvien: "",
           tenbenhvien: "",
           ghichu: "",
@@ -848,13 +852,10 @@ export default {
         // Bắt đầu tính tiền
         castSubTwhotro = castSubTwhotro * (madoituong / 100);
         let tienPhaidong =
-          (castMucdong -
-            castSubTwhotro -
-            castDiaphuonghtKhac) *
+          (castMucdong - castSubTwhotro - castDiaphuonghtKhac) *
           parseFloat(this.items[index].maphuongthucdong);
         this.items[index].sotien = tienPhaidong;
       }
-
     },
 
     // tỉnh thành phố
@@ -1064,17 +1065,6 @@ export default {
           return false;
         }
 
-        if (!this.items[i].tungay) {
-          this.$toasted.show("Thiếu từ ngày", {
-            duration: 3000,
-            theme: "bubble",
-          });
-          if (this.$refs.tungayInput[i]) {
-            this.$refs.tungayInput[i].focus();
-          }
-          return false;
-        }
-
         if (!this.items[i].maphuongthucdong || !this.items[i].phuongthucdong) {
           this.$toasted.show("Thiếu phương thức đóng", {
             duration: 3000,
@@ -1118,21 +1108,11 @@ export default {
           }
           return false;
         }
-
-        if (!this.items[i].mabenhvien || !this.items[i].tenbenhvien) {
-          this.$toasted.show("Chọn bệnh viện", {
-            duration: 3000,
-            theme: "bubble",
-          });
-          if (this.$refs.hopInput[i]) {
-            this.$refs.hopInput[i].focus();
-          }
-          return false;
-        }
       }
       // Nếu tất cả thông tin đều hợp lệ, trả về true để cho phép quá trình lưu dữ liệu
       return true;
     },
+
 
     async onSave() {
       if (this.items.length <= 0) {
@@ -1173,17 +1153,29 @@ export default {
               this.items[i].sotien = parseFloat(
                 this.items[i].sotien.replace(/,/g, "")
               );
-              this.items[i].tienluongcs = parseFloat(
-                this.items[i].tienluongcs.replace(/,/g, "")
+              this.items[i].muctiendong = parseFloat(
+                this.items[i].muctiendong.replace(/,/g, "")
               );
               // info add db
               this.items[i].createdAt = current;
               this.items[i].createdBy = this.$auth.user.username;
               this.items[i].updatedAt = "";
               this.items[i].updatedBy = "";
+
+              // Loại bỏ dữ liệu không cần thiết bằng destructuring
+              const {
+                info_benhvien,
+                info_huyen,
+                info_phuongan,
+                info_tinh,
+                info_xaphuong,
+                phuongthucdong,
+                ...itemWithout
+              } = this.items[i];
+
               const result = await this.$axios.post(
                 `api/kekhai/add-kekhai`,
-                this.items[i]
+                itemWithout
               );
               // console.log(result);
               if (result.status == 200) {

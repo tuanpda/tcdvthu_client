@@ -145,7 +145,7 @@
                 &ensp; Trợ giúp
               </nuxt-link>
               <hr class="navbar-divider" />
-              <template v-if="loggedIn && user.role===1">
+              <template v-if="loggedIn && user.role === 1">
                 <nuxt-link to="/admin/" class="navbar-item">
                   <span class="icon is-small is-left" style="color: #ca1f26">
                     <i class="fab fa-buysellads"></i>
@@ -173,24 +173,26 @@
                 <div class="columns">
                   <div class="column">
                     <div class="field">
-                      <label class="label">Họ tên</label>
+                      <label class="label">Tên tài khoản</label>
                       <div class="control">
                         <input
-                          v-model="user.name"
+                          v-model="localUser.username"
                           class="input is-small"
                           type="text"
+                          disabled
                         />
                       </div>
                     </div>
                   </div>
                   <div class="column">
                     <div class="field">
-                      <label class="label">Tên tài khoản</label>
+                      <label class="label">Họ tên</label>
                       <div class="control">
                         <input
-                          v-model="user.username"
+                          v-model="localUser.name"
                           class="input is-small"
                           type="text"
+                          disabled
                         />
                       </div>
                     </div>
@@ -199,12 +201,43 @@
                 <div class="columns">
                   <div class="column">
                     <div class="field">
-                      <label class="label">Tạo bởi</label>
+                      <label class="label">Email</label>
                       <div class="control">
                         <input
-                          v-model="user.createdBy"
+                          v-model="localUser.email"
                           class="input is-small"
                           type="text"
+                        />
+                      </div>
+                    </div>
+                    <div class="field">
+                      <label class="label">Mật khẩu</label>
+                      <div class="control">
+                        <input
+                          v-model="changePassword.oldPassword"
+                          class="input is-small"
+                          type="password"
+                          placeholder="Mật khẩu hiện tại"
+                        />
+                      </div>
+                    </div>
+                    <div class="field">
+                      <div class="control">
+                        <input
+                          v-model="changePassword.newPassword"
+                          class="input is-small"
+                          type="password"
+                          placeholder="Mật khẩu mới"
+                        />
+                      </div>
+                    </div>
+                    <div class="field">
+                      <div class="control">
+                        <input
+                          v-model="changePassword.re_newPassword"
+                          class="input is-small"
+                          type="password"
+                          placeholder="Nhập lại mật khẩu mới"
                         />
                       </div>
                     </div>
@@ -215,7 +248,7 @@
                       <div class="control" style="text-align: center">
                         <div id="preview" class="box">
                           <figure class="image is-128x128">
-                            <img class="is-rounded" :src="user.avatar" />
+                            <img class="is-rounded" :src="localUser.avatar" />
                           </figure>
                         </div>
                       </div>
@@ -224,7 +257,10 @@
                 </div>
                 <div class="columns">
                   <div class="column">
-                    <button class="button is-small is-success is-fullwidth">
+                    <button
+                      @click="updateUser"
+                      class="button is-small is-success is-fullwidth"
+                    >
                       Cập nhật
                     </button>
                   </div>
@@ -247,6 +283,7 @@
 </template>
 
 <script>
+import Swal from "sweetalert2";
 export default {
   data() {
     return {
@@ -256,6 +293,12 @@ export default {
       activeMenu: "", // Thêm thuộc tính activeMenu để lưu trạng thái menu đang được sử dụng
 
       isActive: false,
+      localUser: {},
+      changePassword: {
+        oldPassword: "",
+        newPassword: "",
+        re_newPassword: "",
+      },
     };
   },
 
@@ -268,7 +311,9 @@ export default {
     },
   },
 
-  mounted() {},
+  mounted() {
+    this.localUser = { ...this.user };
+  },
 
   methods: {
     toggleMenu() {
@@ -286,6 +331,131 @@ export default {
     async logout() {
       await this.$auth.logout(); // Đảm bảo rằng đăng xuất đã hoàn thành trước khi chuyển hướng
       this.$router.push("/login"); // Chuyển hướng đến trang login sau khi đăng xuất
+    },
+
+    async updateUser() {
+      // console.log(this.localUser);
+      if (this.changePassword.oldPassword !== "") {
+        if (this.changePassword.newPassword === "") {
+          const Toast = Swal.mixin({
+            toast: true,
+            position: "top-end",
+            showConfirmButton: false,
+            timer: 2000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+              toast.addEventListener("mouseenter", Swal.stopTimer);
+              toast.addEventListener("mouseleave", Swal.resumeTimer);
+            },
+          });
+          Toast.fire({
+            icon: "error",
+            title: `Bạn đã gõ mật khẩu hiện tại? Nếu muốn đổi mật khẩu phải gõ mật khẩu mới. Hoặc xóa mật khẩu cũ`,
+          });
+        } else {
+          if (
+            this.changePassword.newPassword !==
+            this.changePassword.re_newPassword
+          ) {
+            const Toast = Swal.mixin({
+              toast: true,
+              position: "top-end",
+              showConfirmButton: false,
+              timer: 2000,
+              timerProgressBar: true,
+              didOpen: (toast) => {
+                toast.addEventListener("mouseenter", Swal.stopTimer);
+                toast.addEventListener("mouseleave", Swal.resumeTimer);
+              },
+            });
+            Toast.fire({
+              icon: "error",
+              title: `Mật khẩu mới không khớp nhau`,
+            });
+          } else {
+            const dataUpdate = {
+              _id: this.localUser._id,
+              email: this.localUser.email,
+              password: this.changePassword.oldPassword,
+              newPassword: this.changePassword.newPassword,
+            };
+            // console.log(dataUpdate);
+            try {
+              const res = await this.$axios.post(
+                `/api/users/user/changepass`,
+                dataUpdate
+              );
+              // console.log(res.data.success);
+              if (res.data.success == 5) {
+                const Toast = Swal.mixin({
+                  toast: true,
+                  position: "top-end",
+                  showConfirmButton: false,
+                  timer: 2000,
+                  timerProgressBar: true,
+                  didOpen: (toast) => {
+                    toast.addEventListener("mouseenter", Swal.stopTimer);
+                    toast.addEventListener("mouseleave", Swal.resumeTimer);
+                  },
+                });
+                Toast.fire({
+                  icon: "error",
+                  title: `Mật khẩu hiện tại không đúng`,
+                });
+              } else {
+                const Toast = Swal.mixin({
+                  toast: true,
+                  position: "top-end",
+                  showConfirmButton: false,
+                  timer: 2000,
+                  timerProgressBar: true,
+                  didOpen: (toast) => {
+                    toast.addEventListener("mouseenter", Swal.stopTimer);
+                    toast.addEventListener("mouseleave", Swal.resumeTimer);
+                  },
+                });
+                Toast.fire({
+                  icon: "success",
+                  title: `Đã cập nhật thông tin`,
+                });
+              }
+            } catch (error) {
+              console.log(error);
+            }
+          }
+        }
+      } else {
+        const dataUpdate = {
+          _id: this.localUser._id,
+          email: this.localUser.email,
+        };
+        try {
+          const res = await this.$axios.post(
+            `/api/users/user/changeemail`,
+            dataUpdate
+          );
+          // console.log(res);
+          if (res.status == 200) {
+            const Toast = Swal.mixin({
+              toast: true,
+              position: "top-end",
+              showConfirmButton: false,
+              timer: 2000,
+              timerProgressBar: true,
+              didOpen: (toast) => {
+                toast.addEventListener("mouseenter", Swal.stopTimer);
+                toast.addEventListener("mouseleave", Swal.resumeTimer);
+              },
+            });
+            Toast.fire({
+              icon: "success",
+              title: `Đã cập nhật thông tin`,
+            });
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      }
     },
   },
 };

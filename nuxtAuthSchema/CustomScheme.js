@@ -10,6 +10,7 @@ export default class CustomScheme extends LocalScheme {
     // Token is required but not available
     // console.log(this.check());
     if (!this.check().valid) {
+      this.$router.push("/"); 
       return
     }
 
@@ -27,6 +28,7 @@ export default class CustomScheme extends LocalScheme {
     ).then((response) => {
       // console.log(response.data);
       const user = {
+        _id: response.data._id,
         email: response.data.email,
         username: response.data.username,
         name: response.data.name,
@@ -39,6 +41,10 @@ export default class CustomScheme extends LocalScheme {
         diachi: response.data.diachi,
         tenxa: response.data.tenxa,
         tenhuyen: response.data.tenhuyen,
+        madaily: response.data.madaily,
+        tendaily: response.data.tendaily,
+        matochuc: response.data.matochuc,
+        tentochuc: response.data.tentochuc,
       };
 
       // Set the custom user

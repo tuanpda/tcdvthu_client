@@ -55,7 +55,7 @@ export default {
   server: {
     port: 80, // default: 3000
     // port: 80,
-    host: "192.168.1.97", // server tuanpda
+    // host: "192.168.1.97", // server tuanpda
     // host: "103.104.118.236",
   },
 

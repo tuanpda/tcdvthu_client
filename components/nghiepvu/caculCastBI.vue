@@ -606,6 +606,10 @@ export default {
     addRow() {
       try {
         this.items.push({
+          matochuc: this.$auth.user.matochuc,
+          tentochuc: this.$auth.user.tentochuc,
+          madaily: this.$auth.user.madaily,
+          tendaily: this.$auth.user.tendaily,
           // loại hình nhận từ props kekhai
           maloaihinh: this.maloaihinh,
           tenloaihinh: this.loaihinh,
@@ -623,8 +627,8 @@ export default {
           info_nguoithu: this.nguoithu,
           nguoithu: 0,
           tienluongcs: this.luongcoso,
-          tylengansachtw: 0,
-          tylenngansachdp: 0,
+          tylensnnht: 0,
+          tylensdp: 0,
           hotrokhac: 0,
           tungay: "",
           phuongthucdong: this.phuongthucdong,
@@ -643,7 +647,7 @@ export default {
           tenxaphuong: "",
           tothon: "",
           info_benhvien: this.dmbenhvien,
-          benhvientinh: "42",
+          benhvientinh: this.matinh,
           mabenhvien: "",
           tenbenhvien: "",
           ghichu: "",
@@ -1067,9 +1071,21 @@ export default {
               this.items[i].createdBy = this.$auth.user.username;
               this.items[i].updatedAt = "";
               this.items[i].updatedBy = "";
+
+              // Loại bỏ dữ liệu không cần thiết bằng destructuring
+              const {
+                info_benhvien,
+                info_huyen,
+                info_phuongan,
+                info_tinh,
+                info_xaphuong,
+                phuongthucdong,
+                ...itemWithout
+              } = this.items[i];
+
               const result = await this.$axios.post(
                 `api/kekhai/add-kekhai`,
-                this.items[i]
+                itemWithout
               );
               // console.log(result);
               if (result.status == 200) {

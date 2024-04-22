@@ -160,14 +160,14 @@
               </td>
               <td style="text-align: center">
                 <input
-                  v-model="item.tylengansachtw"
+                  v-model="item.tylensnnht"
                   class="input is-small"
                   type="number"
                 />
               </td>
               <td style="text-align: center">
                 <input
-                  v-model="item.tylenngansachdp"
+                  v-model="item.tylensdp"
                   class="input is-small"
                   type="number"
                 />
@@ -553,8 +553,7 @@ export default {
     };
   },
 
-  mounted() {
-  },
+  mounted() {},
 
   async created() {
     this.$on("danhmucs-loaded", () => {
@@ -573,6 +572,7 @@ export default {
         this.tylengansachtw = this.dmtylehotro[0].tylengansachtw;
         this.tylenngansachdp = this.dmtylehotro[0].tylenngansachdp;
         this.hotrokhac = this.dmtylehotro[0].tylehotrokhac;
+        // console.log(this.tylengansachtw, this.tylenngansachdp);
       }
       if (this.phuongthucdong.length > 0) {
         this.phuongthucdong = this.phuongthucdong.filter(
@@ -610,10 +610,12 @@ export default {
 
   methods: {
     addRow() {
-      console.log("Props maloaihinh:", this.maloaihinh);
-    console.log("Props tenloaihinh:", this.loaihinh);
       try {
         this.items.push({
+          matochuc: this.$auth.user.matochuc,
+          tentochuc: this.$auth.user.tentochuc,
+          madaily: this.$auth.user.madaily,
+          tendaily: this.$auth.user.tendaily,
           // loại hình nhận từ props kekhai
           maloaihinh: this.maloaihinh,
           tenloaihinh: this.loaihinh,
@@ -629,8 +631,8 @@ export default {
           maphuongan: "",
           tenphuongan: "",
           tienluongcs: this.luongcoso,
-          tylengansachtw: this.tylengansachtw,
-          tylenngansachdp: this.tylenngansachdp,
+          tylensnnht: this.tylengansachtw,
+          tylensdp: this.tylenngansachdp,
           hotrokhac: this.hotrokhac,
           tungay: "",
           phuongthucdong: this.phuongthucdong,
@@ -649,7 +651,7 @@ export default {
           tenxaphuong: "",
           tothon: "",
           info_benhvien: this.dmbenhvien,
-          benhvientinh: "42",
+          benhvientinh: this.matinh,
           mabenhvien: "",
           tenbenhvien: "",
           ghichu: "",
@@ -664,9 +666,7 @@ export default {
           muctiendong: 0,
           tientunguyendong: 0,
           tienlai: 0,
-          tylensnnht: 0,
           tiennsnnht: 0, // float
-          tylensdp: 0,
           tiennsdp: 0, //float
         });
 
@@ -1065,9 +1065,21 @@ export default {
               this.items[i].createdBy = this.$auth.user.username;
               this.items[i].updatedAt = "";
               this.items[i].updatedBy = "";
+
+              // Loại bỏ dữ liệu không cần thiết bằng destructuring
+              const {
+                info_benhvien,
+                info_huyen,
+                info_phuongan,
+                info_tinh,
+                info_xaphuong,
+                phuongthucdong,
+                ...itemWithout
+              } = this.items[i];
+
               const result = await this.$axios.post(
                 `api/kekhai/add-kekhai`,
-                this.items[i]
+                itemWithout
               );
               // console.log(result);
               if (result.status == 200) {

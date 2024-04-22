@@ -1,249 +1,74 @@
 <template>
-  <div class="columns">
-    <div class="column container">
-      <div class="box">
-        <div class="columns">
-          <div class="column">
-            <div class="control">
-              <span style="color: #00947e" class="icon is-small is-left">
-                <i class="fas fa-clipboard-check"></i>
-              </span>
-              <span style="font-weight: bold; color: #00947e"
-                >Danh sách Kê khai BHXH BHYT</span
-              >
+  <div class="column">
+    <div class="box">
+      <div class="columns">
+        <div class="column">
+          <div class="control">
+            <span style="color: #00947e" class="icon is-small is-left">
+              <i class="fas fa-clipboard-check"></i>
+            </span>
+            <span style="font-weight: bold; color: #00947e"
+              >Danh sách Kê khai BHXH BHYT</span
+            >
+          </div>
+        </div>
+      </div>
+
+      <div class="columns">
+        <div class="column">
+          <label class="label">Chọn loại hình kê khai</label>
+          <div class="control has-icons-left">
+            <div class="select is-small">
+              <select @change="loaihinhChange($event)">
+                <!-- <option selected disabled>-- Chọn loại hình tham gia --</option> -->
+                <option
+                  v-for="(item, index) in loaihinhtg"
+                  :key="index"
+                  :value="item.maloaihinhtg"
+                >
+                  {{ item.maloaihinhtg }} - {{ item.tenloaihinhtg }}
+                </option>
+              </select>
+            </div>
+            <div class="icon is-small is-left">
+              <i style="color: #fed604" class="far fa-bookmark"></i>
             </div>
           </div>
         </div>
-
-        <div class="columns">
-          <div class="column">
-            <label class="label">Chọn loại hình kê khai</label>
-            <div class="control has-icons-left">
-              <div class="select">
-                <select @change="loaihinhChange($event)">
-                  <!-- <option selected disabled>-- Chọn loại hình tham gia --</option> -->
-                  <option
-                    v-for="(item, index) in loaihinhtg"
-                    :key="index"
-                    :value="item.maloaihinhtg"
-                  >
-                    {{ item.maloaihinhtg }} - {{ item.tenloaihinhtg }}
-                  </option>
-                </select>
-              </div>
-              <div class="icon is-small is-left">
-                <i style="color: #fed604" class="far fa-bookmark"></i>
-              </div>
-            </div>
-          </div>
-          <div class="column">
-            <label class="label">Từ ngày</label
-            ><input v-model="tungay" type="date" class="input" />
-          </div>
-          <div class="column">
-            <label class="label">Đến ngày (Ngày biên lai)</label
-            ><input
-              v-model="denngay"
-              @change="findDate"
-              type="date"
-              class="input"
-            />
-          </div>
-          <div class="column">
-            <label class="label">Hủy lọc</label
-            ><button
-              @click="danhsachkekhai"
-              class="button is-danger is-fullwidth"
-            >
-              Refresh
-            </button>
-          </div>
+        <div class="column">
+          <label class="label">Từ ngày</label
+          ><input v-model="tungay" type="date" class="input is-small" />
         </div>
+        <div class="column">
+          <label class="label">Đến ngày (Ngày biên lai)</label
+          ><input
+            v-model="denngay"
+            @change="findDate"
+            type="date"
+            class="input is-small"
+          />
+        </div>
+        <div class="column">
+          <label class="label">Tìm mã số BHXH</label
+          ><input v-model="masobhxh" type="text" class="input is-small" />
+        </div>
+      </div>
 
-        <div style="margin-top: 20px">
-          <div class="table_wrapper">
-            <table
-              class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth"
-            >
-              <thead style="font-weight: bold">
-                <tr style="">
-                  <td style="text-align: center; width: 3%">STT</td>
-                  <td style="text-align: center">Họ tên</td>
-                  <td style="text-align: center">Mã số BHXH</td>
-                  <td style="text-align: center">CCCD</td>
-                  <td style="text-align: center">Điện thoại</td>
-                  <td style="text-align: center">Phương án</td>
-                  <!-- nếu ar bi v-if="isPhuongan === 'AR' || isPhuongan === 'BI'" -->
-                  <template v-if="isPhuongan === 'AR' || isPhuongan === 'BI'">
-                    <td style="text-align: center">Ngày sinh</td>
-                    <td style="text-align: center">Giới tính</td>
-                    <td style="text-align: center">Người thứ</td>
-                    <td style="text-align: center">Tiền lương</td>
-                    <td style="text-align: center">Số tiền</td>
-                    <td style="text-align: center">Tỷ lệ NSĐP %</td>
-                    <td style="text-align: center">Hỗ trợ khác %</td>
-                    <td style="text-align: center">Từ ngày</td>
-                  </template>
-                  <!-- nếu is -->
-                  <template v-else>
-                    <td style="text-align: center">Hệ số</td>
-                    <td style="text-align: center">Tỷ lệ đóng %</td>
-                    <td style="text-align: center">Mức tiền đóng</td>
-                    <td style="text-align: center">Phương thức đóng</td>
-                    <td style="text-align: center">Số tháng</td>
-                    <td style="text-align: center">Từ tháng</td>
-                    <td style="text-align: center">Tiền tự nguyện đóng</td>
-                    <td style="text-align: center">Tiền lãi</td>
-                    <td style="text-align: center">Đối tượng</td>
-                    <td style="text-align: center">Tỷ lệ NSNN hỗ trợ</td>
-                    <td style="text-align: center">Tiền NSNN hỗ trợ</td>
-                    <td style="text-align: center">Tỷ lệ NSĐP</td>
-                    <td style="text-align: center">Tiền NSĐP</td>
-                  </template>
-                  <td style="text-align: center">Tỉnh / Thành phố</td>
-                  <td style="text-align: center">Quận / Huyện</td>
-                  <td style="text-align: center">Xã phường</td>
-                  <td style="text-align: center">Tổ thôn</td>
-                  <!-- nếu là is -->
-                  <template v-if="isPhuongan === 'AR' || isPhuongan === 'BI'">
-                    <td style="text-align: center">Bệnh viện tỉnh</td>
-                    <td style="text-align: center">Bệnh viện</td>
-                    <td style="text-align: center">Số tháng</td>
-                    <td style="text-align: center">Mức hưởng BHYT</td>
-                  </template>
-                  <td style="text-align: center">Ghi chú</td>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="(item, index) in data_kekhai" :key="index">
-                  <td style="text-align: center; vertical-align: middle">
-                    {{ index + 1 }}
-                  </td>
-                  <td>
-                    {{ item.hoten }}
-                  </td>
-                  <td style="text-align: center">
-                    {{ item.masobhxh }}
-                  </td>
-                  <td style="text-align: center">
-                    {{ item.cccd }}
-                  </td>
-                  <td style="text-align: center">
-                    {{ item.dienthoai }}
-                  </td>
-                  <td style="text-align: center">
-                    {{ item.tenphuongan }}
-                  </td>
-                  <!-- nếu ar bi v-if="isPhuongan === 'AR' || isPhuongan === 'BI'" -->
-                  <template v-if="isPhuongan === 'AR' || isPhuongan === 'BI'">
-                    <td style="text-align: center">
-                      {{ formatISODateToDMY(item.ngaysinh) }}
-                    </td>
-                    <td style="text-align: center">
-                      <template v-if="item.gioitinh === true">
-                        <span>Nam</span>
-                      </template>
-                      <template v-else>
-                        <span>Nữ</span>
-                      </template>
-                    </td>
-                    <td style="text-align: center">
-                      {{ item.nguoithu }}
-                    </td>
-                    <td style="text-align: center">
-                      {{ formatCurrency(item.tienluongcs) }}
-                    </td>
-                    <td style="text-align: center">
-                      {{ formatCurrency(item.sotien) }}
-                    </td>
-                    <td style="text-align: center">
-                      {{ item.tylengansachdiaphuong }}
-                    </td>
-                    <td style="text-align: center">
-                      {{ item.hotrokhac }}
-                    </td>
-                    <td style="text-align: center">
-                      {{ formatISODateToDMY(item.tungay) }}
-                    </td>
-                  </template>
-                  <template v-else>
-                    <td style="text-align: center">
-                      {{ item.heso }}
-                    </td>
-                    <td style="text-align: center">
-                      {{ item.tyledong }}
-                    </td>
-                    <td style="text-align: center">
-                      {{ formatCurrency(item.muctiendong) }}
-                    </td>
-                    <td style="text-align: center">
-                      {{ item.tenphuongthucdong }}
-                    </td>
-                    <td style="text-align: center">
-                      {{ item.sothang }}
-                    </td>
-                    <td style="text-align: center">
-                      {{ formatISODateToDMY(item.tuthang) }}
-                    </td>
-                    <td style="text-align: center">
-                      {{ item.tientunguyendong }}
-                    </td>
-                    <td style="text-align: center">
-                      {{ item.tienlai }}
-                    </td>
-                    <td style="text-align: center">
-                      {{ item.tendoiduong }}
-                    </td>
-                    <td style="text-align: center">
-                      {{ item.tylensnnht }}
-                    </td>
-                    <td style="text-align: center">
-                      {{ item.tiennsnnht }}
-                    </td>
-                    <td style="text-align: center">
-                      {{ item.tylensdp }}
-                    </td>
-                    <td style="text-align: center">
-                      {{ item.tiennsdp }}
-                    </td>
-                  </template>
-                  <!-- tỉnh-->
-                  <td style="text-align: center">
-                    {{ item.tentinh }}
-                  </td>
-                  <!-- quận huyện -->
-                  <td style="">{{ item.tenquanhuyen }}</td>
-                  <!-- xã phường -->
-                  <td style="">{{ item.tenxaphuong }}</td>
-                  <!-- tổ thôn -->
-                  <td style="">
-                    {{ item.tothon }}
-                  </td>
-                  <template v-if="isPhuongan === 'AR' || isPhuongan === 'BI'">
-                    <!-- tỉnh bệnh viện -->
-                    <td style="text-align: center">
-                      {{ item.benhvientinh }}
-                    </td>
-                    <!-- bệnh viện -->
-                    <td style="">
-                      {{ item.tenbenhvien }}
-                    </td>
-                    <td style="text-align: center">
-                      {{ item.sothang }}
-                    </td>
-                    <!-- mức hưởng BHYT -->
-                    <td style="text-align: center">
-                      {{ item.muchuongbhyt }}
-                    </td>
-                  </template>
-                  <!-- ghi chú -->
-                  <td style="">
-                    {{ item.ghichu }}
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+      <div style="margin-top: 20px">
+        <div class="table_wrapper">
+          <table
+            class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth"
+          >
+            <div v-show="maloaihinh == 'AR'">
+              <DataTableAr :data="data_kekhai" />
+            </div>
+            <div v-show="maloaihinh == 'BI'">
+              <DataTableBI :data="data_kekhai" />
+            </div>
+            <div v-show="maloaihinh == 'IS'">
+              <DataTableIS :data="data_kekhai" />
+            </div>
+          </table>
         </div>
       </div>
     </div>
@@ -252,10 +77,17 @@
 
 <script>
 import Swal from "sweetalert2";
+import DataTableAr from "@/components/table/DataTableAr";
+import DataTableBI from "@/components/table/DataTableBI";
+import DataTableIS from "@/components/table/DataTableIS";
 export default {
   name: "DanhsachKekhaiPage",
   middleware: "auth", // middleware for authentication
-  components: {},
+  components: {
+    DataTableAr,
+    DataTableBI,
+    DataTableIS
+  },
 
   data() {
     return {
@@ -279,6 +111,8 @@ export default {
       tenloaihinh: "BHYT Hộ gia đình làm nông lâm MSTB",
       tungay: "",
       denngay: "",
+      masobhxh: "",
+      madaily: this.$auth.user.madaily,
     };
   },
 
@@ -311,9 +145,8 @@ export default {
     },
 
     async danhsachkekhai() {
-      // dm hưởng bhyt
       const res = await this.$axios.get(
-        `/api/kekhai/getalldskkwithmalh?maloaihinh=${this.maloaihinh}`
+        `/api/kekhai/getallkekhaiwithuser?madaily=${this.madaily}&maloaihinh=${this.maloaihinh}`
       );
       // console.log(res);
       this.data_kekhai = res.data;

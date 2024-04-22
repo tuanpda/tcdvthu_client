@@ -25,7 +25,7 @@
               </div>
             </div>
             <div class="columns">
-              <div class="column">{{ user.tendaily }}</div>
+              <div class="column" style="font-size: 15px; font-weight: bold; color: #2e8b57;">{{ user.tendaily }}</div>
               <div class="column">
                 <div class="control has-icons-left">
                   <div class="select is-small is-fullwidth">
