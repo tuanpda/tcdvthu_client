@@ -37,7 +37,7 @@
         </div>
         <div class="column">
           <label class="label">Từ ngày</label
-          ><input v-model="tungay" type="date" class="input is-small" />
+          ><input @change="findDate" v-model="tungay" type="date" class="input is-small" />
         </div>
         <div class="column">
           <label class="label">Đến ngày (Ngày biên lai)</label
@@ -123,26 +123,7 @@ export default {
   computed: {},
 
   methods: {
-    formatISODateToDMY(isoDateString) {
-      const date = new Date(isoDateString);
-
-      // Lấy ngày, tháng và năm từ đối tượng Date
-      const day = date.getDate().toString().padStart(2, "0");
-      const month = (date.getMonth() + 1).toString().padStart(2, "0");
-      const year = date.getFullYear();
-
-      // Tạo chuỗi ngày tháng dd/mm/yyyy
-      const formattedDate = `${day}/${month}/${year}`;
-
-      return formattedDate;
-    },
-
-    formatCurrency(number) {
-      return number.toLocaleString("vi-VN", {
-        style: "currency",
-        currency: "VND",
-      });
-    },
+    
 
     async danhsachkekhai() {
       const res = await this.$axios.get(
@@ -171,7 +152,7 @@ export default {
       const get_Denngay = this.denngay.split("T")[0];
       // console.log(get_Tungay, get_Denngay);
       const res = await this.$axios.get(
-        `/api/kekhai/hskekhaifromtotungay?maloaihinh=${this.maloaihinh}&tungay=${get_Tungay}&denngay=${get_Denngay}`
+        `/api/kekhai/hskekhaifromtotungay?maloaihinh=${this.maloaihinh}&madaily=${this.madaily}&tungay=${get_Tungay}&denngay=${get_Denngay}`
       );
       // console.log(res);
       this.data_kekhai = res.data;

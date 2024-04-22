@@ -54,19 +54,19 @@
               class="navbar-dropdown is-boxed"
               v-show="isDropdownOpen_danhmuc"
             >
-              <nuxt-link to="" class="navbar-item">
+              <nuxt-link to="/danhmuc/city/" class="navbar-item">
                 <span style="color: #3850b7" class="icon is-small is-left">
                   <i class="fa fa-globe"></i>
                 </span>
                 &ensp; Tỉnh / Thành phố
               </nuxt-link>
-              <nuxt-link to="" class="navbar-item">
+              <nuxt-link to="/danhmuc/province/" class="navbar-item">
                 <span style="color: #3850b7" class="icon is-small is-left">
                   <i class="fa fa-h-square"></i>
                 </span>
                 &ensp; Quận / Huyện
               </nuxt-link>
-              <nuxt-link to="" class="navbar-item">
+              <nuxt-link to="/danhmuc/xaphuong/" class="navbar-item">
                 <span style="color: #3850b7" class="icon is-small is-left">
                   <i class="fa fa-institution"></i>
                 </span>
