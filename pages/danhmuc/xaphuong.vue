@@ -129,9 +129,16 @@ export default {
     });
   },
 
-  mounted() {},
+  mounted() {
+    this.getData()
+  },
 
-  methods: {},
+  methods: {
+    async getData(){
+      const res = await this.$axios.get(`get-all-xaphuongwithphantrang`)
+      console.log(res);
+    }
+  },
 };
 </script>
 
