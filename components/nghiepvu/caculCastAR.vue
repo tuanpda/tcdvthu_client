@@ -89,6 +89,7 @@
                   class="input is-small"
                   type="number"
                   ref="masobhxhInput"
+                  @blur="findNguoihuong(item.masobhxh, index)"
                 />
               </td>
               <td style="text-align: center">
@@ -108,10 +109,13 @@
                 />
               </td>
               <td style="text-align: center">
-                <div class="select is-fullwidth is-small" ref="gioitinhSelect">
+                <div class="select is-fullwidth is-small">
                   <select v-model="item.gioitinh">
-                    <option value="0">Nam</option>
-                    <option value="1">Nữ</option>
+                    <!-- Bind v-model để liên kết giá trị -->
+                    <option value="" selected>- Chọn giới tính -</option>
+                    <!-- Tùy chọn mặc định -->
+                    <option value="true">Nam</option>
+                    <option value="false">Nữ</option>
                   </select>
                 </div>
               </td>
@@ -256,7 +260,7 @@
                     :disabled="isDisabled_Xaphuong"
                     ref="xaphuongSelect"
                   >
-                    <option selected disabled>- Chọn tổ thôn -</option>
+                    <option selected disabled>- Chọn xã phường -</option>
                     <option
                       v-for="(dt, index) in item.info_xaphuong"
                       :key="index"
@@ -326,30 +330,39 @@
           </tbody>
         </table>
       </div>
-      <div style="margin-top: 10px">
-        <button
-          @click="addRow"
-          style="margin-bottom: 3px"
-          class="button is-info is-small"
-        >
+      <div class="button-container">
+        <!-- Các nút thêm dòng và gửi kê khai -->
+        <button @click="addRow" class="button is-info is-small">
           <span class="icon is-small">
             <i class="fas fa-plus"></i>
           </span>
           <span>Thêm dòng</span>
         </button>
-
-        <button
-          @click="onSave"
-          style="margin-bottom: 3px"
-          class="button is-danger is-small"
-        >
+        &nbsp;
+        <button @click="onSave" class="button is-danger is-small">
           <span class="icon is-small">
             <i class="fas fa-envelope-open-text"></i>
           </span>
           <span>Gửi Kê khai</span>
         </button>
+
+        <!-- Tổng số tiền, nằm bên phải -->
+        <div class="total-sotien">
+          Tổng số tiền:
+          <span style="font-weight: 900; color: red">{{
+            formatCurrency(totalSoTien)
+          }}</span>
+        </div>
       </div>
     </div>
+
+    <!-- Biểu tượng loading -->
+    <div v-if="isLoading" class="loading-overlay">
+      <!-- Biểu tượng loading -->
+      <div class="loading-spinner"></div>
+      <span>waitting some minute ...</span>
+    </div>
+
     <!-- modal -->
     <div class="">
       <div :class="{ 'is-active': isActive }" class="modal">
@@ -506,6 +519,7 @@
 <script>
 import { mixinDmBhxh } from "../../mixins/mixinDmBhxh";
 import createNumberMask from "text-mask-addons/dist/createNumberMask";
+const { DateTime } = require("luxon");
 const currencyMask = createNumberMask({
   prefix: "",
   allowDecimal: true,
@@ -550,6 +564,7 @@ export default {
       checkXaphuongOpen: false, // khóa xã phường khi load form
       form_response_sucess: [],
       form_response_false: [],
+      isLoading: false,
     };
   },
 
@@ -606,9 +621,69 @@ export default {
     isDisabled_Xaphuong() {
       return this.checkXaphuongOpen == false;
     },
+
+    totalSoTien() {
+      if (this.items && this.items.length > 0) {
+        return this.items.reduce((acc, item) => {
+          // Xóa tất cả dấu phẩy và sau đó chuyển đổi thành số
+          const sotienStr = item.sotien.toString().replace(/,/g, ""); // Loại bỏ dấu phẩy
+          let numericValue = parseFloat(sotienStr); // Chuyển thành số
+
+          if (isNaN(numericValue)) {
+            numericValue = 0; // Xử lý nếu giá trị không hợp lệ
+          }
+
+          return acc + numericValue; // Cộng vào tổng
+        }, 0);
+      }
+      return 0; // Trường hợp không có dữ liệu
+    },
   },
 
   methods: {
+    async findNguoihuong(masobhxh, index) {
+      const res = await this.$axios.get(
+        `/api/nguoihuong/find-nguoihuong?masobhxh=${masobhxh}`
+      );
+      // console.log(res.data);
+      if (res.data.length > 0) {
+        const data = res.data[0];
+        try {
+          this.items[index].hoten = data.hoten;
+
+          // biến đổi dữ liệu ngày sinh từ db thành dạng dữ liệu để bind vào input date
+          // db ra có dạng 1986-07-02T00:00:00.000Z (nhưng ở dạng string)
+          const ngaysinhDb = data.ngaysinh;
+          const dateObject = new Date(ngaysinhDb);
+          const ngaysinhbind = dateObject.toISOString().split("T")[0];
+          this.items[index].ngaysinh = ngaysinhbind;
+
+          this.items[index].gioitinh = data.gioitinh;
+          this.items[index].cccd = data.cccd;
+          this.items[index].dienthoai = data.dienthoai;
+        } catch (error) {
+          console.log(error.message);
+        }
+      } else {
+        const Toast = Swal.mixin({
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.addEventListener("mouseenter", Swal.stopTimer);
+            toast.addEventListener("mouseleave", Swal.resumeTimer);
+          },
+        });
+        Toast.fire({
+          icon: "error",
+          title: "Không tìm thấy dữ liệu trong kho người hưởng",
+        });
+        return;
+      }
+    },
+
     addRow() {
       try {
         this.items.push({
@@ -638,7 +713,6 @@ export default {
           phuongthucdong: this.phuongthucdong,
           maphuongthucdong: "",
           tenphuongthucdong: "",
-          sothang: 0, // phương thức đóng 3 6 12
           sotien: 0, // tiền phải đóng
           info_tinh: { matinh: this.matinh, tentinh: this.tentinh }, // tỉnh mặc định sẽ load theo tên người dùng login
           matinh: this.matinh,
@@ -656,10 +730,9 @@ export default {
           tenbenhvien: "",
           ghichu: "",
           // phải kê vào để lưu CSDL những cái này không có trong loại hình này
-          muchuongbhyt: "",
           madoituong: "",
           tendoituong: "",
-          tuthang: "", // kiểu date
+          tuthang: "1900-01-01", // kiểu date
           nguoithu: 0,
           tylengansachdiaphuong: 0,
           tyledong: 0,
@@ -668,9 +741,15 @@ export default {
           tienlai: 0,
           tiennsnnht: 0, // float
           tiennsdp: 0, //float
+
+          // hồ sơ kê khai
+          dotkekhai: "1",
+          kykekhai: "2",
+          ngaykekhai: "",
+          trangthai: 1,
         });
 
-        // console.log(this.items);
+        // console.log(this.items)
       } catch (error) {
         console.log(error);
       }
@@ -696,6 +775,13 @@ export default {
       } catch (error) {
         console.error("Error adding row:", error);
       }
+    },
+
+    formatCurrency(number) {
+      return number.toLocaleString("vi-VN", {
+        style: "currency",
+        currency: "VND",
+      });
     },
 
     // phương án
@@ -1018,6 +1104,66 @@ export default {
       return true;
     },
 
+    async onSave1() {
+      // const current = new Date();
+      // Lấy thời gian hiện tại theo múi giờ Việt Nam
+      const nowInVietnam = DateTime.now().setZone("Asia/Ho_Chi_Minh");
+      const formattedDate = nowInVietnam.toFormat("yyyy-MM-dd HH:mm:ss");
+      // console.log(formattedDate); // Sẽ in ra giờ chính xác ở Việt Nam
+      // Lọc các trường cần thiết trong từng item của 'items'
+      const cleanedItems = this.items.map((item) => {
+        // console.log(item.madoituong);
+        // console.log(item.tendoituong);
+        item.sotien = parseFloat(item.sotien.replace(/,/g, ""));
+        item.tienluongcs = parseFloat(item.tienluongcs.replace(/,/g, ""));
+        // info add db
+        item.createdAt = formattedDate;
+        item.createdBy = this.$auth.user.username;
+        item.updatedAt = "";
+        item.updatedBy = "";
+        // thông tin bộ hồ sơ nạp
+        item.dotkekhai = "Dot 1";
+        item.kykekhai = "Dot 2";
+        item.ngaykekhai = formattedDate;
+
+        item.trangthai = 1;
+        // Loại bỏ các trường không cần thiết
+        const {
+          info_benhvien,
+          info_huyen,
+          info_phuongan,
+          info_tinh,
+          info_xaphuong,
+          phuongthucdong,
+          ...essentialFields // Chỉ giữ các trường cần thiết
+        } = item;
+
+        return essentialFields; // Trả về item đã lọc
+      });
+
+      const result = await this.$axios.post(
+        "api/kekhai/kekhai-trans",
+        cleanedItems
+      );
+      if (result.data.status == "success") {
+        const Toast = Swal.mixin({
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.addEventListener("mouseenter", Swal.stopTimer);
+            toast.addEventListener("mouseleave", Swal.resumeTimer);
+          },
+        });
+        Toast.fire({
+          icon: "success",
+          title: "Chuyển thành công!",
+        });
+      }
+    },
+
     async onSave() {
       if (this.items.length <= 0) {
         const Toast = Swal.mixin({
@@ -1051,7 +1197,11 @@ export default {
           denyButtonText: `Hủy gửi`,
         });
         if (result.isConfirmed) {
-          const current = new Date();
+          // const current = new Date();
+          const nowInVietnam = DateTime.now().setZone("Asia/Ho_Chi_Minh");
+          const formattedDate = nowInVietnam.toFormat("yyyy-MM-dd HH:mm:ss");
+          // Bắt đầu hiển thị biểu tượng loading
+          this.isLoading = true;
           try {
             for (let i = 0; i < this.items.length; i++) {
               this.items[i].sotien = parseFloat(
@@ -1061,11 +1211,15 @@ export default {
                 this.items[i].tienluongcs.replace(/,/g, "")
               );
               // info add db
-              this.items[i].createdAt = current;
+              this.items[i].createdAt = formattedDate;
               this.items[i].createdBy = this.$auth.user.username;
               this.items[i].updatedAt = "";
               this.items[i].updatedBy = "";
 
+              // thông tin bộ hồ sơ nạp
+              this.items[i].dotkekhai = "Dot 1";
+              this.items[i].kykekhai = "Dot 2";
+              this.items[i].ngaykekhai = formattedDate;
               // Loại bỏ dữ liệu không cần thiết bằng destructuring
               const {
                 info_benhvien,
@@ -1081,41 +1235,14 @@ export default {
                 `api/kekhai/add-kekhai`,
                 itemWithout
               );
-              // console.log(result);
-              if (result.status == 200) {
-                if (!this.form_response_sucess[i]) {
-                  this.form_response_sucess[i] = {}; // Tạo mới nếu chưa tồn tại
-                }
-                // Cập nhật form_response dựa trên response
-                this.form_response_sucess[i].trangthai = result.status; // Đặt trạng thái thành true
-                // Cập nhật các thông tin khác từ response
-                const responseData = result.data; // Dữ liệu từ response
-                this.form_response_sucess[i].hoten = responseData.hoten;
-                this.form_response_sucess[i].masobhxh = responseData.masobhxh;
-                this.form_response_sucess[i].sodienthoai =
-                  responseData.dienthoai;
-                this.form_response_sucess[i].cccd = responseData.cccd;
-              } else {
-                if (!this.form_response_false[i]) {
-                  this.form_response_false[i] = {}; // Tạo mới nếu chưa tồn tại
-                }
-                // Cập nhật form_response dựa trên response
-                this.form_response_false[i].trangthai = result.status; // Đặt trạng thái thành true
-                // Cập nhật các thông tin khác từ response
-                const responseData = result.data; // Dữ liệu từ response
-                this.form_response_false[i].hoten = responseData.hoten;
-                this.form_response_false[i].masobhxh = responseData.masobhxh;
-                this.form_response_false[i].sodienthoai =
-                  responseData.dienthoai;
-                this.form_response_false[i].cccd = responseData.cccd;
-              }
+              console.log(result);
             }
           } catch (error) {
             // console.log(error);
             this.isLoading = false;
           }
-          this.isActive = true;
-          this.items = [];
+          // this.isActive = true;
+          // this.items = [];
         }
       }
     },
@@ -1125,4 +1252,6 @@ export default {
 
 <style scoped lang="css">
 @import "@/assets/customCss/common.css";
+
+@import "@/assets/customCss/footerTable.css";
 </style>

@@ -87,6 +87,7 @@
                   class="input is-small"
                   type="number"
                   ref="masobhxhInput"
+                  @blur="findNguoihuong(item.masobhxh, index)"
                 />
               </td>
               <td style="text-align: center">
@@ -106,10 +107,13 @@
                 />
               </td>
               <td style="text-align: center">
-                <div class="select is-fullwidth is-small" ref="gioitinhSelect">
+                <div class="select is-fullwidth is-small">
                   <select v-model="item.gioitinh">
-                    <option value="0">Nam</option>
-                    <option value="1">Nữ</option>
+                    <!-- Bind v-model để liên kết giá trị -->
+                    <option value="" selected>- Chọn giới tính -</option>
+                    <!-- Tùy chọn mặc định -->
+                    <option value="true">Nam</option>
+                    <option value="false">Nữ</option>
                   </select>
                 </div>
               </td>
@@ -321,28 +325,29 @@
           </tbody>
         </table>
       </div>
-      <div style="margin-top: 10px">
-        <button
-          @click="addRow"
-          style="margin-bottom: 3px"
-          class="button is-info is-small"
-        >
+      <div class="button-container">
+        <!-- Các nút thêm dòng và gửi kê khai -->
+        <button @click="addRow" class="button is-info is-small">
           <span class="icon is-small">
             <i class="fas fa-plus"></i>
           </span>
           <span>Thêm dòng</span>
         </button>
-
-        <button
-          @click="onSave"
-          style="margin-bottom: 3px"
-          class="button is-danger is-small"
-        >
+        &nbsp;
+        <button @click="onSave" class="button is-danger is-small">
           <span class="icon is-small">
             <i class="fas fa-envelope-open-text"></i>
           </span>
           <span>Gửi Kê khai</span>
         </button>
+
+        <!-- Tổng số tiền, nằm bên phải -->
+        <div class="total-sotien">
+          Tổng số tiền:
+          <span style="font-weight: 900; color: red">{{
+            formatCurrency(totalSoTien)
+          }}</span>
+        </div>
       </div>
     </div>
     <!-- modal -->
@@ -600,9 +605,69 @@ export default {
     isDisabled_Xaphuong() {
       return this.checkXaphuongOpen == false;
     },
+
+    totalSoTien() {
+      if (this.items && this.items.length > 0) {
+        return this.items.reduce((acc, item) => {
+          // Xóa tất cả dấu phẩy và sau đó chuyển đổi thành số
+          const sotienStr = item.sotien.toString().replace(/,/g, ""); // Loại bỏ dấu phẩy
+          let numericValue = parseFloat(sotienStr); // Chuyển thành số
+
+          if (isNaN(numericValue)) {
+            numericValue = 0; // Xử lý nếu giá trị không hợp lệ
+          }
+
+          return acc + numericValue; // Cộng vào tổng
+        }, 0);
+      }
+      return 0; // Trường hợp không có dữ liệu
+    },
   },
 
   methods: {
+    async findNguoihuong(masobhxh, index) {
+      const res = await this.$axios.get(
+        `/api/nguoihuong/find-nguoihuong?masobhxh=${masobhxh}`
+      );
+      // console.log(res.data);
+      if (res.data.length > 0) {
+        const data = res.data[0];
+        try {
+          this.items[index].hoten = data.hoten;
+
+          // biến đổi dữ liệu ngày sinh từ db thành dạng dữ liệu để bind vào input date
+          // db ra có dạng 1986-07-02T00:00:00.000Z (nhưng ở dạng string)
+          const ngaysinhDb = data.ngaysinh;
+          const dateObject = new Date(ngaysinhDb);
+          const ngaysinhbind = dateObject.toISOString().split("T")[0];
+          this.items[index].ngaysinh = ngaysinhbind;
+
+          this.items[index].gioitinh = data.gioitinh;
+          this.items[index].cccd = data.cccd;
+          this.items[index].dienthoai = data.dienthoai;
+        } catch (error) {
+          console.log(error.message);
+        }
+      } else {
+        const Toast = Swal.mixin({
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.addEventListener("mouseenter", Swal.stopTimer);
+            toast.addEventListener("mouseleave", Swal.resumeTimer);
+          },
+        });
+        Toast.fire({
+          icon: "error",
+          title: "Không tìm thấy dữ liệu trong kho người hưởng",
+        });
+        return;
+      }
+    },
+
     addRow() {
       try {
         this.items.push({
@@ -630,11 +695,10 @@ export default {
           tylensnnht: 0,
           tylensdp: 0,
           hotrokhac: 0,
-          tungay: "",
+          tungay: "1900-01-01",
           phuongthucdong: this.phuongthucdong,
           maphuongthucdong: "",
           tenphuongthucdong: "",
-          sothang: 0, // phương thức đóng 3 6 12
           sotien: 0, // tiền phải đóng
           info_tinh: { matinh: this.matinh, tentinh: this.tentinh }, // tỉnh mặc định sẽ load theo tên người dùng login
           matinh: this.matinh,
@@ -655,7 +719,7 @@ export default {
           muchuongbhyt: "",
           madoituong: "",
           tendoituong: "",
-          tuthang: "", // kiểu date
+          tuthang: "1900-01-01", // kiểu date
           tylengansachdiaphuong: 0,
           tyledong: 0,
           muctiendong: 0,
@@ -695,6 +759,13 @@ export default {
       }
     },
 
+    formatCurrency(number) {
+      return number.toLocaleString("vi-VN", {
+        style: "currency",
+        currency: "VND",
+      });
+    },
+
     // phương án
     async phuonganChange(e, index) {
       const maphuongan = e.target.value;
@@ -708,6 +779,20 @@ export default {
       const manguoithu = e.target.value;
       const nguoithu = e.target.options[e.target.selectedIndex].text;
       this.items[index].nguoithu = manguoithu;
+
+      const cast =
+        this.luongcoso * 0.045 * parseInt(this.items[index].maphuongthucdong);
+      if (this.items[index].nguoithu === "1") {
+        this.items[index].sotien = cast;
+      } else if (this.items[index].nguoithu === "2") {
+        this.items[index].sotien = cast * 0.7;
+      } else if (this.items[index].nguoithu === "3") {
+        this.items[index].sotien = cast * 0.6;
+      } else if (this.items[index].nguoithu === "4") {
+        this.items[index].sotien = cast * 0.5;
+      } else {
+        this.items[index].sotien = cast * 0.4;
+      }
     },
 
     // phương thức đóng
@@ -1131,4 +1216,6 @@ export default {
 
 <style scoped lang="css">
 @import "@/assets/customCss/common.css";
+
+@import "@/assets/customCss/footerTable.css";
 </style>

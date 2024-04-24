@@ -36,6 +36,7 @@ export default class CustomScheme extends LocalScheme {
         avatar: response.data.avatar,
         matinh: response.data.matinh,
         tentinh: response.data.tentinh,
+        masobhxh: response.data.masobhxh,
         cccd: response.data.cccd,
         sodienthoai: response.data.sodienthoai,
         diachi: response.data.diachi,
@@ -45,6 +46,7 @@ export default class CustomScheme extends LocalScheme {
         tendaily: response.data.tendaily,
         matochuc: response.data.matochuc,
         tentochuc: response.data.tentochuc,
+        nvcongty: response.data.nvcongty,
       };
 
       // Set the custom user

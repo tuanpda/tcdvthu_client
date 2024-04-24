@@ -1,0 +1,11 @@
+.button-container {
+    margin-top: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .total-sotien {
+    margin-left: auto; /* Đẩy sang bên phải */
+    font-weight: bold;
+  }

@@ -55,7 +55,7 @@
                 <td style="text-align: center">
                   {{ item.cccd }}
                 </td>
-                <td style="text-align: center">
+                <td>
                   {{ item.email }}
                 </td>
                 <td style="text-align: center">
@@ -895,19 +895,7 @@ export default {
           denyButtonText: `Hủy xóa`,
         });
         if (result.isConfirmed) {
-          // todo something
-          try {
-            const res = await this.$axios.post(`/api/users/delete/user`, data);
-            // console.log(res.data.success);
-            if (res.data.success == true) {
-              Swal.fire({
-                title: "Đã xóa tài khoản khỏi hệ thống",
-                text: "Deleted!",
-              });
-              this.fetchDataUsers();
-            }
-          } catch (error) {
-            console.log(error);
+          if (data.role === 1) {
             const Toast = Swal.mixin({
               toast: true,
               position: "top-end",
@@ -921,8 +909,40 @@ export default {
             });
             Toast.fire({
               icon: "error",
-              title: `Lỗi! Không thể xóa`,
+              title: `Không thể xóa User này !!!`,
             });
+          } else {
+            try {
+              const res = await this.$axios.post(
+                `/api/users/delete/user`,
+                data
+              );
+              // console.log(res.data.success);
+              if (res.data.success == true) {
+                Swal.fire({
+                  title: "Đã xóa tài khoản khỏi hệ thống",
+                  text: "Deleted!",
+                });
+                this.fetchDataUsers();
+              }
+            } catch (error) {
+              console.log(error);
+              const Toast = Swal.mixin({
+                toast: true,
+                position: "top-end",
+                showConfirmButton: false,
+                timer: 2000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                  toast.addEventListener("mouseenter", Swal.stopTimer);
+                  toast.addEventListener("mouseleave", Swal.resumeTimer);
+                },
+              });
+              Toast.fire({
+                icon: "error",
+                title: `Lỗi! Không thể xóa`,
+              });
+            }
           }
         }
       } else {

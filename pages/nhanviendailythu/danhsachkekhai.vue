@@ -37,7 +37,12 @@
         </div>
         <div class="column">
           <label class="label">Từ ngày</label
-          ><input @change="findDate" v-model="tungay" type="date" class="input is-small" />
+          ><input
+            @change="findDate"
+            v-model="tungay"
+            type="date"
+            class="input is-small"
+          />
         </div>
         <div class="column">
           <label class="label">Đến ngày (Ngày biên lai)</label
@@ -70,6 +75,30 @@
             </div>
           </table>
         </div>
+        <div class="button-container">
+          <!-- Các nút thêm dòng và gửi kê khai -->
+          <button class="button is-info is-small">
+            <span class="icon is-small">
+              <i class="fas fa-plus"></i>
+            </span>
+            <span>...</span>
+          </button>
+          &nbsp;
+          <button class="button is-danger is-small">
+            <span class="icon is-small">
+              <i class="far fa-file-excel"></i>
+            </span>
+            <span>Xuất Execl</span>
+          </button>
+
+          <!-- Tổng số tiền, nằm bên phải -->
+          <div class="total-sotien">
+            Tổng số tiền:
+            <span style="font-weight: 900; color: red">{{
+              formatCurrency(totalSoTien)
+            }}</span>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -86,7 +115,7 @@ export default {
   components: {
     DataTableAr,
     DataTableBI,
-    DataTableIS
+    DataTableIS,
   },
 
   data() {
@@ -120,11 +149,26 @@ export default {
     this.danhsachkekhai();
   },
 
-  computed: {},
+  computed: {
+    totalSoTien() {
+      if (this.data_kekhai && this.data_kekhai.length > 0) {
+        return this.data_kekhai.reduce((acc, item) => {
+          // Xóa tất cả dấu phẩy và sau đó chuyển đổi thành số
+          const sotienStr = item.sotien.toString().replace(/,/g, ""); // Loại bỏ dấu phẩy
+          let numericValue = parseFloat(sotienStr); // Chuyển thành số
+
+          if (isNaN(numericValue)) {
+            numericValue = 0; // Xử lý nếu giá trị không hợp lệ
+          }
+
+          return acc + numericValue; // Cộng vào tổng
+        }, 0);
+      }
+      return 0; // Trường hợp không có dữ liệu
+    },
+  },
 
   methods: {
-    
-
     async danhsachkekhai() {
       const res = await this.$axios.get(
         `/api/kekhai/getallkekhaiwithuser?madaily=${this.madaily}&maloaihinh=${this.maloaihinh}`
@@ -157,203 +201,18 @@ export default {
       // console.log(res);
       this.data_kekhai = res.data;
     },
+
+    formatCurrency(number) {
+      return number.toLocaleString("vi-VN", {
+        style: "currency",
+        currency: "VND",
+      });
+    },
   },
 };
 </script>
 
 <style scoped lang="css">
-.table_wrapper {
-  display: block;
-  overflow: scroll;
-  white-space: nowrap;
-  position: sticky;
-  left: 0;
-}
-
-.input {
-  min-width: 200px;
-  /* Điều chỉnh độ rộng tùy ý */
-}
-
-.select {
-  min-width: 200px;
-  /* Điều chỉnh độ rộng tùy ý */
-}
-
-.pagination {
-  display: flex;
-  justify-content: right;
-  margin-top: 20px;
-}
-
-.pagination button {
-  margin: 0 5px;
-  padding: 5px 10px;
-  border: none;
-  background-color: #ccc;
-  color: #fff;
-  cursor: pointer;
-}
-
-.pagination button.active {
-  background-color: #cb4b10;
-}
-
-.field.is-tuanpda {
-  display: flex;
-  justify-content: flex-end;
-}
-
-.field.is-grouped-function {
-  display: flex;
-  justify-content: center;
-}
-
-.modal-card {
-  width: 850px;
-  height: auto;
-}
-
-/* Tùy chỉnh giao diện của input */
-.custom-input {
-  width: 50%;
-  height: 30px;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 16px;
-}
-
-/* Tùy chỉnh giao diện của datalist */
-datalist {
-  position: absolute;
-  width: 100%;
-  max-height: 50px;
-  /* Điều chỉnh chiều cao tối đa của datalist */
-  overflow-y: auto;
-  /* Cho phép cuộn nếu danh sách quá dài */
-  border: 1px solid #ccc;
-  border-radius: 1px;
-  background-color: #fff;
-  z-index: 1;
-  /* Đảm bảo datalist hiển thị phía trên các phần tử khác */
-}
-
-/* Tùy chỉnh giao diện của các option trong datalist */
-datalist option {
-  padding: 8px;
-  cursor: pointer;
-}
-
-/* Tùy chỉnh giao diện của option được chọn */
-datalist option:checked {
-  background-color: #f0f0f0;
-}
-
-/* Tùy chỉnh giao diện của option mặc định */
-datalist option:not(:checked) {
-  background-color: transparent;
-}
-
-.pagination-container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  /* margin-top: 20px; */
-}
-
-.pagination-input {
-  margin-right: 10px;
-  /* Khoảng cách giữa input và phân trang */
-}
-
-.pagination {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.pagination button {
-  margin: 0 5px;
-  padding: 5px 10px;
-  border: none;
-  background-color: #ccc;
-  color: #fff;
-  cursor: pointer;
-}
-
-.pagination button.active {
-  background-color: #cb4b10;
-}
-
-.loading-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(255, 255, 255, 0.5);
-  /* Mờ nền */
-  z-index: 9999;
-  /* Đặt vị trí cao hơn */
-}
-
-/* CSS của biểu tượng loading */
-.loading-spinner {
-  border: 4px solid rgba(0, 0, 0, 0.1);
-  /* Màu đường viền của spinner */
-  border-top: 4px solid red;
-  /* Màu của đường viền phía trên */
-  border-radius: 50%;
-  /* Hình dạng của spinner */
-  width: 30px;
-  /* Chiều rộng của spinner */
-  height: 30px;
-  /* Chiều cao của spinner */
-  animation: spin 1s linear infinite;
-  /* Animation cho spinner */
-  position: absolute;
-  /* Đặt vị trí tuyệt đối */
-  top: 50%;
-  /* Đặt vị trí ở giữa theo chiều dọc */
-  left: 50%;
-  /* Đặt vị trí ở giữa theo chiều ngang */
-  transform: translate(-50%, -50%);
-  /* Dịch chuyển spinner về trung tâm */
-}
-
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-
-  /* Góc quay ban đầu */
-  100% {
-    transform: rotate(360deg);
-  }
-
-  /* Góc quay cuối cùng */
-}
-
-#preview {
-  display: flex;
-  justify-content: left;
-  align-items: left;
-}
-
-#preview img {
-  max-width: 100px;
-  max-height: 100px;
-  padding: 5px;
-}
-
-input:focus {
-  border-color: red; /* Đổi màu viền thành đỏ */
-  box-shadow: 0 0 5px rgba(255, 0, 0, 0.5); /* Thêm hiệu ứng bóng đổ */
-}
-
-select:focus {
-  border-color: red; /* Đổi màu viền thành đỏ */
-  box-shadow: 0 0 5px rgba(255, 0, 0, 0.5); /* Thêm hiệu ứng bóng đổ */
-}
+@import "@/assets/customCss/common.css";
+@import "@/assets/customCss/footerTable.css";
 </style>

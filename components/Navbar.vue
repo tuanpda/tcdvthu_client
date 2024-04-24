@@ -104,7 +104,7 @@
                 <span style="color: #3850b7" class="icon is-small is-left">
                   <i class="far fa-file-pdf"></i>
                 </span>
-                &ensp; Danh sách kê khai
+                &ensp; Lịch sử kê khai
               </nuxt-link>
               <nuxt-link to="/nhanviendailythu/taokekhai" class="navbar-item">
                 <span style="color: #3850b7" class="icon is-small is-left">
@@ -120,8 +120,9 @@
           <div v-if="loggedIn" class="navbar-item has-dropdown is-hoverable">
             <a class="navbar-link" @click="toggleDropdown_user"
               ><img
+                :src="user.avatar"
                 alt=""
-                width="50"
+                width="40"
                 height="80"
                 style="border-radius: 50%; border: 2px solid #ffd863"
               />

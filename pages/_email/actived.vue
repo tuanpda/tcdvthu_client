@@ -65,7 +65,7 @@ export default {
         this.user = {};
         //   console.log(this.$route.params.email);
         const res = await this.$axios.$get(
-          `/api/users/findemail?email=${this.$route.params.email}`
+          `/api/auth/findemail?email=${this.$route.params.email}`
         );
         if (res.length <= 0) {
           this.$router.push("/404");
@@ -75,14 +75,14 @@ export default {
           // Kiểm tra thời gian kích hoạt
 
           const activationTime = new Date(this.user.createdAt); // Giả sử res.activationTime chứa thời gian kích hoạt
-          console.log(activationTime.toString());
+          // console.log(activationTime.toString());
           const currentTime = new Date();
-          console.log(currentTime.toString());
+          // console.log(currentTime.toString());
           const timeDiff = currentTime - activationTime; // Khoảng thời gian tính bằng millisecond
-          console.log(timeDiff.toString());
+          // console.log(timeDiff.toString());
 
           const maxActivationTime = 5 * 60 * 1000; // 5 phút, đổi sang millisecond
-          console.log(maxActivationTime);
+          // console.log(maxActivationTime);
           if (timeDiff > maxActivationTime) {
             // Nếu thời gian kích hoạt đã vượt quá thời gian tối đa
             this.$router.push("/404");
@@ -97,7 +97,7 @@ export default {
       const data = {
         email: this.user.email,
       };
-      const res_active = await this.$axios.post(`/api/users/active/user`, data);
+      const res_active = await this.$axios.post(`/api/auth/active/user`, data);
       //   console.log(res_active.status);
       if (res_active.status === 200) {
         // to do something

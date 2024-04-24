@@ -8,7 +8,8 @@
               <img
                 src="@/assets/logos/an-sinh-bhxh-high-resolution-logo-black-transparent.png"
                 alt="Your Image"
-                width="250" height="150"
+                width="250"
+                height="150"
               />
             </div>
             <div class="box" style="margin-top: 10px; color: red">
@@ -54,14 +55,17 @@
                     Đăng nhập
                   </button>
                 </div>
-                <br />
+                <div class="field" style="padding-top: 10px">
+                  <a href="/forgotpassword"><span class="forgotpas">Quên mật khẩu ?</span></a>
+                </div>
               </form>
             </div>
             <div class="centered-image">
               <img
                 src="@/assets/images/logobhxh.png"
                 alt="Your Image"
-                width="100" height="40"
+                width="100"
+                height="40"
               />
             </div>
           </div>
@@ -93,13 +97,32 @@ export default {
             password: this.password,
           },
         });
-        this.$router.push("/"); 
+        this.$router.push("/");
       } catch (error) {
         // Xử lý lỗi khi đăng nhập không thành công
-        // console.error("Đăng nhập thất bại:", error);
+        const errorResponse = error.response;
+        const successCode = errorResponse ? errorResponse.data.success : null;
+
+        let errorMessage = "Đăng nhập thất bại";
+        if (successCode) {
+          switch (successCode) {
+            case 9:
+              errorMessage = "Đăng nhập thất bại";
+              break;
+            case 4:
+              errorMessage = "Tài khoản chưa được kích hoạt. Liên hệ quản trị hệ thống !!!";
+              break;
+            case 7:
+              errorMessage = "Đăng nhập thất bại";
+              break;
+            default:
+              errorMessage = "Lỗi xác thực";
+              break;
+          }
+        }
+
         Swal.fire({
-          title: "Đăng nhập thất bại",
-          text: "Sai thông tin đăng nhập hoặc tài khoản chưa được kích hoạt !!!",
+          title: errorMessage,
           icon: "error",
         });
       }
@@ -150,5 +173,17 @@ p.subtitle {
 .centered-image {
   margin: 0 auto;
   display: block;
+}
+
+.forgotpas {
+  color: white;
+  font-weight: 600;
+  font-size: 13px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  transition: color 0.3s; /* Thời gian chuyển tiếp khi thay đổi màu */
+}
+
+.forgotpas:hover {
+  color: #ffcc00; /* Màu vàng khi di chuột */
 }
 </style>

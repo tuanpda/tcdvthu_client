@@ -87,6 +87,7 @@
                   class="input is-small"
                   type="number"
                   ref="masobhxhInput"
+                  @blur="findNguoihuong(item.masobhxh, index)"
                 />
               </td>
               <td style="text-align: center">
@@ -106,10 +107,13 @@
                 />
               </td>
               <td style="text-align: center">
-                <div class="select is-fullwidth is-small" ref="gioitinhSelect">
+                <div class="select is-fullwidth is-small">
                   <select v-model="item.gioitinh">
-                    <option value="0">Nam</option>
-                    <option value="1">Nữ</option>
+                    <!-- Bind v-model để liên kết giá trị -->
+                    <option value="" selected>- Chọn giới tính -</option>
+                    <!-- Tùy chọn mặc định -->
+                    <option value="true">Nam</option>
+                    <option value="false">Nữ</option>
                   </select>
                 </div>
               </td>
@@ -153,6 +157,7 @@
                   class="input is-small"
                   type="text"
                   v-mask="mask"
+                  @blur="limitTiendong(item.muctiendong, index)"
                 />
               </td>
               <td style="text-align: center">
@@ -319,28 +324,29 @@
           </tbody>
         </table>
       </div>
-      <div style="margin-top: 10px">
-        <button
-          @click="addRow"
-          style="margin-bottom: 3px"
-          class="button is-info is-small"
-        >
+      <div class="button-container">
+        <!-- Các nút thêm dòng và gửi kê khai -->
+        <button @click="addRow" class="button is-info is-small">
           <span class="icon is-small">
             <i class="fas fa-plus"></i>
           </span>
           <span>Thêm dòng</span>
         </button>
-
-        <button
-          @click="onSave"
-          style="margin-bottom: 3px"
-          class="button is-danger is-small"
-        >
+        &nbsp;
+        <button @click="onSave" class="button is-danger is-small">
           <span class="icon is-small">
             <i class="fas fa-envelope-open-text"></i>
           </span>
           <span>Gửi Kê khai</span>
         </button>
+
+        <!-- Tổng số tiền, nằm bên phải -->
+        <div class="total-sotien">
+          Tổng số tiền:
+          <span style="font-weight: 900; color: red">{{
+            formatCurrency(totalSoTien)
+          }}</span>
+        </div>
       </div>
     </div>
     <!-- modal -->
@@ -611,9 +617,69 @@ export default {
     isDisabled_Xaphuong() {
       return this.checkXaphuongOpen == false;
     },
+
+    totalSoTien() {
+      if (this.items && this.items.length > 0) {
+        return this.items.reduce((acc, item) => {
+          // Xóa tất cả dấu phẩy và sau đó chuyển đổi thành số
+          const sotienStr = item.sotien.toString().replace(/,/g, ""); // Loại bỏ dấu phẩy
+          let numericValue = parseFloat(sotienStr); // Chuyển thành số
+
+          if (isNaN(numericValue)) {
+            numericValue = 0; // Xử lý nếu giá trị không hợp lệ
+          }
+
+          return acc + numericValue; // Cộng vào tổng
+        }, 0);
+      }
+      return 0; // Trường hợp không có dữ liệu
+    },
   },
 
   methods: {
+    async findNguoihuong(masobhxh, index) {
+      const res = await this.$axios.get(
+        `/api/nguoihuong/find-nguoihuong?masobhxh=${masobhxh}`
+      );
+      // console.log(res.data);
+      if (res.data.length > 0) {
+        const data = res.data[0];
+        try {
+          this.items[index].hoten = data.hoten;
+
+          // biến đổi dữ liệu ngày sinh từ db thành dạng dữ liệu để bind vào input date
+          // db ra có dạng 1986-07-02T00:00:00.000Z (nhưng ở dạng string)
+          const ngaysinhDb = data.ngaysinh;
+          const dateObject = new Date(ngaysinhDb);
+          const ngaysinhbind = dateObject.toISOString().split("T")[0];
+          this.items[index].ngaysinh = ngaysinhbind;
+
+          this.items[index].gioitinh = data.gioitinh;
+          this.items[index].cccd = data.cccd;
+          this.items[index].dienthoai = data.dienthoai;
+        } catch (error) {
+          console.log(error.message);
+        }
+      } else {
+        const Toast = Swal.mixin({
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.addEventListener("mouseenter", Swal.stopTimer);
+            toast.addEventListener("mouseleave", Swal.resumeTimer);
+          },
+        });
+        Toast.fire({
+          icon: "error",
+          title: "Không tìm thấy dữ liệu trong kho người hưởng",
+        });
+        return;
+      }
+    },
+
     addRow() {
       try {
         this.items.push({
@@ -639,11 +705,10 @@ export default {
           tylengansachtw: this.tylengansachtw,
           tylenngansachdp: this.tylenngansachdp,
           hotrokhac: this.hotrokhac,
-          tungay: "",
+          tungay: "1900-01-01",
           phuongthucdong: this.phuongthucdong,
           maphuongthucdong: "",
           tenphuongthucdong: "",
-          sothang: 0, // phương thức đóng 3 6 12
           sotien: 0, // tiền phải đóng
           info_tinh: { matinh: this.matinh, tentinh: this.tentinh }, // tỉnh mặc định sẽ load theo tên người dùng login
           matinh: this.matinh,
@@ -665,7 +730,7 @@ export default {
           doituong: this.doituongdong,
           madoituong: "",
           tendoituong: "",
-          tuthang: "", // kiểu date
+          tuthang: "1900-01-01", // kiểu date
           nguoithu: 0,
           tylengansachdiaphuong: 0,
           tyledong: 0,
@@ -706,22 +771,266 @@ export default {
       }
     },
 
+    formatCurrency(number) {
+      return number.toLocaleString("vi-VN", {
+        style: "currency",
+        currency: "VND",
+      });
+    },
+
+    limitTiendong(cast, index) {
+      let castInput = cast.toString().replace(/,/g, "");
+      const minInput = this.chuanngheo;
+      const maxInput = this.luongcoso * 20;
+      if (castInput < minInput) {
+        const Toast = Swal.mixin({
+          toast: true,
+          position: "top-center",
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.addEventListener("mouseenter", Swal.stopTimer);
+            toast.addEventListener("mouseleave", Swal.resumeTimer);
+          },
+        });
+        Toast.fire({
+          icon: "error",
+          title: `Số tiền đóng không được thấp hơn chuẩn nghèo: ${this.formatCurrency(
+            minInput
+          )}`,
+        });
+        return;
+      }
+      if (castInput > maxInput) {
+        const Toast = Swal.mixin({
+          toast: true,
+          position: "top-center",
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.addEventListener("mouseenter", Swal.stopTimer);
+            toast.addEventListener("mouseleave", Swal.resumeTimer);
+          },
+        });
+        Toast.fire({
+          icon: "error",
+          title: `Số tiền đóng không được vượt quá 20 lần lương cơ sở: ${this.formatCurrency(
+            maxInput
+          )}`,
+        });
+        return;
+      }
+      // Kiểm tra xem số tiền có phải là bội số của 50,000 sau 1,500,000 không
+      if ((castInput - minInput) % 50000 !== 0) {
+        const Toast = Swal.mixin({
+          toast: true,
+          position: "top",
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.addEventListener("mouseenter", Swal.stopTimer);
+            toast.addEventListener("mouseleave", Swal.resumeTimer);
+          },
+        });
+        Toast.fire({
+          icon: "error",
+          title: `Số tiền đóng phải là bội số của 50.000 đ`,
+        });
+        return;
+      }
+
+      const mucDong = parseFloat(
+        this.items[index].muctiendong.replace(/,/g, "")
+      );
+
+      let castMucdong = mucDong * (this.tyledongbhyt / 100);
+      let castSubTwhotro = this.chuanngheo * (this.tyledongbhyt / 100);
+      let castDiaphuonght =
+        this.chuanngheo *
+        (this.tyledongbhyt / 100) *
+        (this.tylediaphuonghotroIs / 100);
+      let castDiaphuonghtKhac =
+        this.chuanngheo *
+        (this.tyledongbhyt / 100) *
+        (this.tylehotrokhacIs / 100);
+
+      if (this.items[index].madoituong === "BT") {
+        let madoituong = "";
+        for (let i = 0; i < this.doituongdong.length; i++) {
+          const doituong = this.doituongdong[i];
+          // CHÚNG TA TÌM TỶ LỆ HỖ TRỢ TƯƠNG ỨNG TẠI ĐÂY
+          if (doituong.madoituong === "BT") {
+            madoituong = doituong.tylehotro;
+          }
+        }
+
+        // Bắt đầu tính tiền
+        castSubTwhotro = castSubTwhotro * (madoituong / 100);
+        let tienPhaidong =
+          (castMucdong -
+            castSubTwhotro -
+            castDiaphuonght -
+            castDiaphuonghtKhac) *
+          parseFloat(this.items[index].maphuongthucdong);
+        this.items[index].sotien = tienPhaidong;
+        // console.log(this.items[index].sotien);
+      } else if (this.items[index].madoituong === "CN") {
+        let madoituong = "";
+        for (let i = 0; i < this.doituongdong.length; i++) {
+          const doituong = this.doituongdong[i];
+          // CHÚNG TA TÌM TỶ LỆ HỖ TRỢ TƯƠNG ỨNG TẠI ĐÂY
+          if (doituong.madoituong === "CN") {
+            madoituong = doituong.tylehotro;
+          }
+        }
+
+        // Bắt đầu tính tiền
+        castSubTwhotro = castSubTwhotro * (madoituong / 100);
+        let tienPhaidong =
+          (castMucdong -
+            castSubTwhotro -
+            castDiaphuonght -
+            castDiaphuonghtKhac) *
+          parseFloat(this.items[index].maphuongthucdong);
+        this.items[index].sotien = tienPhaidong;
+      } else if (this.items[index].madoituong === "N") {
+        let madoituong = "";
+        for (let i = 0; i < this.doituongdong.length; i++) {
+          const doituong = this.doituongdong[i];
+          // CHÚNG TA TÌM TỶ LỆ HỖ TRỢ TƯƠNG ỨNG TẠI ĐÂY
+          if (doituong.madoituong === "N") {
+            madoituong = doituong.tylehotro;
+          }
+        }
+
+        // Bắt đầu tính tiền
+        castSubTwhotro = castSubTwhotro * (madoituong / 100);
+        let tienPhaidong =
+          (castMucdong -
+            castSubTwhotro -
+            castDiaphuonght -
+            castDiaphuonghtKhac) *
+          parseFloat(this.items[index].maphuongthucdong);
+        this.items[index].sotien = tienPhaidong;
+      } else if (this.items[index].madoituong === "NT") {
+        let madoituong = "";
+        for (let i = 0; i < this.doituongdong.length; i++) {
+          const doituong = this.doituongdong[i];
+          // CHÚNG TA TÌM TỶ LỆ HỖ TRỢ TƯƠNG ỨNG TẠI ĐÂY
+          if (doituong.madoituong === "NT") {
+            madoituong = doituong.tylehotro;
+          }
+        }
+
+        // Bắt đầu tính tiền
+        castSubTwhotro = castSubTwhotro * (madoituong / 100);
+        let tienPhaidong =
+          (castMucdong - castSubTwhotro - castDiaphuonghtKhac) *
+          parseFloat(this.items[index].maphuongthucdong);
+        this.items[index].sotien = tienPhaidong;
+      }
+    },
+
     // Đối tượng đóng - IS - TÍNH TIỀN LUÔN
     async doituongChange(e, index) {
       const madoituong = e.target.value;
       const tendoituong = e.target.options[e.target.selectedIndex].text;
       this.items[index].madoituong = madoituong;
       this.items[index].tendoituong = tendoituong;
-      // console.log(this.items[index].madoituong);
-      // console.log(this.items[index].tendoituong);
-    },
 
-    // phương án
-    async phuonganChange(e, index) {
-      const maphuongan = e.target.value;
-      const tenphuongan = e.target.options[e.target.selectedIndex].text;
-      this.items[index].maphuongan = maphuongan;
-      this.items[index].tenphuongan = tenphuongan;
+      const mucDong = parseFloat(
+        this.items[index].muctiendong.replace(/,/g, "")
+      );
+
+      let castMucdong = mucDong * (this.tyledongbhyt / 100);
+      let castSubTwhotro = this.chuanngheo * (this.tyledongbhyt / 100);
+      let castDiaphuonght =
+        this.chuanngheo *
+        (this.tyledongbhyt / 100) *
+        (this.tylediaphuonghotroIs / 100);
+      let castDiaphuonghtKhac =
+        this.chuanngheo *
+        (this.tyledongbhyt / 100) *
+        (this.tylehotrokhacIs / 100);
+
+      if (this.items[index].madoituong === "BT") {
+        let madoituong = "";
+        for (let i = 0; i < this.doituongdong.length; i++) {
+          const doituong = this.doituongdong[i];
+          // CHÚNG TA TÌM TỶ LỆ HỖ TRỢ TƯƠNG ỨNG TẠI ĐÂY
+          if (doituong.madoituong === "BT") {
+            madoituong = doituong.tylehotro;
+          }
+        }
+
+        // Bắt đầu tính tiền
+        castSubTwhotro = castSubTwhotro * (madoituong / 100);
+        let tienPhaidong =
+          (castMucdong -
+            castSubTwhotro -
+            castDiaphuonght -
+            castDiaphuonghtKhac) *
+          parseFloat(this.items[index].maphuongthucdong);
+        this.items[index].sotien = tienPhaidong;
+        // console.log(this.items[index].sotien);
+      } else if (this.items[index].madoituong === "CN") {
+        let madoituong = "";
+        for (let i = 0; i < this.doituongdong.length; i++) {
+          const doituong = this.doituongdong[i];
+          // CHÚNG TA TÌM TỶ LỆ HỖ TRỢ TƯƠNG ỨNG TẠI ĐÂY
+          if (doituong.madoituong === "CN") {
+            madoituong = doituong.tylehotro;
+          }
+        }
+
+        // Bắt đầu tính tiền
+        castSubTwhotro = castSubTwhotro * (madoituong / 100);
+        let tienPhaidong =
+          (castMucdong -
+            castSubTwhotro -
+            castDiaphuonght -
+            castDiaphuonghtKhac) *
+          parseFloat(this.items[index].maphuongthucdong);
+        this.items[index].sotien = tienPhaidong;
+      } else if (this.items[index].madoituong === "N") {
+        let madoituong = "";
+        for (let i = 0; i < this.doituongdong.length; i++) {
+          const doituong = this.doituongdong[i];
+          // CHÚNG TA TÌM TỶ LỆ HỖ TRỢ TƯƠNG ỨNG TẠI ĐÂY
+          if (doituong.madoituong === "N") {
+            madoituong = doituong.tylehotro;
+          }
+        }
+
+        // Bắt đầu tính tiền
+        castSubTwhotro = castSubTwhotro * (madoituong / 100);
+        let tienPhaidong =
+          (castMucdong -
+            castSubTwhotro -
+            castDiaphuonght -
+            castDiaphuonghtKhac) *
+          parseFloat(this.items[index].maphuongthucdong);
+        this.items[index].sotien = tienPhaidong;
+      } else if (this.items[index].madoituong === "NT") {
+        let madoituong = "";
+        for (let i = 0; i < this.doituongdong.length; i++) {
+          const doituong = this.doituongdong[i];
+          // CHÚNG TA TÌM TỶ LỆ HỖ TRỢ TƯƠNG ỨNG TẠI ĐÂY
+          if (doituong.madoituong === "NT") {
+            madoituong = doituong.tylehotro;
+          }
+        }
+
+        // Bắt đầu tính tiền
+        castSubTwhotro = castSubTwhotro * (madoituong / 100);
+        let tienPhaidong =
+          (castMucdong - castSubTwhotro - castDiaphuonghtKhac) *
+          parseFloat(this.items[index].maphuongthucdong);
+        this.items[index].sotien = tienPhaidong;
+      }
     },
 
     // phương thức đóng
@@ -856,6 +1165,14 @@ export default {
           parseFloat(this.items[index].maphuongthucdong);
         this.items[index].sotien = tienPhaidong;
       }
+    },
+
+    // phương án
+    async phuonganChange(e, index) {
+      const maphuongan = e.target.value;
+      const tenphuongan = e.target.options[e.target.selectedIndex].text;
+      this.items[index].maphuongan = maphuongan;
+      this.items[index].tenphuongan = tenphuongan;
     },
 
     // tỉnh thành phố
@@ -1113,7 +1430,6 @@ export default {
       return true;
     },
 
-
     async onSave() {
       if (this.items.length <= 0) {
         const Toast = Swal.mixin({
@@ -1221,4 +1537,6 @@ export default {
 
 <style scoped lang="css">
 @import "@/assets/customCss/common.css";
+
+@import "@/assets/customCss/footerTable.css";
 </style>
