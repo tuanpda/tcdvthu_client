@@ -1217,6 +1217,8 @@ export default {
               this.items[i].updatedBy = "";
 
               // thông tin bộ hồ sơ nạp
+              this.items[i].nvt_masobhxh = this.$auth.user.masobhxh
+              this.items[i].nvt_cccd = this.$auth.user.cccd
               this.items[i].dotkekhai = "Dot 1";
               this.items[i].kykekhai = "Dot 2";
               this.items[i].ngaykekhai = formattedDate;
@@ -1236,6 +1238,7 @@ export default {
                 itemWithout
               );
               console.log(result);
+              this.isLoading = false;
             }
           } catch (error) {
             // console.log(error);
