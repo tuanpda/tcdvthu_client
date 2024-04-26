@@ -123,49 +123,19 @@ export default {
           `/api/auth/callresetpass`,
           this.formReset
         );
-        // console.log(response.data.newPass);
-        // console.log(response.data.success);
-
-        let newPass = response.data.newPass;
-        if (response.data.success === true) {
-          this.isLoading = true;
-          const data_send_mail = {
-            email: this.formReset.email,
-            subject: `Email Reset mật khẩu từ hệ thống phần mềm ansinhbhxh.online`,
-            content: `
-              <p>Xin chào bạn!</p>
-              <p>Chúng tôi đã nhận được yêu cầu Reset Mật khẩu từ bạn hoặc cá nhân tổ chức nào đó lấy thông tin email của bạn để thực hiện (nếu trường hợp không phải là bạn thì bạn hãy bỏ qua email này gửi email phản hồi lại cho chúng tôi thông qua email sonthucompany@gmail.com)</p>
-              <hr />
-              <p>Bạn đã thực hiện thành công yêu cầu Reset mật khẩu. Mật khẩu mới của bạn là:</p>
-              <ul>
-                <li>Mật khẩu mới: ${newPass}</li>
-                <li>Đây là mật khẩu đăng nhập vào phần mềm, tuyệt đối không tiết lộ hay chia sẽ cho bất kỳ ai</li>
-              </ul>
-              <hr />
-              <p>* CHÚC BẠN CÓ NHỮNG TRẢI NGHIỆM TỐT NHẤT KHI SỬ DỤNG HỆ THỐNG PHẦN MỀM CỦA CÔNG TY CHÚNG TÔI *</p>
-              <p>* CÔNG VIỆC CỦA BẠN - SỨ MỆNH CỦA CHÚNG TÔI *</p>
-            `,
-          };
-
-          // GỌI ENDPOINT SEND EMAIL ĐẾN CHO NGƯỜI ĐĂNG KÝ
-          const res_send_mail = await this.$axios.post(
-            `/api/nodemailer/email/send`,
-            data_send_mail
-          );
-          // console.log(res_send_mail.status == 200);
-          if (res_send_mail.status == 200) {
-            // Khi gửi email thành công, dừng hiển thị biểu tượng loading
-            this.isLoading = false;
-
-            Swal.fire({
-              title: "Reset thành công mật khẩu",
-              text: `Đã gửi mật khẩu mới về email ${this.formReset.email}, hãy check mail để lấy mật khẩu đăng nhập hệ thống`,
-            });
-          }
+        this.isLoading = true;
+        // console.log(response);
+        if (response.status === 200) {
+          this.isLoading = false;
+          Swal.fire({
+            title: "Reset thành công mật khẩu",
+            text: `Đã gửi mật khẩu mới về email ${this.formReset.email}, hãy check mail để lấy mật khẩu đăng nhập hệ thống`,
+          });
         }
       } catch (error) {
         console.log(error.response.status);
         if (error.response.status === 404) {
+          this.isLoading = false;
           Swal.fire({
             title: error.response.data.message,
             icon: "error",
@@ -173,6 +143,7 @@ export default {
         }
 
         if (error.response.status === 400) {
+          this.isLoading = false;
           Swal.fire({
             title: error.response.data.message,
             icon: "error",

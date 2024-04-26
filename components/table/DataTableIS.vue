@@ -11,7 +11,7 @@
         <td style="text-align: center">Điện thoại</td>
         <td style="text-align: center">Phương án</td>
         <td style="text-align: center">Mức lương đóng</td>
-        <td style="text-align: center">Từ tháng (chỉ tháng)</td>
+        <td style="text-align: center">Từ tháng</td>
         <td style="text-align: center">Đối tượng đóng</td>
         <td style="text-align: center">Số tháng</td>
         <td style="text-align: center">Số tiền phải đóng</td>
@@ -52,7 +52,7 @@
         </td>
         <td style="text-align: center">{{ item.tenphuongan }}</td>
         <td style="text-align: center">{{ formatCurrency(item.muctiendong) }}</td>
-        <td style="text-align: center">{{ formatISODateToDMY(item.tuthang) }}</td>
+        <td style="text-align: center">{{ item.tuthang }}</td>
         <td style="text-align: center">{{ item.madoituong }}</td>
         <td style="text-align: center">{{ item.tenphuongthucdong }}</td>
         <td style="text-align: center">{{ formatCurrency(item.sotien) }}</td>

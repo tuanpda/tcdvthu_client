@@ -112,10 +112,10 @@
                   style="display: flex; align-items: center; margin-top: 15px"
                 >
                   <div style="margin-right: 10px">
-                    <label class="labelFix">Ngày nộp</label>
+                    <label class="labelFix">Email</label>
                   </div>
                   <div style="flex-grow: 1">
-                    <input type="date" class="input is-small" />
+                    <input v-model="user.email" disabled type="text" class="input is-small" />
                   </div>
                 </div>
               </div>

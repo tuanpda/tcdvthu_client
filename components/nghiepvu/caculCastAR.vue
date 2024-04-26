@@ -7,11 +7,11 @@
             class="field is-grouped is-grouped-multiline is-justify-content-flex-end"
           >
             <p class="control">
-              <button class="button is-small is-info">
+              <button @click="addHosokekhai" class="button is-small is-success">
                 <span class="icon">
-                  <i class="fas fa-print"></i>
+                  <i class="fas fa-pen-nib"></i>
                 </span>
-                <span>In C45</span>
+                <span>Nhập dữ liệu kê khai</span>
               </button>
             </p>
             <p class="control">
@@ -19,7 +19,15 @@
                 <span class="icon">
                   <i class="fas fa-file-import"></i>
                 </span>
-                <span>Import tờ khai</span>
+                <span>Import kê khai</span>
+              </button>
+            </p>
+            <p class="control">
+              <button class="button is-small is-warning">
+                <span class="icon">
+                  <i class="fas fa-file-download"></i>
+                </span>
+                <span>Tải về mẫu Import</span>
               </button>
             </p>
           </div>
@@ -221,7 +229,7 @@
               <td style="text-align: center">
                 <div class="select is-fullwidth is-small">
                   <select
-                    v-model="item.info_tinh.matinh"
+                    v-model="item.matinh"
                     @change="provinceChange($event, index)"
                   >
                     <option
@@ -286,7 +294,7 @@
                 <div class="select is-fullwidth is-small">
                   <select
                     @change="benhvienChange($event, index)"
-                    v-model="item.info_tinh.matinh"
+                    v-model="item.matinh"
                   >
                     <option
                       v-for="(dt, index) in dmtinhthanhpho"
@@ -339,7 +347,10 @@
           <span>Thêm dòng</span>
         </button>
         &nbsp;
-        <button @click="onSave" class="button is-danger is-small">
+        <button
+          @click="guiKekhai"
+          class="button is-danger is-small"
+        >
           <span class="icon is-small">
             <i class="fas fa-envelope-open-text"></i>
           </span>
@@ -363,13 +374,18 @@
       <span>waitting some minute ...</span>
     </div>
 
-    <!-- modal -->
+    <!-- modal nạp hồ sơ thành công -->
     <div class="">
       <div :class="{ 'is-active': isActive }" class="modal">
         <div class="modal-background"></div>
         <div class="modal-content modal-card-kekhai box">
           <section class="modal-card-kekhai-body">
             <div>
+              <div>
+                <span style="font-weight: 800; font-size: 15px; color: #3cb371"
+                  >Nạp hồ sơ thành công</span
+                >
+              </div>
               <div style="text-align: end">
                 <button
                   @click="isActive = false"
@@ -380,132 +396,748 @@
               </div>
             </div>
             <div>
-              <div
-                v-if="form_response_sucess.length > 0"
-                style="margin-top: 20px"
-              >
-                <div class="table_wrapper">
-                  <span
-                    style="
-                      font-weight: bold;
-                      color: #00947e;
-                      margin-bottom: 20px;
-                    "
-                    >-- Kê khai thành công !!! --</span
-                  >
-                  <table
-                    class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth"
-                  >
-                    <thead>
-                      <tr style="background-color: bisque; font-size: small">
-                        <td style="text-align: center; font-weight: bold">
-                          STT
-                        </td>
-                        <td style="text-align: center; font-weight: bold">
-                          Trạng thái kê khai
-                        </td>
-                        <td style="text-align: center; font-weight: bold">
-                          Họ tên
-                        </td>
-                        <td style="text-align: center; font-weight: bold">
-                          Mã số BHXH
-                        </td>
-                        <td style="text-align: center; font-weight: bold">
-                          Số điện thoại
-                        </td>
-                        <td style="text-align: center; font-weight: bold">
-                          CCCD
-                        </td>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr
-                        v-for="(item, index) in form_response_sucess"
-                        :key="index"
-                        style="font-size: small"
-                      >
-                        <td style="text-align: center">{{ index + 1 }}</td>
-                        <td
-                          style="
-                            text-align: center;
-                            font-weight: bold;
-                            color: #00947e;
-                          "
-                        >
-                          Đăng ký thành công
-                        </td>
-                        <td>
-                          {{ item.hoten }}
-                        </td>
-                        <td style="text-align: center">
-                          {{ item.masobhxh }}
-                        </td>
-                        <td style="text-align: center">
-                          {{ item.sodienthoai }}
-                        </td>
-                        <td style="text-align: center">
-                          {{ item.cccd }}
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
+              <div class="titleKk">
+                <hr class="line" />
+                <div class="topleft">
+                  <span style="color: red; font-weight: 700">1.</span> Thông tin
+                  hồ sơ nạp
                 </div>
+              </div>
+              <div class="columns">
+                <div class="column">
+                  <div style="display: flex; align-items: center">
+                    <div style="margin-right: 10px">
+                      <label class="labelFix">Số hồ sơ: </label>
+                    </div>
+                    <div style="flex-grow: 1">
+                      <span style="color: red; font-weight: 600">{{
+                        formKekhai.sohoso
+                      }}</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="column">
+                  <div style="display: flex; align-items: center">
+                    <div style="margin-right: 10px">
+                      <label class="labelFix">Đợt Kê khai: </label>
+                    </div>
+                    <div style="flex-grow: 1">
+                      <span style="color: red; font-weight: 600">{{
+                        formKekhai.dotkekhai
+                      }}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="columns">
+                <div class="column">
+                  <div style="display: flex; align-items: center">
+                    <div style="margin-right: 10px">
+                      <label class="labelFix">Kỳ kê khai: </label>
+                    </div>
+                    <div style="flex-grow: 1">
+                      <span style="color: red; font-weight: 600">{{
+                        formKekhai.kykekhai
+                      }}</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="column">
+                  <div style="display: flex; align-items: center">
+                    <div style="margin-right: 10px">
+                      <label class="labelFix">Ngày Kê khai: </label>
+                    </div>
+                    <div style="flex-grow: 1">
+                      <span style="color: red; font-weight: 600">{{
+                        formKekhai.ngaykekhai
+                      }}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
 
-                <div
-                  v-if="form_response_false.length > 0"
-                  class="table_wrapper"
-                >
-                  <span style="font-weight: bold; color: red"
-                    >-- Kê khai lỗi !!! --</span
+              <div class="titleKk" style="margin-top: 10px">
+                <hr class="line" />
+                <div class="topleft">
+                  <span style="color: red; font-weight: 700">2.</span> Danh sách
+                  kê khai
+                </div>
+              </div>
+              <div class="columns">
+                <div class="column">
+                  <div
+                    v-if="form_response_sucess.length > 0"
+                    class="table_wrapper"
                   >
-                  <table
-                    class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth"
-                  >
-                    <thead>
-                      <td style="text-align: center; font-weight: bold">STT</td>
-                      <td style="text-align: center; font-weight: bold">
-                        Trạng thái kê khai
-                      </td>
-                      <td style="text-align: center; font-weight: bold">
-                        Họ tên
-                      </td>
-                      <td style="text-align: center; font-weight: bold">
-                        Mã số BHXH
-                      </td>
-                      <td style="text-align: center; font-weight: bold">
-                        Số điện thoại
-                      </td>
-                      <td style="text-align: center; font-weight: bold">
-                        CCCD
-                      </td>
-                    </thead>
-                    <tbody>
-                      <tr v-for="(index, item) in form_response_false">
-                        <td style="text-align: center">{{ index + 1 }}</td>
-                        <td
-                          style="
-                            text-align: center;
-                            font-weight: bold;
-                            color: red;
-                          "
+                    <table
+                      class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth"
+                    >
+                      <thead>
+                        <tr style="background-color: f5fffa; font-size: small">
+                          <td style="text-align: center; font-weight: bold">
+                            STT
+                          </td>
+                          <td style="text-align: center; font-weight: bold">
+                            Họ tên
+                          </td>
+                          <td style="text-align: center; font-weight: bold">
+                            Mã số BHXH
+                          </td>
+                          <td style="text-align: center; font-weight: bold">
+                            CCCD
+                          </td>
+                          <td style="text-align: center; font-weight: bold">
+                            Số điện thoại
+                          </td>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr
+                          v-for="(item, index) in form_response_sucess"
+                          :key="index"
+                          style="font-size: small"
                         >
-                          Đăng ký KHÔNG thành công
-                        </td>
-                        <td>
-                          {{ item.hoten }}
-                        </td>
-                        <td style="text-align: center">
-                          {{ item.masobhxh }}
-                        </td>
-                        <td style="text-align: center">
-                          {{ item.sodienthoai }}
-                        </td>
-                        <td style="text-align: center">
-                          {{ item.cccd }}
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
+                          <td style="text-align: center">{{ index + 1 }}</td>
+                          <td>
+                            {{ item.hoten }}
+                          </td>
+                          <td style="text-align: center">
+                            {{ item.masobhxh }}
+                          </td>
+                          <td style="text-align: center">
+                            {{ item.cccd }}
+                          </td>
+                          <td style="text-align: center">
+                            {{ item.dienthoai }}
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+
+    <!-- modal nhập hồ sơ kê khai -->
+    <div class="">
+      <div :class="{ 'is-active': isActive_nhaphoso }" class="modal">
+        <div class="modal-background"></div>
+        <div class="modal-content modal-card-kekhai box">
+          <section class="modal-card-kekhai-body">
+            <div>
+              <div>
+                <span style="font-weight: 800; font-size: 15px; color: #3cb371"
+                  >Nhập hồ sơ</span
+                >
+              </div>
+              <div style="text-align: end">
+                <button
+                  @click="cancelNhaphoso()"
+                  class="button is-small is-danger"
+                >
+                  Hủy nhập hồ sơ kê khai này
+                </button>
+              </div>
+            </div>
+            <div v-if="items.length > 0">
+              <div class="titleKk">
+                <hr class="line" />
+                <div class="topleft">
+                  <span style="color: red; font-weight: 700">1.</span> Thông tin
+                  người kê khai
+                </div>
+              </div>
+              <div class="columns">
+                <div class="column">
+                  <div style="display: flex; align-items: center">
+                    <div style="margin-right: 10px">
+                      <label class="labelFix">Mã số BHXH </label>
+                    </div>
+                    <div style="flex-grow: 1">
+                      <span style="color: red; font-weight: 600"
+                        ><input
+                          @blur="
+                            findNguoihuong(
+                              datanhaphosomodal.masobhxh,
+                              addedIndex
+                            )
+                          "
+                          v-model="datanhaphosomodal.masobhxh"
+                          class="input is-small"
+                          type="text"
+                      /></span>
+                    </div>
+                  </div>
+                </div>
+                <div class="column">
+                  <div style="display: flex; align-items: center">
+                    <div style="margin-right: 10px">
+                      <label class="labelFix">Họ tên </label>
+                    </div>
+                    <div style="flex-grow: 1">
+                      <span style="color: red; font-weight: 600"
+                        ><input
+                          v-model="datanhaphosomodal.hoten"
+                          class="input is-small"
+                          type="text"
+                      /></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="columns">
+                <div class="column">
+                  <div style="display: flex; align-items: center">
+                    <div style="margin-right: 10px">
+                      <label class="labelFix">Ngày sinh </label>
+                    </div>
+                    <div style="flex-grow: 1">
+                      <input
+                        v-model="datanhaphosomodal.ngaysinh"
+                        class="input is-small"
+                        type="date"
+                        ref="ngaysinhInput"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div class="column">
+                  <div style="display: flex; align-items: center">
+                    <div style="margin-right: 10px">
+                      <label class="labelFix">Giới tính </label>
+                    </div>
+                    <div style="flex-grow: 1">
+                      <div class="select is-fullwidth is-small">
+                        <select v-model="datanhaphosomodal.gioitinh">
+                          <!-- Bind v-model để liên kết giá trị -->
+                          <option value="" selected>- Chọn giới tính -</option>
+                          <!-- Tùy chọn mặc định -->
+                          <option value="true">Nam</option>
+                          <option value="false">Nữ</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="columns">
+                <div class="column">
+                  <div style="display: flex; align-items: center">
+                    <div style="margin-right: 10px">
+                      <label class="labelFix">Căn cước </label>
+                    </div>
+                    <div style="flex-grow: 1">
+                      <input
+                        v-model="datanhaphosomodal.cccd"
+                        class="input is-small"
+                        type="number"
+                        ref="cccdInput"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div class="column">
+                  <div style="display: flex; align-items: center">
+                    <div style="margin-right: 10px">
+                      <label class="labelFix">Điện thoại </label>
+                    </div>
+                    <div style="flex-grow: 1">
+                      <input
+                        v-model="datanhaphosomodal.dienthoai"
+                        class="input is-small"
+                        type="number"
+                        ref="dienthoaiInput"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="titleKk" style="margin-top: 10px">
+                <hr class="line" />
+                <div class="topleft">
+                  <span style="color: red; font-weight: 700">2.</span> Thủ tục
+                  kê khai
+                </div>
+              </div>
+              <div class="columns">
+                <div class="column">
+                  <div style="margin-bottom: 5px">
+                    <label class="labelFix">Phương án</label>
+                  </div>
+                  <div class="select is-fullwidth is-small">
+                    <select
+                      @change="phuonganChange($event, addedIndex)"
+                      ref="phuonganSelect"
+                    >
+                      <option selected disabled>- Chọn phương án -</option>
+                      <option
+                        v-for="(item, index) in datanhaphosomodal.info_phuongan"
+                        :key="index"
+                        :value="item.maphuongan"
+                      >
+                        {{ item.tenphuongan }}
+                      </option>
+                    </select>
+                  </div>
+                </div>
+                <div class="column">
+                  <div style="margin-bottom: 5px">
+                    <label class="labelFix">Lương CS</label>
+                  </div>
+                  <div>
+                    <input
+                      v-model="datanhaphosomodal.tienluongcs"
+                      class="input is-small"
+                      type="text"
+                      v-mask="mask"
+                      disabled
+                    />
+                  </div>
+                </div>
+                <div class="column">
+                  <div style="margin-bottom: 5px">
+                    <label class="labelFix">Tỷ lệ NSTW %</label>
+                  </div>
+                  <div>
+                    <input
+                      v-model="datanhaphosomodal.tylensnnht"
+                      class="input is-small"
+                      type="number"
+                    />
+                  </div>
+                </div>
+                <div class="column">
+                  <div style="margin-bottom: 5px">
+                    <label class="labelFix">Tỷ lệ NSĐP %</label>
+                  </div>
+                  <div>
+                    <input
+                      v-model="datanhaphosomodal.tylensdp"
+                      class="input is-small"
+                      type="number"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div class="columns">
+                <div class="column">
+                  <div style="margin-bottom: 5px">
+                    <label class="labelFix">Hỗ trợ khác</label>
+                  </div>
+                  <div>
+                    <input
+                      v-model="datanhaphosomodal.hotrokhac"
+                      class="input is-small"
+                      type="number"
+                    />
+                  </div>
+                </div>
+                <div class="column">
+                  <div style="margin-bottom: 5px">
+                    <label class="labelFix">Từ ngày</label>
+                  </div>
+                  <div>
+                    <input
+                      v-model="datanhaphosomodal.tungay"
+                      class="input is-small"
+                      type="date"
+                      ref="tungayInput"
+                    />
+                  </div>
+                </div>
+                <div class="column">
+                  <div style="margin-bottom: 5px">
+                    <label class="labelFix">Số tháng</label>
+                  </div>
+                  <div>
+                    <div class="select is-fullwidth is-small">
+                      <select
+                        @change="phuongthucdChange($event, addedIndex)"
+                        ref="phuongthucdongSelect"
+                      >
+                        <option selected disabled>
+                          - Chọn phương thức đóng -
+                        </option>
+                        <option
+                          v-for="(
+                            item, index
+                          ) in datanhaphosomodal.phuongthucdong"
+                          :key="index"
+                          :value="item.maphuongthuc"
+                        >
+                          {{ item.tenphuongthuc }}
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <div class="column">
+                  <div style="margin-bottom: 5px">
+                    <label class="labelFix">Số tiền phải đóng</label>
+                  </div>
+                  <div>
+                    <input
+                      v-mask="mask"
+                      v-model="datanhaphosomodal.sotien"
+                      class="input is-small"
+                      style="font-weight: 800; color: red"
+                      disabled
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div class="columns">
+                <div class="column">
+                  <div style="margin-bottom: 5px">
+                    <label class="labelFix">Tỉnh</label>
+                  </div>
+                  <div>
+                    <div class="select is-fullwidth is-small">
+                      <select
+                        v-model="datanhaphosomodal.matinh"
+                        @change="provinceChange($event, addedIndex)"
+                      >
+                        <option
+                          v-for="(dt, index) in dmtinhthanhpho"
+                          :key="index"
+                          :value="dt.matinh"
+                        >
+                          {{ dt.tentinh }}
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <div class="column">
+                  <div style="margin-bottom: 5px">
+                    <label class="labelFix">Quận huyện</label>
+                  </div>
+                  <div class="select is-fullwidth is-small">
+                    <select
+                      @change="quanhuyenChange($event, addedIndex)"
+                      ref="quanhuyenSelect"
+                    >
+                      <option selected disabled>- Chọn Quận huyện -</option>
+                      <option
+                        v-for="(dt, index) in datanhaphosomodal.info_huyen"
+                        :key="index"
+                        :value="dt.maquanhuyen"
+                      >
+                        {{ dt.tenquanhuyen }}
+                      </option>
+                    </select>
+                  </div>
+                </div>
+                <div class="column">
+                  <div style="margin-bottom: 5px">
+                    <label class="labelFix">Xã phường</label>
+                  </div>
+                  <div>
+                    <div class="select is-fullwidth is-small">
+                      <select
+                        @change="xaphuongChange($event, addedIndex)"
+                        :disabled="isDisabled_Xaphuong"
+                        ref="xaphuongSelect"
+                      >
+                        <option selected disabled>- Chọn xã phường -</option>
+                        <option
+                          v-for="(dt, index) in datanhaphosomodal.info_xaphuong"
+                          :key="index"
+                          :value="dt.maxaphuong"
+                        >
+                          {{ dt.tenxaphuong }}
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <div class="column">
+                  <div style="margin-bottom: 5px">
+                    <label class="labelFix">Tổ thôn</label>
+                  </div>
+                  <div>
+                    <input
+                      v-model="datanhaphosomodal.tothon"
+                      class="input is-small"
+                      type="text"
+                      ref="tothonInput"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div class="columns">
+                <div class="column">
+                  <div style="margin-bottom: 5px">
+                    <label class="labelFix">Bệnh viện tỉnh</label>
+                  </div>
+                  <div>
+                    <div class="select is-fullwidth is-small">
+                      <select
+                        @change="benhvienChange($event, addedIndex)"
+                        v-model="datanhaphosomodal.matinh"
+                      >
+                        <option
+                          v-for="(dt, index) in dmtinhthanhpho"
+                          :key="index"
+                          :value="dt.matinh"
+                        >
+                          {{ dt.tentinh }}
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <div class="column">
+                  <div style="margin-bottom: 5px">
+                    <label class="labelFix">Bệnh viện</label>
+                  </div>
+                  <div>
+                    <input
+                      autoComplete="on"
+                      list="hopSuggestions"
+                      class="custom-input"
+                      @change="hopChange($event, addedIndex)"
+                      ref="hopInput"
+                      style="min-width: 300px; height: 30px"
+                    />
+                    <datalist id="hopSuggestions">
+                      <option
+                        v-for="(item, index) in datanhaphosomodal.info_benhvien"
+                        :key="index"
+                      >
+                        {{ item.mabenhvien }} - {{ item.tenbenhvien }}
+                      </option>
+                    </datalist>
+                  </div>
+                </div>
+                <div class="column">
+                  <div style="margin-bottom: 5px">
+                    <label class="labelFix">Ghi chú</label>
+                  </div>
+                  <div>
+                    <input
+                      v-model="datanhaphosomodal.ghichu"
+                      class="input is-small"
+                      type="text"
+                    />
+                  </div>
+                </div>
+              </div>
+              <hr class="navbar-divider" />
+              <div class="columns">
+                <div class="column" style="margin-top: 10px">
+                  <div
+                    class="field is-grouped is-flex is-justify-content-center"
+                  >
+                    <div class="control">
+                      <button
+                        @click="xacnhanGhihoso"
+                        class="button is-success is-small"
+                      >
+                        Xác nhận
+                      </button>
+                    </div>
+                    <div class="control">
+                      <button
+                        @click="cancelNhaphoso"
+                        class="button is-warning is-light is-small"
+                      >
+                        Hủy bỏ
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+
+    <!-- modal nhập xem trước khi xác nhận gửi hồ sơ đi -->
+    <div class="">
+      <div :class="{ 'is-active': isActive_xacnhan }" class="modal">
+        <div class="modal-background"></div>
+        <div class="modal-content modal-card-kekhai box">
+          <section class="modal-card-kekhai-body">
+            <div>
+              <div>
+                <span style="font-weight: 800; font-size: 15px; color: #3cb371"
+                  >Xem lại và xác nhận gửi bộ hồ sơ kê khai</span
+                >
+              </div>
+              <div style="text-align: end"></div>
+            </div>
+            <div v-if="items.length > 0">
+              <div class="titleKk">
+                <hr class="line" />
+                <div class="topleft">
+                  <span style="color: red; font-weight: 700">1.</span> Thông tin
+                  hồ sơ kê khai đã nhập
+                </div>
+              </div>
+
+              <div class="table_wrapper">
+                <table
+                  class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth"
+                >
+                  <thead style="font-weight: bold">
+                    <tr style="font-size: small; background-color: #fff8dc">
+                      <td style="text-align: center; width: 3%">STT</td>
+                      <td style="text-align: center">Mã số BHXH</td>
+                      <td style="text-align: center">Họ tên</td>
+                      <td style="text-align: center">Ngày sinh</td>
+                      <td style="text-align: center">Giới tính</td>
+                      <td style="text-align: center">CCCD</td>
+                      <td style="text-align: center">Điện thoại</td>
+                      <td style="text-align: center">Phương án</td>
+                      <td style="text-align: center">Lương cơ sở</td>
+                      <td style="text-align: center">Tỷ lệ NSTW %</td>
+                      <td style="text-align: center">Tỷ lệ NSĐP %</td>
+                      <td style="text-align: center">Tỷ lệ HT khác</td>
+                      <td style="text-align: center">Từ ngày</td>
+                      <td style="text-align: center">Số tháng</td>
+                      <td style="text-align: center">Số tiền phải đóng</td>
+                      <td style="text-align: center">Tỉnh / Thành phố</td>
+                      <td style="text-align: center">Quận / Huyện</td>
+                      <td style="text-align: center">Xã phường</td>
+                      <td style="text-align: center">Tổ thôn</td>
+                      <td style="text-align: center">Bệnh viện tỉnh</td>
+                      <td style="text-align: center">Bệnh viện</td>
+                      <td style="text-align: center">Ghi chú</td>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr
+                      v-for="(item, index) in items"
+                      :key="index"
+                      style="font-size: small"
+                    >
+                      <td style="text-align: center; vertical-align: middle">
+                        {{ index + 1 }}
+                      </td>
+                      <td style="text-align: center; font-weight: 500">
+                        {{ item.masobhxh }}
+                      </td>
+                      <td style="text-align: center; font-weight: 500">
+                        {{ item.hoten }}
+                      </td>
+                      <td style="text-align: center">
+                        {{ formatISODateToDMY(item.ngaysinh) }}
+                      </td>
+                      <td style="text-align: center">
+                        <template v-if="item.gioitinh == 0">
+                          <span>Nữ</span>
+                        </template>
+                        <template v-else>
+                          <span>Nam</span>
+                        </template>
+                      </td>
+                      <td style="text-align: center; font-weight: 500">
+                        {{ item.cccd }}
+                      </td>
+                      <td style="text-align: center; font-weight: 500">
+                        {{ item.dienthoai }}
+                      </td>
+                      <td style="text-align: center">
+                        {{ item.tenphuongan }}
+                      </td>
+                      <td style="text-align: center">
+                        {{ item.tienluongcs }}
+                      </td>
+                      <td style="text-align: center">
+                        {{ item.tylensnnht }}
+                      </td>
+                      <td style="text-align: center">
+                        {{ item.tylensdp }}
+                      </td>
+                      <td style="text-align: center">
+                        {{ item.hotrokhac }}
+                      </td>
+                      <td style="text-align: center">
+                        {{ formatISODateToDMY(item.tungay) }}
+                      </td>
+                      <td style="text-align: center">
+                        {{ item.tenphuongthucdong }}
+                      </td>
+                      <td
+                        style="text-align: center; font-weight: 500; color: red"
+                      >
+                        {{ formatCurrency(item.sotien) }}
+                      </td>
+                      <!-- tỉnh-->
+                      <td style="text-align: center">
+                        {{ item.tentinh }}
+                      </td>
+                      <!-- quận huyện -->
+                      <td style="text-align: center">
+                        {{ item.tenquanhuyen }}
+                      </td>
+                      <!-- xã phường -->
+                      <td>
+                        {{ item.tenxaphuong }}
+                      </td>
+                      <!-- tổ thôn -->
+                      <td>
+                        {{ item.tothon }}
+                      </td>
+                      <!-- tỉnh bệnh viện -->
+                      <td style="text-align: center">
+                        {{ item.benhvientinh }}
+                      </td>
+                      <!-- bệnh viện -->
+                      <td>
+                        {{ item.tenbenhvien }}
+                      </td>
+                      <!-- ghi chú -->
+                      <td>
+                        {{ item.ghichu }}
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <div class="titleKk">
+                  <hr class="line" />
+                  <div class="topleft">
+                    <span style="color: red; font-weight: 700">2.</span> Tổng số
+                    tiền phải nạp:
+                    <span style="color: red; font-weight: 700">{{
+                      formatCurrency(totalSoTien)
+                    }}</span>
+                  </div>
+                </div>
+              </div>
+              <hr class="navbar-divider" />
+              <div class="columns">
+                <div class="column" style="margin-top: 10px">
+                  <div
+                    class="field is-grouped is-flex is-justify-content-center"
+                  >
+                    <div class="control">
+                      <button
+                        @click="onSave"
+                        class="button is-success is-small"
+                      >
+                        Xác nhận nạp hồ sơ
+                      </button>
+                    </div>
+                    <div class="control">
+                      <button
+                        @click="isActive_xacnhan = false"
+                        class="button is-warning is-light is-small"
+                      >
+                        Hủy xác nhận
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -541,6 +1173,8 @@ export default {
   data() {
     return {
       isActive: false,
+      isActive_nhaphoso: false,
+      isActive_xacnhan: false,
       mask: currencyMask,
       items: [],
       phuongan: [
@@ -563,8 +1197,18 @@ export default {
       dmbenhvien: [],
       checkXaphuongOpen: false, // khóa xã phường khi load form
       form_response_sucess: [],
-      form_response_false: [],
       isLoading: false,
+
+      formKekhai: {
+        sohoso: "",
+        dotkekhai: "",
+        kykekhai: "",
+        ngaykekhai: "",
+      },
+
+      // phục vụ việc nhập item từ modal
+      addedIndex: 0,
+      datanhaphosomodal: {},
     };
   },
 
@@ -684,6 +1328,79 @@ export default {
       }
     },
 
+    addHosokekhai() {
+      this.addedIndex = 0; // là chỉ mục index của item hiện tại đang được nhập tại modal
+      // Mở trạng thái nhập hồ sơ
+      this.isActive_nhaphoso = true;
+      // Số lượng phần tử trước khi thêm
+      const previousLength = this.items.length;
+      // Thêm dòng mới vào mảng
+      this.addRow();
+      // Số lượng phần tử sau khi thêm
+      const currentLength = this.items.length;
+      // Nếu số lượng phần tử tăng lên, lấy chỉ số dòng vừa thêm
+      this.addedIndex = -1;
+      if (currentLength > previousLength) {
+        this.addedIndex = currentLength - 1; // Chỉ số dòng mới là phần tử cuối cùng
+      }
+      // console.log(
+      //   "Index của dòng vừa thêm đang được nhập tại modal:",
+      //   this.addedIndex
+      // );
+      this.datanhaphosomodal = this.items[this.addedIndex];
+      // console.log(this.datanhaphosomodal);
+    },
+
+    async xacnhanGhihoso() {
+      const result = await Swal.fire({
+        title: `Xác nhận thêm vào bộ hồ sơ kê khai ?`,
+        showDenyButton: true,
+        confirmButtonText: "Xác nhận",
+        denyButtonText: `Không`,
+      });
+      if (result.isConfirmed) {
+        this.items[this.addedIndex] = this.datanhaphosomodal;
+        this.datanhaphosomodal = {};
+        this.isActive_nhaphoso = false;
+        // console.log(this.items);
+      }
+    },
+
+    async cancelNhaphoso() {
+      const result = await Swal.fire({
+        title: `Xác nhận hủy kê khai hồ sơ ?`,
+        showDenyButton: true,
+        confirmButtonText: "Xác nhận",
+        denyButtonText: `Không`,
+      });
+      if (result.isConfirmed) {
+        this.items.splice(this.addedIndex, 1);
+        this.isActive_nhaphoso = false;
+      }
+    },
+
+    async guiKekhai() {
+      if (this.items.length > 0) {
+        this.isActive_xacnhan = true;
+      } else {
+        const Toast = Swal.mixin({
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.addEventListener("mouseenter", Swal.stopTimer);
+            toast.addEventListener("mouseleave", Swal.resumeTimer);
+          },
+        });
+        Toast.fire({
+          icon: "error",
+          title: "Không có hồ sơ nào để xác nhận",
+        });
+      }
+    },
+
     addRow() {
       try {
         this.items.push({
@@ -743,8 +1460,8 @@ export default {
           tiennsdp: 0, //float
 
           // hồ sơ kê khai
-          dotkekhai: "1",
-          kykekhai: "2",
+          dotkekhai: "",
+          kykekhai: "",
           ngaykekhai: "",
           trangthai: 1,
         });
@@ -782,6 +1499,20 @@ export default {
         style: "currency",
         currency: "VND",
       });
+    },
+
+    formatISODateToDMY(isoDateString) {
+      const date = new Date(isoDateString);
+
+      // Lấy ngày, tháng và năm từ đối tượng Date
+      const day = date.getDate().toString().padStart(2, "0");
+      const month = (date.getMonth() + 1).toString().padStart(2, "0");
+      const year = date.getFullYear();
+
+      // Tạo chuỗi ngày tháng dd/mm/yyyy
+      const formattedDate = `${day}/${month}/${year}`;
+
+      return formattedDate;
     },
 
     // phương án
@@ -1104,66 +1835,6 @@ export default {
       return true;
     },
 
-    async onSave1() {
-      // const current = new Date();
-      // Lấy thời gian hiện tại theo múi giờ Việt Nam
-      const nowInVietnam = DateTime.now().setZone("Asia/Ho_Chi_Minh");
-      const formattedDate = nowInVietnam.toFormat("yyyy-MM-dd HH:mm:ss");
-      // console.log(formattedDate); // Sẽ in ra giờ chính xác ở Việt Nam
-      // Lọc các trường cần thiết trong từng item của 'items'
-      const cleanedItems = this.items.map((item) => {
-        // console.log(item.madoituong);
-        // console.log(item.tendoituong);
-        item.sotien = parseFloat(item.sotien.replace(/,/g, ""));
-        item.tienluongcs = parseFloat(item.tienluongcs.replace(/,/g, ""));
-        // info add db
-        item.createdAt = formattedDate;
-        item.createdBy = this.$auth.user.username;
-        item.updatedAt = "";
-        item.updatedBy = "";
-        // thông tin bộ hồ sơ nạp
-        item.dotkekhai = "Dot 1";
-        item.kykekhai = "Dot 2";
-        item.ngaykekhai = formattedDate;
-
-        item.trangthai = 1;
-        // Loại bỏ các trường không cần thiết
-        const {
-          info_benhvien,
-          info_huyen,
-          info_phuongan,
-          info_tinh,
-          info_xaphuong,
-          phuongthucdong,
-          ...essentialFields // Chỉ giữ các trường cần thiết
-        } = item;
-
-        return essentialFields; // Trả về item đã lọc
-      });
-
-      const result = await this.$axios.post(
-        "api/kekhai/kekhai-trans",
-        cleanedItems
-      );
-      if (result.data.status == "success") {
-        const Toast = Swal.mixin({
-          toast: true,
-          position: "top-end",
-          showConfirmButton: false,
-          timer: 3000,
-          timerProgressBar: true,
-          didOpen: (toast) => {
-            toast.addEventListener("mouseenter", Swal.stopTimer);
-            toast.addEventListener("mouseleave", Swal.resumeTimer);
-          },
-        });
-        Toast.fire({
-          icon: "success",
-          title: "Chuyển thành công!",
-        });
-      }
-    },
-
     async onSave() {
       if (this.items.length <= 0) {
         const Toast = Swal.mixin({
@@ -1199,9 +1870,11 @@ export default {
         if (result.isConfirmed) {
           // const current = new Date();
           const nowInVietnam = DateTime.now().setZone("Asia/Ho_Chi_Minh");
-          const formattedDate = nowInVietnam.toFormat("yyyy-MM-dd HH:mm:ss");
+          const formattedDate = nowInVietnam.toFormat("dd-MM-yyyy HH:mm:ss");
+          const kyKeKhaiFrm = nowInVietnam.toFormat("MM/yyyy");
           // Bắt đầu hiển thị biểu tượng loading
           this.isLoading = true;
+          let dataKekhai = [];
           try {
             for (let i = 0; i < this.items.length; i++) {
               this.items[i].sotien = parseFloat(
@@ -1210,6 +1883,7 @@ export default {
               this.items[i].tienluongcs = parseFloat(
                 this.items[i].tienluongcs.replace(/,/g, "")
               );
+
               // info add db
               this.items[i].createdAt = formattedDate;
               this.items[i].createdBy = this.$auth.user.username;
@@ -1217,10 +1891,9 @@ export default {
               this.items[i].updatedBy = "";
 
               // thông tin bộ hồ sơ nạp
-              this.items[i].nvt_masobhxh = this.$auth.user.masobhxh
-              this.items[i].nvt_cccd = this.$auth.user.cccd
-              this.items[i].dotkekhai = "Dot 1";
-              this.items[i].kykekhai = "Dot 2";
+              this.items[i].nvt_masobhxh = this.$auth.user.masobhxh;
+              this.items[i].nvt_cccd = this.$auth.user.cccd;
+              this.items[i].kykekhai = kyKeKhaiFrm;
               this.items[i].ngaykekhai = formattedDate;
               // Loại bỏ dữ liệu không cần thiết bằng destructuring
               const {
@@ -1230,22 +1903,39 @@ export default {
                 info_tinh,
                 info_xaphuong,
                 phuongthucdong,
-                ...itemWithout
+                ...filteredItem
               } = this.items[i];
 
-              const result = await this.$axios.post(
-                `api/kekhai/add-kekhai`,
-                itemWithout
-              );
-              console.log(result);
+              // Thêm vào mảng mới
+              dataKekhai.push(filteredItem);
+            }
+
+            const result = await this.$axios.post(
+              `api/kekhai/add-kekhai-series`,
+              dataKekhai
+            );
+
+            if (result.status === 200) {
+              this.form_response_sucess = [];
+              this.formKekhai = {};
+              // console.log(result.data.data);
+              this.form_response_sucess = result.data.data;
+              const ttHoso = result.data.data[0];
+              this.formKekhai = {
+                sohoso: ttHoso.sohoso,
+                dotkekhai: ttHoso.dotkekhai,
+                kykekhai: ttHoso.kykekhai,
+                ngaykekhai: ttHoso.ngaykekhai,
+              };
               this.isLoading = false;
+              this.isActive_xacnhan = false;
+              this.isActive = true;
+              this.items = [];
             }
           } catch (error) {
             // console.log(error);
             this.isLoading = false;
           }
-          // this.isActive = true;
-          // this.items = [];
         }
       }
     },
