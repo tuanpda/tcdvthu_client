@@ -20,8 +20,7 @@
             <div class="titleKk">
               <hr class="line" />
               <div class="topleft">
-                <span style="color: red; font-weight: 700">1.</span> Thông tin
-                đại lý
+                <span style="color: red; font-weight: 700">1.</span> Thông tin điểm Thu
               </div>
             </div>
             <div class="columns">
@@ -186,13 +185,13 @@
         </div>
 
         <!-- Sử dụng v-bind để truyền props vào component con -->
-        <div v-show="maloaihinh == 'AR'">
+        <div v-if="maloaihinh == 'AR'">
           <ArTable :maloaihinh="maloaihinh" :loaihinh="loaihinh" />
         </div>
-        <div v-show="maloaihinh == 'BI'">
+        <div v-if="maloaihinh == 'BI'">
           <BiTable :maloaihinh="maloaihinh" :loaihinh="loaihinh" />
         </div>
-        <div v-show="maloaihinh == 'IS'">
+        <div v-if="maloaihinh == 'IS'">
           <ISTable :maloaihinh="maloaihinh" :loaihinh="loaihinh" />
         </div>
       </div>

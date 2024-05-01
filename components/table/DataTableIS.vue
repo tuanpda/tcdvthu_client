@@ -34,15 +34,10 @@
           {{ item.hoten }}
         </td>
         <td style="text-align: center">
-          {{ formatISODateToDMY(item.ngaysinh) }}
+          {{ item.ngaysinh }}
         </td>
         <td style="text-align: center">
-          <template v-if="item.gioitinh === true">
-            <span>Nam</span>
-          </template>
-          <template v-else>
-            <span>Nữ</span>
-          </template>
+          {{ item.gioitinh }}
         </td>
         <td style="text-align: center">
           {{ item.cccd }}
@@ -89,7 +84,8 @@ export default {
       return formattedDate;
     },
 
-    formatCurrency(number) {
+    formatCurrency(text) {
+      const number = parseFloat(text);
       return number.toLocaleString("vi-VN", {
         style: "currency",
         currency: "VND",

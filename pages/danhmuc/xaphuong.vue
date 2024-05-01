@@ -188,7 +188,7 @@ export default {
     visiblePages() {
       // Trả về một mảng các số trang mà bạn muốn hiển thị
       const pages = [];
-      const maxVisiblePages = 5; // Số lượng trang hiển thị tối đa
+      const maxVisiblePages = 10; // Số lượng trang hiển thị tối đa
 
       let startPage = Math.max(
         1,
@@ -221,30 +221,6 @@ export default {
 
   mounted() {
     this.getData(1); // Tải dữ liệu cho trang đầu tiên
-  },
-
-  computed: {
-    visiblePages() {
-      const pages = [];
-      const maxVisiblePages = 5; // Số lượng trang hiển thị tối đa
-
-      // Xác định phạm vi của các trang hiển thị
-      let startPage = Math.max(
-        1,
-        this.currentPage - Math.floor(maxVisiblePages / 2)
-      );
-      let endPage = Math.min(this.totalPages, startPage + maxVisiblePages - 1);
-
-      if (endPage - startPage < maxVisiblePages - 1) {
-        startPage = Math.max(1, endPage - maxVisiblePages + 1);
-      }
-
-      for (let i = startPage; i <= endPage; i++) {
-        pages.push(i);
-      }
-
-      return pages;
-    },
   },
 
   methods: {

@@ -15,7 +15,7 @@
               </button>
             </p>
             <p class="control">
-              <button class="button is-small is-info">
+              <button @click="importKekhai" class="button is-small is-info">
                 <span class="icon">
                   <i class="fas fa-file-import"></i>
                 </span>
@@ -109,12 +109,21 @@
                 />
               </td>
               <td style="text-align: center">
-                <input
-                  v-model="item.ngaysinh"
-                  class="input is-small"
-                  type="date"
-                  ref="ngaysinhInput"
-                />
+                <template v-if="item.ngaysinh !== ''">
+                  <input
+                    v-model="item.ngaysinh"
+                    class="input is-small"
+                    ref="ngaysinhInput"
+                  />
+                </template>
+                <template v-else>
+                  <input
+                    v-model="item.ngaysinh"
+                    class="input is-small"
+                    type="date"
+                    ref="ngaysinhInput"
+                  />
+                </template>
               </td>
               <td style="text-align: center">
                 <div class="select is-fullwidth is-small">
@@ -122,8 +131,8 @@
                     <!-- Bind v-model để liên kết giá trị -->
                     <option value="" selected>- Chọn giới tính -</option>
                     <!-- Tùy chọn mặc định -->
-                    <option value="true">Nam</option>
-                    <option value="false">Nữ</option>
+                    <option value="Nam">Nam</option>
+                    <option value="Nữ">Nữ</option>
                   </select>
                 </div>
               </td>
@@ -347,10 +356,7 @@
           <span>Thêm dòng</span>
         </button>
         &nbsp;
-        <button
-          @click="guiKekhai"
-          class="button is-danger is-small"
-        >
+        <button @click="guiKekhai" class="button is-danger is-small">
           <span class="icon is-small">
             <i class="fas fa-envelope-open-text"></i>
           </span>
@@ -481,6 +487,12 @@
                             Họ tên
                           </td>
                           <td style="text-align: center; font-weight: bold">
+                            Ngày sinh
+                          </td>
+                          <td style="text-align: center; font-weight: bold">
+                            Giới tính
+                          </td>
+                          <td style="text-align: center; font-weight: bold">
                             Mã số BHXH
                           </td>
                           <td style="text-align: center; font-weight: bold">
@@ -503,6 +515,12 @@
                           </td>
                           <td style="text-align: center">
                             {{ item.masobhxh }}
+                          </td>
+                          <td>
+                            {{ item.ngaysinh }}
+                          </td>
+                          <td>
+                            {{ item.gioitinh }}
                           </td>
                           <td style="text-align: center">
                             {{ item.cccd }}
@@ -596,12 +614,21 @@
                       <label class="labelFix">Ngày sinh </label>
                     </div>
                     <div style="flex-grow: 1">
-                      <input
-                        v-model="datanhaphosomodal.ngaysinh"
-                        class="input is-small"
-                        type="date"
-                        ref="ngaysinhInput"
-                      />
+                      <template v-if="datanhaphosomodal.ngaysinh !== ''">
+                        <input
+                          v-model="datanhaphosomodal.ngaysinh"
+                          class="input is-small"
+                          ref="ngaysinhInput"
+                        />
+                      </template>
+                      <template v-else>
+                        <input
+                          v-model="datanhaphosomodal.ngaysinh"
+                          class="input is-small"
+                          type="date"
+                          ref="ngaysinhInput"
+                        />
+                      </template>
                     </div>
                   </div>
                 </div>
@@ -616,8 +643,8 @@
                           <!-- Bind v-model để liên kết giá trị -->
                           <option value="" selected>- Chọn giới tính -</option>
                           <!-- Tùy chọn mặc định -->
-                          <option value="true">Nam</option>
-                          <option value="false">Nữ</option>
+                          <option value="Nam">Nam</option>
+                          <option value="Nữ">Nữ</option>
                         </select>
                       </div>
                     </div>
@@ -1145,6 +1172,224 @@
         </div>
       </div>
     </div>
+
+    <!-- modal import dữ liệu kê khai -->
+    <div class="">
+      <div :class="{ 'is-active': isActive_import }" class="modal">
+        <div class="modal-background"></div>
+        <div class="modal-content modal-card-kekhai box">
+          <section class="modal-card-kekhai-body">
+            <div>
+              <div>
+                <span style="font-weight: 800; font-size: 15px; color: #3cb371"
+                  >Import dữ liệu kê khai</span
+                >
+              </div>
+              <div style="text-align: end">
+                <button
+                  @click="isActive_import = false"
+                  class="button is-small is-info"
+                >
+                  Thoát
+                </button>
+              </div>
+            </div>
+            <div>
+              <div class="titleKk">
+                <hr class="line" />
+                <div class="topleft">
+                  <span style="color: red; font-weight: 700">1.</span> Chọn file
+                  dữ liệu
+                </div>
+              </div>
+              <div class="columns">
+                <div class="column">
+                  <div>
+                    <div class="file is-info has-name is-small">
+                      <label class="file-label">
+                        <input
+                          @change="onFileChange"
+                          class="file-input"
+                          type="file"
+                          name="resume"
+                        />
+                        <span class="file-cta">
+                          <span class="file-icon">
+                            <i class="fas fa-upload"></i>
+                          </span>
+                          <span class="file-label"> Chọn file dữ liệu </span>
+                        </span>
+                        <span class="file-name">
+                          {{ fileName }}
+                        </span>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="titleKk" style="margin-top: 10px">
+                <hr class="line" />
+                <div class="topleft">
+                  <span style="color: red; font-weight: 700">2.</span> Danh sách
+                  kê khai
+                </div>
+              </div>
+              <div class="columns table_wrapper">
+                <div class="column">
+                  <div v-if="items.length > 0">
+                    <table
+                      class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth"
+                    >
+                      <thead>
+                        <tr style="font-size: small; background-color: #fff8dc">
+                          <td style="text-align: center; width: 3%">STT</td>
+                          <td style="text-align: center">Mã số BHXH</td>
+                          <td style="text-align: center">Họ tên</td>
+                          <td style="text-align: center">Ngày sinh</td>
+                          <td style="text-align: center">Giới tính</td>
+                          <td style="text-align: center">CCCD</td>
+                          <td style="text-align: center">Điện thoại</td>
+                          <td style="text-align: center">Phương án</td>
+                          <td style="text-align: center">Lương cơ sở</td>
+                          <td style="text-align: center">Tỷ lệ NSTW %</td>
+                          <td style="text-align: center">Tỷ lệ NSĐP %</td>
+                          <td style="text-align: center">Tỷ lệ HT khác</td>
+                          <td style="text-align: center">Từ ngày</td>
+                          <td style="text-align: center">Số tháng</td>
+                          <td style="text-align: center">Số tiền phải đóng</td>
+                          <td style="text-align: center">Tỉnh / Thành phố</td>
+                          <td style="text-align: center">Quận / Huyện</td>
+                          <td style="text-align: center">Xã phường</td>
+                          <td style="text-align: center">Tổ thôn</td>
+                          <td style="text-align: center">Bệnh viện tỉnh</td>
+                          <td style="text-align: center">Bệnh viện</td>
+                          <td style="text-align: center">Ghi chú</td>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr
+                          v-for="(item, index) in items"
+                          :key="index"
+                          style="font-size: small"
+                        >
+                          <td
+                            style="text-align: center; vertical-align: middle"
+                          >
+                            {{ index + 1 }}
+                          </td>
+                          <td style="text-align: center; font-weight: 500">
+                            {{ item.masobhxh }}
+                          </td>
+                          <td style="text-align: center; font-weight: 500">
+                            {{ item.hoten }}
+                          </td>
+                          <td style="text-align: center">
+                            {{ formatISODateToDMY(item.ngaysinh) }}
+                          </td>
+                          <td style="text-align: center">
+                            {{ item.gioitinh }}
+                          </td>
+                          <td style="text-align: center; font-weight: 500">
+                            {{ item.cccd }}
+                          </td>
+                          <td style="text-align: center; font-weight: 500">
+                            {{ item.dienthoai }}
+                          </td>
+                          <td style="text-align: center">
+                            {{ item.tenphuongan }}
+                          </td>
+                          <td style="text-align: center">
+                            {{ item.tienluongcs }}
+                          </td>
+                          <td style="text-align: center">
+                            {{ item.tylensnnht }}
+                          </td>
+                          <td style="text-align: center">
+                            {{ item.tylensdp }}
+                          </td>
+                          <td style="text-align: center">
+                            {{ item.hotrokhac }}
+                          </td>
+                          <td style="text-align: center">
+                            {{ formatISODateToDMY(item.tungay) }}
+                          </td>
+                          <td style="text-align: center">
+                            {{ item.tenphuongthucdong }}
+                          </td>
+                          <td
+                            style="
+                              text-align: center;
+                              font-weight: 500;
+                              color: red;
+                            "
+                          >
+                            {{ formatCurrency(item.sotien) }}
+                          </td>
+                          <!-- tỉnh-->
+                          <td style="text-align: center">
+                            {{ item.tentinh }}
+                          </td>
+                          <!-- quận huyện -->
+                          <td style="text-align: center">
+                            {{ item.tenquanhuyen }}
+                          </td>
+                          <!-- xã phường -->
+                          <td>
+                            {{ item.tenxaphuong }}
+                          </td>
+                          <!-- tổ thôn -->
+                          <td>
+                            {{ item.tothon }}
+                          </td>
+                          <!-- tỉnh bệnh viện -->
+                          <td style="text-align: center">
+                            {{ item.benhvientinh }}
+                          </td>
+                          <!-- bệnh viện -->
+                          <td>
+                            {{ item.tenbenhvien }}
+                          </td>
+                          <!-- ghi chú -->
+                          <td>
+                            {{ item.ghichu }}
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+              <hr class="navbar-divider" />
+              <div class="columns">
+                <div class="column" style="margin-top: 10px">
+                  <div
+                    class="field is-grouped is-flex is-justify-content-center"
+                  >
+                    <div class="control">
+                      <button
+                        @click="onSave"
+                        class="button is-success is-small"
+                      >
+                        Xác nhận nạp hồ sơ
+                      </button>
+                    </div>
+                    <div class="control">
+                      <button
+                        @click="cancelImport"
+                        class="button is-warning is-light is-small"
+                      >
+                        Hủy xác nhận
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -1159,6 +1404,7 @@ const currencyMask = createNumberMask({
   allowNegative: false,
 });
 import Swal from "sweetalert2";
+import XLSX from "xlsx";
 export default {
   name: "calCastAR",
   middleware: "auth",
@@ -1175,8 +1421,10 @@ export default {
       isActive: false,
       isActive_nhaphoso: false,
       isActive_xacnhan: false,
+      isActive_import: false,
       mask: currencyMask,
       items: [],
+      template_items: [],
       phuongan: [
         {
           maphuongan: "TM",
@@ -1209,6 +1457,10 @@ export default {
       // phục vụ việc nhập item từ modal
       addedIndex: 0,
       datanhaphosomodal: {},
+
+      // thêm cho việc import dữ liệu kê khai từ file execl
+      fileName: "",
+      selectedFile: null,
     };
   },
 
@@ -1294,14 +1546,7 @@ export default {
         const data = res.data[0];
         try {
           this.items[index].hoten = data.hoten;
-
-          // biến đổi dữ liệu ngày sinh từ db thành dạng dữ liệu để bind vào input date
-          // db ra có dạng 1986-07-02T00:00:00.000Z (nhưng ở dạng string)
-          const ngaysinhDb = data.ngaysinh;
-          const dateObject = new Date(ngaysinhDb);
-          const ngaysinhbind = dateObject.toISOString().split("T")[0];
-          this.items[index].ngaysinh = ngaysinhbind;
-
+          this.items[index].ngaysinh = data.ngaysinh;
           this.items[index].gioitinh = data.gioitinh;
           this.items[index].cccd = data.cccd;
           this.items[index].dienthoai = data.dienthoai;
@@ -1381,6 +1626,7 @@ export default {
 
     async guiKekhai() {
       if (this.items.length > 0) {
+        // console.log(this.items);
         this.isActive_xacnhan = true;
       } else {
         const Toast = Swal.mixin({
@@ -1449,15 +1695,15 @@ export default {
           // phải kê vào để lưu CSDL những cái này không có trong loại hình này
           madoituong: "",
           tendoituong: "",
-          tuthang: "1900-01-01", // kiểu date
+          tuthang: "",
           nguoithu: 0,
           tylengansachdiaphuong: 0,
           tyledong: 0,
           muctiendong: 0,
           tientunguyendong: 0,
           tienlai: 0,
-          tiennsnnht: 0, // float
-          tiennsdp: 0, //float
+          tiennsnnht: 0,
+          tiennsdp: 0,
 
           // hồ sơ kê khai
           dotkekhai: "",
@@ -1502,17 +1748,22 @@ export default {
     },
 
     formatISODateToDMY(isoDateString) {
-      const date = new Date(isoDateString);
+      const dateFormat = this.identifyDateFormat(isoDateString);
+      if (dateFormat == "YYYY-MM-DD") {
+        const date = new Date(isoDateString);
 
-      // Lấy ngày, tháng và năm từ đối tượng Date
-      const day = date.getDate().toString().padStart(2, "0");
-      const month = (date.getMonth() + 1).toString().padStart(2, "0");
-      const year = date.getFullYear();
+        // Lấy ngày, tháng và năm từ đối tượng Date
+        const day = date.getDate().toString().padStart(2, "0");
+        const month = (date.getMonth() + 1).toString().padStart(2, "0");
+        const year = date.getFullYear();
 
-      // Tạo chuỗi ngày tháng dd/mm/yyyy
-      const formattedDate = `${day}/${month}/${year}`;
+        // Tạo chuỗi ngày tháng dd/mm/yyyy
+        const formattedDate = `${day}/${month}/${year}`;
 
-      return formattedDate;
+        return formattedDate;
+      } else {
+        return isoDateString;
+      }
     },
 
     // phương án
@@ -1776,7 +2027,10 @@ export default {
           return false;
         }
 
-        if (!this.items[i].maphuongthucdong || !this.items[i].phuongthucdong) {
+        if (
+          !this.items[i].maphuongthucdong ||
+          !this.items[i].tenphuongthucdong
+        ) {
           this.$toasted.show("Thiếu phương thức đóng", {
             duration: 3000,
             theme: "bubble",
@@ -1835,6 +2089,29 @@ export default {
       return true;
     },
 
+    // chuyển đổi định dạng ngày tháng
+    convertDate(inputDate) {
+      const [year, month, day] = inputDate.split("-");
+      return `${day}/${month}/${year}`;
+    },
+
+    identifyDateFormat(dateString) {
+      // Biểu thức chính quy cho định dạng YYYY-MM-DD
+      const regexYYYYMMDD = /^\d{4}-\d{2}-\d{2}$/;
+
+      // Biểu thức chính quy cho định dạng DD/MM/YYYY
+      const regexDDMMYYYY = /^\d{2}\/\d{2}\/\d{4}$/;
+
+      // Kiểm tra xem chuỗi ngày tháng thuộc định dạng nào
+      if (regexYYYYMMDD.test(dateString)) {
+        return "YYYY-MM-DD";
+      } else if (regexDDMMYYYY.test(dateString)) {
+        return "DD/MM/YYYY";
+      } else {
+        return "UNKNOWN";
+      }
+    },
+
     async onSave() {
       if (this.items.length <= 0) {
         const Toast = Swal.mixin({
@@ -1877,12 +2154,26 @@ export default {
           let dataKekhai = [];
           try {
             for (let i = 0; i < this.items.length; i++) {
-              this.items[i].sotien = parseFloat(
-                this.items[i].sotien.replace(/,/g, "")
+              this.items[i].sotien = this.items[i].sotien.replace(/,/g, "");
+              this.items[i].tienluongcs = this.items[i].tienluongcs.replace(
+                /,/g,
+                ""
               );
-              this.items[i].tienluongcs = parseFloat(
-                this.items[i].tienluongcs.replace(/,/g, "")
+
+              // Nếu ngày sinh từ db người hưởng sẽ có dạng text không cần chuyển đổi
+              // Nếu từ input dạng yyyy-mm-dd thì phải đổi thành text
+              const dateFormat = this.identifyDateFormat(
+                this.items[i].ngaysinh
               );
+              if (dateFormat == "YYYY-MM-DD") {
+                const ngaysinhTranform = this.convertDate(
+                  this.items[i].ngaysinh
+                );
+                this.items[i].ngaysinh = ngaysinhTranform;
+              }
+
+              const tungayTranform = this.convertDate(this.items[i].tungay);
+              this.items[i].tungay = tungayTranform;
 
               // info add db
               this.items[i].createdAt = formattedDate;
@@ -1938,6 +2229,48 @@ export default {
           }
         }
       }
+    },
+
+    async onFileChange(e) {
+      this.fileName = e.target.files[0].name;
+      this.selectedFile = e.target.files[0];
+      const files = e.target.files;
+
+      const fileReader = new FileReader(); // construction function that can read the file content
+      fileReader.onload = (ev) => {
+        const data = ev.target.result;
+        const workbook = XLSX.read(data, {
+          type: "binary", // binary
+        });
+        const wsname = workbook.SheetNames[0]; //take the first sheet
+        const ws = XLSX.utils.sheet_to_json(workbook.Sheets[wsname]); //Get the data in this table
+        this.items = ws;
+        // ws.forEach((template) => {
+        //   this.items.forEach((item) => {
+        //     // Duyệt qua các trường của template
+        //     for (const key in template) {
+        //       if (item.hasOwnProperty(key)) {
+        //         // Nếu item có trường giống với template, ghi đè giá trị
+        //         item[key] = template[key];
+        //       }
+        //     }
+        //   });
+        // });
+      };
+
+      fileReader.readAsBinaryString(files[0]); // read file, trigger onload
+    },
+
+    async importKekhai() {
+      // thêm các thứ sau. 1. import XLSX from "xlsx"
+      // 2. thêm isActive_import (vào data); 3. thêm fileName: "", và selectedFile: null, vào data
+      // thêm @click="importKekhai" cho button trên cùng
+      this.isActive_import = true;
+    },
+
+    cancelImport() {
+      this.isActive_import = false;
+      this.items = [];
     },
   },
 };

@@ -99,12 +99,21 @@
                 />
               </td>
               <td style="text-align: center">
-                <input
-                  v-model="item.ngaysinh"
-                  class="input is-small"
-                  type="date"
-                  ref="ngaysinhInput"
-                />
+                <template v-if="item.ngaysinh !== ''">
+                  <input
+                    v-model="item.ngaysinh"
+                    class="input is-small"
+                    ref="ngaysinhInput"
+                  />
+                </template>
+                <template v-else>
+                  <input
+                    v-model="item.ngaysinh"
+                    class="input is-small"
+                    type="date"
+                    ref="ngaysinhInput"
+                  />
+                </template>
               </td>
               <td style="text-align: center">
                 <div class="select is-fullwidth is-small">
@@ -465,6 +474,12 @@
                             Họ tên
                           </td>
                           <td style="text-align: center; font-weight: bold">
+                            Ngày sinh
+                          </td>
+                          <td style="text-align: center; font-weight: bold">
+                            Giới tính
+                          </td>
+                          <td style="text-align: center; font-weight: bold">
                             Mã số BHXH
                           </td>
                           <td style="text-align: center; font-weight: bold">
@@ -487,6 +502,12 @@
                           </td>
                           <td style="text-align: center">
                             {{ item.masobhxh }}
+                          </td>
+                          <td>
+                            {{ item.ngaysinh }}
+                          </td>
+                          <td>
+                            {{ item.gioitinh }}
                           </td>
                           <td style="text-align: center">
                             {{ item.cccd }}
@@ -580,12 +601,21 @@
                       <label class="labelFix">Ngày sinh </label>
                     </div>
                     <div style="flex-grow: 1">
-                      <input
-                        v-model="datanhaphosomodal.ngaysinh"
-                        class="input is-small"
-                        type="date"
-                        ref="ngaysinhInput"
-                      />
+                      <template v-if="datanhaphosomodal.ngaysinh !== ''">
+                        <input
+                          v-model="datanhaphosomodal.ngaysinh"
+                          class="input is-small"
+                          ref="ngaysinhInput"
+                        />
+                      </template>
+                      <template v-else>
+                        <input
+                          v-model="datanhaphosomodal.ngaysinh"
+                          class="input is-small"
+                          type="date"
+                          ref="ngaysinhInput"
+                        />
+                      </template>
                     </div>
                   </div>
                 </div>
@@ -600,8 +630,8 @@
                           <!-- Bind v-model để liên kết giá trị -->
                           <option value="" selected>- Chọn giới tính -</option>
                           <!-- Tùy chọn mặc định -->
-                          <option value="true">Nam</option>
-                          <option value="false">Nữ</option>
+                          <option value="Nam">Nam</option>
+                          <option value="Nữ">Nữ</option>
                         </select>
                       </div>
                     </div>
@@ -1222,14 +1252,7 @@ export default {
         const data = res.data[0];
         try {
           this.items[index].hoten = data.hoten;
-
-          // biến đổi dữ liệu ngày sinh từ db thành dạng dữ liệu để bind vào input date
-          // db ra có dạng 1986-07-02T00:00:00.000Z (nhưng ở dạng string)
-          const ngaysinhDb = data.ngaysinh;
-          const dateObject = new Date(ngaysinhDb);
-          const ngaysinhbind = dateObject.toISOString().split("T")[0];
-          this.items[index].ngaysinh = ngaysinhbind;
-
+          this.items[index].ngaysinh = data.ngaysinh;
           this.items[index].gioitinh = data.gioitinh;
           this.items[index].cccd = data.cccd;
           this.items[index].dienthoai = data.dienthoai;
@@ -1354,7 +1377,7 @@ export default {
           tylengansachtw: this.tylengansachtw,
           tylenngansachdp: this.tylenngansachdp,
           hotrokhac: this.hotrokhac,
-          tungay: "1900-01-01",
+          tungay: "",
           phuongthucdong: this.phuongthucdong,
           maphuongthucdong: "",
           tenphuongthucdong: "",
@@ -1387,9 +1410,9 @@ export default {
           tientunguyendong: 0,
           tienlai: 0,
           tylensnnht: 0,
-          tiennsnnht: 0, // float
+          tiennsnnht: 0,
           tylensdp: 0,
-          tiennsdp: 0, //float
+          tiennsdp: 0,
 
           // hồ sơ kê khai
           dotkekhai: "",
@@ -1434,17 +1457,22 @@ export default {
     },
 
     formatISODateToDMY(isoDateString) {
-      const date = new Date(isoDateString);
+      const dateFormat = this.identifyDateFormat(isoDateString);
+      if (dateFormat == "YYYY-MM-DD") {
+        const date = new Date(isoDateString);
 
-      // Lấy ngày, tháng và năm từ đối tượng Date
-      const day = date.getDate().toString().padStart(2, "0");
-      const month = (date.getMonth() + 1).toString().padStart(2, "0");
-      const year = date.getFullYear();
+        // Lấy ngày, tháng và năm từ đối tượng Date
+        const day = date.getDate().toString().padStart(2, "0");
+        const month = (date.getMonth() + 1).toString().padStart(2, "0");
+        const year = date.getFullYear();
 
-      // Tạo chuỗi ngày tháng dd/mm/yyyy
-      const formattedDate = `${day}/${month}/${year}`;
+        // Tạo chuỗi ngày tháng dd/mm/yyyy
+        const formattedDate = `${day}/${month}/${year}`;
 
-      return formattedDate;
+        return formattedDate;
+      }else{
+        return isoDateString
+      }
     },
 
     limitTiendong(cast, index) {
@@ -2107,6 +2135,29 @@ export default {
       return true;
     },
 
+    // chuyển đổi định dạng ngày tháng
+    convertDate(inputDate) {
+      const [year, month, day] = inputDate.split("-");
+      return `${day}/${month}/${year}`;
+    },
+
+    identifyDateFormat(dateString) {
+      // Biểu thức chính quy cho định dạng YYYY-MM-DD
+      const regexYYYYMMDD = /^\d{4}-\d{2}-\d{2}$/;
+
+      // Biểu thức chính quy cho định dạng DD/MM/YYYY
+      const regexDDMMYYYY = /^\d{2}\/\d{2}\/\d{4}$/;
+
+      // Kiểm tra xem chuỗi ngày tháng thuộc định dạng nào
+      if (regexYYYYMMDD.test(dateString)) {
+        return "YYYY-MM-DD";
+      } else if (regexDDMMYYYY.test(dateString)) {
+        return "DD/MM/YYYY";
+      } else {
+        return "UNKNOWN";
+      }
+    },
+
     async onSave() {
       if (this.items.length <= 0) {
         const Toast = Swal.mixin({
@@ -2148,12 +2199,23 @@ export default {
           let dataKekhai = [];
           try {
             for (let i = 0; i < this.items.length; i++) {
-              this.items[i].sotien = parseFloat(
-                this.items[i].sotien.replace(/,/g, "")
+              this.items[i].sotien = this.items[i].sotien.replace(/,/g, "");
+              this.items[i].muctiendong = this.items[i].muctiendong.replace(
+                /,/g,
+                ""
               );
-              this.items[i].muctiendong = parseFloat(
-                this.items[i].muctiendong.replace(/,/g, "")
+
+              // Nếu ngày sinh từ db người hưởng sẽ có dạng text không cần chuyển đổi
+              // Nếu từ input dạng yyyy-mm-dd thì phải đổi thành text
+              const dateFormat = this.identifyDateFormat(
+                this.items[i].ngaysinh
               );
+              if (dateFormat == "YYYY-MM-DD") {
+                const ngaysinhTranform = this.convertDate(
+                  this.items[i].ngaysinh
+                );
+                this.items[i].ngaysinh = ngaysinhTranform;
+              }
 
               // info add db
               this.items[i].createdAt = formattedDate;
