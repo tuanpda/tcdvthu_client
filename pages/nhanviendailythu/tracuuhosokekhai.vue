@@ -510,7 +510,7 @@ export default {
       //   `/api/kekhai/kykekhai-search-series?kykekhai=${this.kykekhai}`
       // );
       const res = await this.$axios.get(
-        `/api/kekhai/kykekhai-search-series-pagi?kykekhai=${this.kykekhai}&page=${page}`
+        `/api/kekhai/kykekhai-search-series-pagi?kykekhai=${this.kykekhai}&madaily=${this.dailyview}&page=${page}`
       );
       // console.log(res.data.kekhai);
       if (res.data.results.length > 0) {
