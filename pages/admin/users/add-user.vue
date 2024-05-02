@@ -457,7 +457,7 @@ export default {
         name: "",
         password: "",
         role: 4, // nomal user
-        avatar: "http://ansinhbhxh.online/avatar/default-image.jpg",
+        avatar: "http://ansinhbhxh.online:4042/avatar/default-image.jpg",
         active: 0,
         createdBy: this.$auth.user.username,
         createdAt: null,
@@ -937,7 +937,7 @@ export default {
             this.fetchDataUsers();
               // tạo chuỗi active
               // this.linkActive = `http://localhost:3000/${this.form.email}/actived`;
-              this.linkActive = `http://ansinhbhxh.online/${this.form.email}/actived`;
+              this.linkActive = `http://ansinhbhxh.online:4042/${this.form.email}/actived`;
               //   // gửi mail kích hoạt và mật khẩu gọi API send mail
               const data_send_mail = {
                 email: this.form.email,
