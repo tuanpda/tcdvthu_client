@@ -1488,6 +1488,8 @@ export default {
           dotkekhai: "",
           kykekhai: "",
           ngaykekhai: "",
+          ngaybienlai: "",
+          sobienlai: "",
           trangthai: 1,
         });
 

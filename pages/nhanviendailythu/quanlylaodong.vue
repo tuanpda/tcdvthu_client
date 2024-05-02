@@ -59,6 +59,27 @@
                   </button>
                 </div>
               </div>
+              <div class="columns">
+                <div class="column is-2">
+                  <button class="button is-small is-info is-fullwidth">
+                    <span class="icon">
+                      <i class="fas fa-arrow-alt-circle-down"></i>
+                    </span>
+                    <span>Import Excel</span>
+                  </button>
+                </div>
+                <div class="column is-2">
+                  <button
+                    @click="getData(1)"
+                    class="button is-small is-info is-fullwidth"
+                  >
+                    <span class="icon">
+                      <i class="fas fa-file-excel"></i>
+                    </span>
+                    <span>Tải Excel mẫu</span>
+                  </button>
+                </div>
+              </div>
 
               <div class="columns">
                 <div class="column">
