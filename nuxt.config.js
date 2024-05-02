@@ -53,10 +53,11 @@ export default {
   },
 
   server: {
-    port: 8080, // default: 3000
+    port: 80, // default: 3000
     // port: 80,
     // host: "192.168.1.97", // server tuanpda
     host: "103.170.123.199", // server nhân hòa
+    // host: "localhost", // local
   },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build

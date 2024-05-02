@@ -245,7 +245,10 @@
                     @change="quanhuyenChange($event, index)"
                     ref="quanhuyenSelect"
                   >
-                    <option selected disabled>- Chọn Quận huyện -</option>
+                    <option selected disabled>
+                      {{ item.maquanhuyen }} -
+                      {{ item.tenquanhuyen }}
+                    </option>
                     <option
                       v-for="(dt, index) in item.info_huyen"
                       :key="index"
@@ -264,7 +267,10 @@
                     :disabled="isDisabled_Xaphuong"
                     ref="xaphuongSelect"
                   >
-                    <option selected disabled>- Chọn tổ thôn -</option>
+                    <option selected disabled>
+                      {{ item.maxaphuong }} -
+                      {{ item.tenxaphuong }}
+                    </option>
                     <option
                       v-for="(dt, index) in item.info_xaphuong"
                       :key="index"
@@ -310,6 +316,7 @@
                   @change="hopChange($event, index)"
                   ref="hopInput"
                   style="min-width: 200px; height: 30px"
+                  :value="item.tenbenhvien"
                 />
                 <datalist id="hopSuggestions">
                   <option
@@ -821,7 +828,10 @@
                       @change="quanhuyenChange($event, addedIndex)"
                       ref="quanhuyenSelect"
                     >
-                      <option selected disabled>- Chọn Quận huyện -</option>
+                      <option selected disabled>
+                        {{ item.maquanhuyen }} -
+                        {{ item.tenquanhuyen }}
+                      </option>
                       <option
                         v-for="(dt, index) in datanhaphosomodal.info_huyen"
                         :key="index"
@@ -845,7 +855,10 @@
                         :disabled="isDisabled_Xaphuong"
                         ref="xaphuongSelect"
                       >
-                        <option selected disabled>- Chọn xã phường -</option>
+                        <option selected disabled>
+                          {{ item.maxaphuong }} -
+                          {{ item.tenxaphuong }}
+                        </option>
                         <option
                           v-for="(dt, index) in datanhaphosomodal.info_xaphuong"
                           :key="index"
@@ -903,6 +916,7 @@
                       @change="hopChange($event, addedIndex)"
                       ref="hopInput"
                       style="min-width: 220px; height: 30px"
+                      :value="datanhaphosomodal.tenbenhvien"
                     />
                     <datalist id="hopSuggestions">
                       <option
@@ -1276,21 +1290,79 @@ export default {
   methods: {
     async findNguoihuong(masobhxh, index) {
       const res = await this.$axios.get(
-        `/api/nguoihuong/find-nguoihuong?masobhxh=${masobhxh}`
+        `/api/nguoihuong/find-nguoihuong?MaSoBhxh=${masobhxh}`
       );
+      this.isLoading = true;
       // console.log(res.data);
       if (res.data.length > 0) {
+        this.isLoading = false;
+        const Toast = Swal.mixin({
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.addEventListener("mouseenter", Swal.stopTimer);
+            toast.addEventListener("mouseleave", Swal.resumeTimer);
+          },
+        });
+        Toast.fire({
+          icon: "success",
+          title:
+            "Dữ liệu chỉ mang tính chất tham khảo. Xem và sửa nếu cần thiết !",
+        });
         const data = res.data[0];
         try {
-          this.items[index].hoten = data.hoten;
-          this.items[index].ngaysinh = data.ngaysinh;
-          this.items[index].gioitinh = data.gioitinh;
-          this.items[index].cccd = data.cccd;
-          this.items[index].dienthoai = data.dienthoai;
+          this.items[index].hoten = data.HoTen;
+          this.items[index].ngaysinh = data.NgaySinh;
+          if (data.GioiTinh === 0) {
+            this.items[index].gioitinh = "Nữ";
+          } else {
+            this.items[index].gioitinh = "Nam";
+          }
+          this.items[index].cccd = data.Cmnd;
+          this.items[index].dienthoai = data.DienThoai;
+          this.items[index].matinh = data.DiaChiTinhId;
+          // đi tìm tên tỉnh
+          const res_tinh = await this.$axios.get(
+            `/api/nguoihuong/find-tentinh?matinh=${data.DiaChiTinhId}`
+          );
+          if (res_tinh.data.length > 0) {
+            this.items[index].tentinh = res_tinh.data[0].tentinh;
+          }
+          this.items[index].maquanhuyen = data.DiaChiHuyenId;
+          // đi tìm tên quận huyện
+          const res_huyen = await this.$axios.get(
+            `/api/nguoihuong/find-tenhuyen?matinh=${data.DiaChiTinhId}&maquanhuyen=${data.DiaChiHuyenId}`
+          );
+          if (res_huyen.data.length > 0) {
+            this.items[index].tenquanhuyen = res_huyen.data[0].tenquanhuyen;
+          }
+          this.items[index].maxaphuong = data.DiaChiXaId;
+          // đi tìm tên xã
+          const res_xa = await this.$axios.get(
+            `/api/nguoihuong/find-tenxa?matinh=${data.DiaChiTinhId}&maquanhuyen=${data.DiaChiHuyenId}&maxaphuong=${data.DiaChiXaId}`
+          );
+          if (res_xa.data.length > 0) {
+            this.items[index].tenxaphuong = res_xa.data[0].tenxaphuong;
+          }
+          this.items[index].tothon = data.DiaChiSinhSong;
+          this.items[index].benhvientinh = data.TinhKhamChuaBenhId;
+          this.items[index].mabenhvien = data.NoiKhamChuaBenh;
+          // đi tìm tên bệnh viện kcb
+          const maBv = `${this.matinh}${data.NoiKhamChuaBenh}`;
+          const res_bv = await this.$axios.get(
+            `/api/nguoihuong/find-benhvien?mabenhvien=${maBv}`
+          );
+          if (res_bv.data.length > 0) {
+            this.items[index].tenbenhvien = res_bv.data[0].tenbenhvien;
+          }
         } catch (error) {
           console.log(error.message);
         }
       } else {
+        this.isLoading = false;
         const Toast = Swal.mixin({
           toast: true,
           position: "top-end",
@@ -1918,6 +1990,11 @@ export default {
                 /,/g,
                 ""
               );
+
+              this.items[
+                i
+              ].mabenhvien = `${this.items[i].matinh}${this.items[i].mabenhvien}`;
+              this.items[i].tenbenhvien = this.items[i].tenbenhvien.trim();
 
               // Nếu ngày sinh từ db người hưởng sẽ có dạng text không cần chuyển đổi
               // Nếu từ input dạng yyyy-mm-dd thì phải đổi thành text

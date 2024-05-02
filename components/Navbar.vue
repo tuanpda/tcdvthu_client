@@ -97,7 +97,7 @@
               class="navbar-dropdown is-boxed"
               v-show="isDropdownOpen_danhmuc"
             >
-              <nuxt-link
+              <!-- <nuxt-link
                 to="/nhanviendailythu/danhsachkekhai"
                 class="navbar-item"
               >
@@ -105,7 +105,7 @@
                   <i class="far fa-file-pdf"></i>
                 </span>
                 &ensp; Lịch sử kê khai
-              </nuxt-link>
+              </nuxt-link> -->
               <nuxt-link
                 to="/nhanviendailythu/tracuuhosokekhai"
                 class="navbar-item"
@@ -120,6 +120,15 @@
                   <i class="fas fa-file-signature"></i>
                 </span>
                 &ensp; Tạo kê khai
+              </nuxt-link>
+              <nuxt-link
+                to="/nhanviendailythu/quanlylaodong"
+                class="navbar-item"
+              >
+                <span style="color: #3850b7" class="icon is-small is-left">
+                  <i class="fab fa-creative-commons-by"></i>
+                </span>
+                &ensp; Quản lý lao động
               </nuxt-link>
             </div>
           </div>
