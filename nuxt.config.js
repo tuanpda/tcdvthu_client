@@ -53,7 +53,7 @@ export default {
   },
 
   server: {
-    port: 8080, // default: 3000
+    port: 4042, // default: 3000
     // port: 80,
     // host: "192.168.1.97", // server tuanpda
     host: "103.170.123.199", // server nhân hòa

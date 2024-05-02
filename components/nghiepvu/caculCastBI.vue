@@ -829,8 +829,8 @@
                       ref="quanhuyenSelect"
                     >
                       <option selected disabled>
-                        {{ item.maquanhuyen }} -
-                        {{ item.tenquanhuyen }}
+                        {{ datanhaphosomodal.maquanhuyen }} -
+                        {{ datanhaphosomodal.tenquanhuyen }}
                       </option>
                       <option
                         v-for="(dt, index) in datanhaphosomodal.info_huyen"
@@ -856,8 +856,8 @@
                         ref="xaphuongSelect"
                       >
                         <option selected disabled>
-                          {{ item.maxaphuong }} -
-                          {{ item.tenxaphuong }}
+                          {{ datanhaphosomodal.maxaphuong }} -
+                          {{ datanhaphosomodal.tenxaphuong }}
                         </option>
                         <option
                           v-for="(dt, index) in datanhaphosomodal.info_xaphuong"

@@ -949,7 +949,7 @@ export default {
               <p>Bạn đã đăng ký thành công tài khoản sử dụng phần mềm kê khai dành cho tổ chức dịch vụ thu của chúng tôi. Cảm ơn bạn. Sau đây là thông tin tài khoản của bạn:</p>
               <ul>
                 <li>Email: ${this.form.email}</li>
-                <li>Username: ${this.form.username} (Đây là thông tin tài khoản dùng truy cập vào phần mềm)</li>
+                <li>Username: ${this.form.cccd} (Đây là thông tin tài khoản dùng truy cập vào phần mềm)</li>
                 <li>Password: ${passtranfomer} (Đây là mật khẩu đăng nhập vào phần mềm, tuyệt đối không tiết lộ hay chia sẽ cho bất kỳ ai)</li>
               </ul>
               <hr />
