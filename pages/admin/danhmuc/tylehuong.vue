@@ -1,6 +1,6 @@
 <template>
-  <div class="columns is-mobile">
-    <div class="column container">
+  <div class="columns">
+    <div class="column is-offset-2 is-8">
       <br />
       <div class="box">
         <div class="columns">
@@ -23,118 +23,86 @@
                       hỗ trợ cho AR - BHYT Hộ gia đình làm nông lâm MSTB
                     </div>
                   </div>
-
-                  <div class="table_wrapper">
-                    <div style="text-align: right; margin-bottom: 5px">
-                      <button @click="addRowDataAr" class="button is-small is-success">
-                        <span class="icon">
-                          <i class="fas fa-plus"></i>
-                        </span>
-                        <span>Thêm</span>
-                      </button>
-                    </div>
-                    <table
-                      class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth"
-                    >
-                      <thead style="font-weight: bold">
-                        <tr style="font-size: small; background-color: #4169e1">
-                          <td
-                            style="color: azure; text-align: center; width: 3%"
-                          >
-                            STT
-                          </td>
-                          <td
-                            style="color: azure; text-align: center; width: 20%"
-                          >
-                            Tỷ lệ Ngân sách trung ương (%)
-                          </td>
-                          <td
-                            style="color: azure; text-align: center; width: 20%"
-                          >
-                            Tỷ lệ Ngân sách địa phương (%)
-                          </td>
-                          <td
-                            style="color: azure; text-align: center; width: 20%"
-                          >
-                            Tỷ lệ Hỗ trợ khác (%)
-                          </td>
-                          <td
-                            style="color: azure; text-align: center; width: 10%"
-                          >
-                            Kích hoạt
-                          </td>
-                          <td style="color: azure; text-align: center">
-                            Ghi chú
-                          </td>
-                          <td style="color: azure; text-align: center">
-                            Chức năng
-                          </td>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr
-                          style="font-size: small"
-                          v-for="(item, index) in tylehotroar"
-                          :key="index"
+                  <table
+                    class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth"
+                  >
+                    <thead style="font-weight: bold">
+                      <tr style="font-size: small; background-color: #4169e1">
+                        <td style="color: azure; text-align: center; width: 3%">
+                          STT
+                        </td>
+                        <td style="color: azure; text-align: center">
+                          Tỷ lệ Ngân sách <br />
+                          trung ương (%)
+                        </td>
+                        <td style="color: azure; text-align: center">
+                          Tỷ lệ Ngân sách <br />
+                          địa phương (%)
+                        </td>
+                        <td style="color: azure; text-align: center">
+                          Tỷ lệ <br />
+                          Hỗ trợ khác (%)
+                        </td>
+                        <td style="color: azure; text-align: center">
+                          Ghi chú
+                        </td>
+                        <td
+                          style="color: azure; text-align: center; width: 10%"
                         >
-                          <td style="text-align: center">
-                            {{ index + 1 }}
-                          </td>
-                          <td style="text-align: center">
-                            {{ item.tylengansachtw }}
-                          </td>
-                          <td style="text-align: center">
-                            {{ item.tylenngansachdp }}
-                          </td>
-                          <td style="text-align: center">
-                            {{ item.tylehotrokhac }}
-                          </td>
-                          <td style="text-align: center">
-                            <template v-if="item.active == true">
-                              <span>
-                                <i
-                                  style="color: #00947e"
-                                  class="fa fa-circle"
-                                ></i>
-                              </span>
-                            </template>
-                            <template v-else>
-                              <span>
-                                <i
-                                  style="color: #ffd863"
-                                  class="fa fa-circle"
-                                ></i>
-                              </span>
-                            </template>
-                          </td>
-                          <td style="text-align: center">
-                            {{ item.ghichu }}
-                          </td>
-                          <td
-                            style="text-align: center; vertical-align: middle"
-                          >
-                            <a>
-                              <span class="icon is-small">
-                                <i
-                                  style="color: hsl(153deg, 53%, 53%)"
-                                  class="fas fa-check-circle"
-                                ></i>
-                              </span>
-                            </a>
-                            &nbsp;
-                            <a @click="deleteRowDataAr(index)">
-                              <span class="icon is-small">
-                                <i
-                                  style="color: red"
-                                  class="far fa-trash-alt"
-                                ></i>
-                              </span>
-                            </a>
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
+                          Cập nhật
+                        </td>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr
+                        style="font-size: small"
+                        v-for="(item, index) in tylehotroar"
+                        :key="index"
+                      >
+                        <td style="text-align: center">
+                          {{ index + 1 }}
+                        </td>
+                        <td style="text-align: center">
+                          <input
+                            v-model="item.tylengansachtw"
+                            type="number"
+                            class="input is-small"
+                          />
+                        </td>
+                        <td style="text-align: center">
+                          <input
+                            v-model="item.tylenngansachdp"
+                            type="number"
+                            class="input is-small"
+                          />
+                        </td>
+                        <td style="text-align: center">
+                          <input
+                            v-model="item.tylehotrokhac"
+                            type="number"
+                            class="input is-small"
+                          />
+                        </td>
+                        <td style="">
+                          <input
+                            v-model="item.ghichu"
+                            type="text"
+                            class="input is-small"
+                          />
+                        </td>
+                        <td style="text-align: center; vertical-align: middle">
+                          <a @click="updateAr(item)">
+                            <span class="icon is-small">
+                              <i
+                                style="color: hsl(153deg, 53%, 53%)"
+                                class="fas fa-check-circle"
+                              ></i>
+                            </span>
+                          </a>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
                 </div>
               </div>
               <div class="columns">
@@ -147,104 +115,75 @@
                       đóng hỗ trợ cho IS - BHXH Tự nguyện
                     </div>
                   </div>
-                  <div class="table_wrapper">
-                    <table
-                      class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth"
-                    >
-                      <thead style="font-weight: bold">
-                        <tr style="font-size: small; background-color: #4169e1">
-                          <td
-                            style="color: azure; text-align: center; width: 3%"
-                          >
-                            STT
-                          </td>
-                          <td
-                            style="color: azure; text-align: center; width: 20%"
-                          >
-                            Tỷ lệ đóng (%)
-                          </td>
-                          <td
-                            style="color: azure; text-align: center; width: 20%"
-                          >
-                            Năm
-                          </td>
-                          <td
-                            style="color: azure; text-align: center; width: 10%"
-                          >
-                            Kích hoạt
-                          </td>
-                          <td style="color: azure; text-align: center">
-                            Ghi chú
-                          </td>
-                          <td style="color: azure; text-align: center">
-                            Chức năng
-                          </td>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr
-                          style="font-size: small"
-                          v-for="(item, index) in tyledongis"
-                          :key="index"
+                  <table
+                    class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth"
+                  >
+                    <thead style="font-weight: bold">
+                      <tr style="font-size: small; background-color: #4169e1">
+                        <td style="color: azure; text-align: center; width: 3%">
+                          STT
+                        </td>
+                        <td style="color: azure; text-align: center">
+                          Tỷ lệ đóng (%)
+                        </td>
+                        <td style="color: azure; text-align: center">Năm</td>
+                        <td
+                          style="color: azure; text-align: center; width: 40%"
                         >
-                          <td style="text-align: center">
-                            {{ index + 1 }}
-                          </td>
-                          <td style="text-align: center">
-                            {{ item.tyledong }}
-                          </td>
-                          <td style="text-align: center">
-                            {{ item.nam }}
-                          </td>
-                          <td style="text-align: center">
-                            <template v-if="item.active == true">
-                              <span>
-                                <i
-                                  style="color: #00947e"
-                                  class="fa fa-circle"
-                                ></i>
-                              </span>
-                            </template>
-                            <template v-else>
-                              <span>
-                                <i
-                                  style="color: #ffd863"
-                                  class="fa fa-circle"
-                                ></i>
-                              </span>
-                            </template>
-                          </td>
-                          <td style="text-align: center">
-                            {{ item.ghichu }}
-                          </td>
-                          <td
-                            style="text-align: center; vertical-align: middle"
-                          >
-                            <a>
-                              <span class="icon is-small">
-                                <i
-                                  style="color: hsl(153deg, 53%, 53%)"
-                                  class="fas fa-check-circle"
-                                ></i>
-                              </span>
-                            </a>
-                            &nbsp;
-                            <a>
-                              <span class="icon is-small">
-                                <i
-                                  style="color: red"
-                                  class="far fa-trash-alt"
-                                ></i>
-                              </span>
-                            </a>
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
+                          Ghi chú
+                        </td>
+                        <td
+                          style="color: azure; text-align: center; width: 10%"
+                        >
+                          Cập nhật
+                        </td>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr
+                        style="font-size: small"
+                        v-for="(item, index) in tyledongis"
+                        :key="index"
+                      >
+                        <td style="text-align: center">
+                          {{ index + 1 }}
+                        </td>
+                        <td style="text-align: center">
+                          <input
+                            v-model="item.tyledong"
+                            type="number"
+                            class="input is-small"
+                          />
+                        </td>
+                        <td style="text-align: center">
+                          <input
+                            v-model="item.nam"
+                            type="number"
+                            class="input is-small"
+                          />
+                        </td>
+                        <td style="text-align: center">
+                          <input
+                            v-model="item.ghichu"
+                            type="text"
+                            class="input is-small"
+                          />
+                        </td>
+                        <td style="text-align: center; vertical-align: middle">
+                          <a @click="updateIStyledong(item)">
+                            <span class="icon is-small">
+                              <i
+                                style="color: hsl(153deg, 53%, 53%)"
+                                class="fas fa-check-circle"
+                              ></i>
+                            </span>
+                          </a>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
                 </div>
               </div>
-
               <!-- tỷ lệ địa phương hỗ trợ is -->
               <div class="columns">
                 <!-- tỷ lệ đóng -->
@@ -256,109 +195,84 @@
                       NS Địa phương hỗ trợ cho IS - BHXH Tự nguyện
                     </div>
                   </div>
-                  <div class="table_wrapper">
-                    <table
-                      class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth"
-                    >
-                      <thead style="font-weight: bold">
-                        <tr style="font-size: small; background-color: #4169e1">
-                          <td
-                            style="color: azure; text-align: center; width: 3%"
-                          >
-                            STT
-                          </td>
-                          <td
-                            style="color: azure; text-align: center; width: 20%"
-                          >
-                            Tỷ lệ địa phương hỗ trợ (%)
-                          </td>
-                          <td
-                            style="color: azure; text-align: center; width: 20%"
-                          >
-                            Tỷ lệ hỗ trợ khác (ví dụ của huyện xin thêm) (%)
-                          </td>
-                          <td
-                            style="color: azure; text-align: center; width: 20%"
-                          >
-                            Năm
-                          </td>
-                          <td
-                            style="color: azure; text-align: center; width: 10%"
-                          >
-                            Kích hoạt
-                          </td>
-                          <td style="color: azure; text-align: center">
-                            Ghi chú
-                          </td>
-                          <td style="color: azure; text-align: center">
-                            Chức năng
-                          </td>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr
-                          style="font-size: small"
-                          v-for="(item, index) in tylehotrodiaphuongis"
-                          :key="index"
+                  <table
+                    class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth"
+                  >
+                    <thead style="font-weight: bold">
+                      <tr style="font-size: small; background-color: #4169e1">
+                        <td style="color: azure; text-align: center; width: 3%">
+                          STT
+                        </td>
+                        <td style="color: azure; text-align: center">
+                          Tỷ lệ địa phương <br />
+                          hỗ trợ (%)
+                        </td>
+                        <td style="color: azure; text-align: center">
+                          Tỷ lệ hỗ trợ khác (%)
+                        </td>
+                        <td style="color: azure; text-align: center">Năm</td>
+                        <td
+                          style="color: azure; text-align: center; width: 40%"
                         >
-                          <td style="text-align: center">
-                            {{ index + 1 }}
-                          </td>
-                          <td style="text-align: center">
-                            {{ item.tylediaphuong }}
-                          </td>
-                          <td style="text-align: center">
-                            {{ item.tylekhac }}
-                          </td>
-                          <td style="text-align: center">
-                            {{ item.nam }}
-                          </td>
-                          <td style="text-align: center">
-                            <template v-if="item.active == true">
-                              <span>
-                                <i
-                                  style="color: #00947e"
-                                  class="fa fa-circle"
-                                ></i>
-                              </span>
-                            </template>
-                            <template v-else>
-                              <span>
-                                <i
-                                  style="color: #ffd863"
-                                  class="fa fa-circle"
-                                ></i>
-                              </span>
-                            </template>
-                          </td>
-                          <td style="text-align: center">
-                            {{ item.ghichu }}
-                          </td>
-                          <td
-                            style="text-align: center; vertical-align: middle"
-                          >
-                            <a>
-                              <span class="icon is-small">
-                                <i
-                                  style="color: hsl(153deg, 53%, 53%)"
-                                  class="fas fa-check-circle"
-                                ></i>
-                              </span>
-                            </a>
-                            &nbsp;
-                            <a>
-                              <span class="icon is-small">
-                                <i
-                                  style="color: red"
-                                  class="far fa-trash-alt"
-                                ></i>
-                              </span>
-                            </a>
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
+                          Ghi chú
+                        </td>
+                        <td
+                          style="color: azure; text-align: center; width: 10%"
+                        >
+                          Cập nhật
+                        </td>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr
+                        style="font-size: small"
+                        v-for="(item, index) in tylehotrodiaphuongis"
+                        :key="index"
+                      >
+                        <td style="text-align: center">
+                          {{ index + 1 }}
+                        </td>
+                        <td style="text-align: center">
+                          <input
+                            v-model="item.tylediaphuong"
+                            type="number"
+                            class="input is-small"
+                          />
+                        </td>
+                        <td style="text-align: center">
+                          <input
+                            v-model="item.tylekhac"
+                            type="number"
+                            class="input is-small"
+                          />
+                        </td>
+                        <td style="text-align: center">
+                          <input
+                            v-model="item.nam"
+                            type="number"
+                            class="input is-small"
+                          />
+                        </td>
+                        <td style="text-align: center">
+                          <input
+                            v-model="item.ghichu"
+                            type="text"
+                            class="input is-small"
+                          />
+                        </td>
+                        <td style="text-align: center; vertical-align: middle">
+                          <a @click="updateNgansachdphtIS(item)">
+                            <span class="icon is-small">
+                              <i
+                                style="color: hsl(153deg, 53%, 53%)"
+                                class="fas fa-check-circle"
+                              ></i>
+                            </span>
+                          </a>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
                 </div>
               </div>
 
@@ -373,101 +287,73 @@
                       nghèo
                     </div>
                   </div>
-                  <div class="table_wrapper">
-                    <table
-                      class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth"
-                    >
-                      <thead style="font-weight: bold">
-                        <tr style="font-size: small; background-color: #4169e1">
-                          <td
-                            style="color: azure; text-align: center; width: 3%"
-                          >
-                            STT
-                          </td>
-                          <td
-                            style="color: azure; text-align: center; width: 20%"
-                          >
-                            Chuẩn nghèo
-                          </td>
-                          <td
-                            style="color: azure; text-align: center; width: 20%"
-                          >
-                            Năm
-                          </td>
-                          <td
-                            style="color: azure; text-align: center; width: 10%"
-                          >
-                            Kích hoạt
-                          </td>
-                          <td style="color: azure; text-align: center">
-                            Ghi chú
-                          </td>
-                          <td style="color: azure; text-align: center">
-                            Chức năng
-                          </td>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr
-                          style="font-size: small"
-                          v-for="(item, index) in chuanngheo"
-                          :key="index"
+                  <table
+                    class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth"
+                  >
+                    <thead style="font-weight: bold">
+                      <tr style="font-size: small; background-color: #4169e1">
+                        <td style="color: azure; text-align: center; width: 3%">
+                          STT
+                        </td>
+                        <td style="color: azure; text-align: center">
+                          Chuẩn nghèo
+                        </td>
+                        <td style="color: azure; text-align: center">Năm</td>
+                        <td
+                          style="color: azure; text-align: center; width: 40%"
                         >
-                          <td style="text-align: center">
-                            {{ index + 1 }}
-                          </td>
-                          <td style="text-align: center">
-                            {{ item.chuanngheo }}
-                          </td>
-                          <td style="text-align: center">
-                            {{ item.nam }}
-                          </td>
-                          <td style="text-align: center">
-                            <template v-if="item.active == true">
-                              <span>
-                                <i
-                                  style="color: #00947e"
-                                  class="fa fa-circle"
-                                ></i>
-                              </span>
-                            </template>
-                            <template v-else>
-                              <span>
-                                <i
-                                  style="color: #ffd863"
-                                  class="fa fa-circle"
-                                ></i>
-                              </span>
-                            </template>
-                          </td>
-                          <td style="text-align: center">
-                            {{ item.ghichu }}
-                          </td>
-                          <td
-                            style="text-align: center; vertical-align: middle"
-                          >
-                            <a>
-                              <span class="icon is-small">
-                                <i
-                                  style="color: hsl(153deg, 53%, 53%)"
-                                  class="fas fa-check-circle"
-                                ></i>
-                              </span>
-                            </a>
-                            &nbsp;
-                            <a>
-                              <span class="icon is-small">
-                                <i
-                                  style="color: red"
-                                  class="far fa-trash-alt"
-                                ></i>
-                              </span>
-                            </a>
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
+                          Ghi chú
+                        </td>
+                        <td
+                          style="color: azure; text-align: center; width: 10%"
+                        >
+                          Chức năng
+                        </td>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr
+                        style="font-size: small"
+                        v-for="(item, index) in chuanngheo"
+                        :key="index"
+                      >
+                        <td style="text-align: center">
+                          {{ index + 1 }}
+                        </td>
+                        <td style="text-align: center">
+                          <input
+                            v-model="item.chuanngheo"
+                            type="number"
+                            class="input is-small"
+                          />
+                        </td>
+                        <td style="text-align: center">
+                          <input
+                            v-model="item.nam"
+                            type="number"
+                            class="input is-small"
+                          />
+                        </td>
+                        <td style="text-align: center">
+                          <input
+                            v-model="item.ghichu"
+                            type="text"
+                            class="input is-small"
+                          />
+                        </td>
+                        <td style="text-align: center; vertical-align: middle">
+                          <a @click="updateChuanngheo(item)">
+                            <span class="icon is-small">
+                              <i
+                                style="color: hsl(153deg, 53%, 53%)"
+                                class="fas fa-check-circle"
+                              ></i>
+                            </span>
+                          </a>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
                 </div>
               </div>
             </div>
@@ -501,13 +387,12 @@
 </template>
 
 <script>
-import { mixinDmBhxh } from "@/mixins/mixinDmBhxh";
+import Swal from "sweetalert2";
 export default {
   name: "baohiemxahoi",
   layout: "admin",
   middleware: "auth", // middleware for authentication
   middleware: "super-admin", // middleware for authentication with the admin
-  mixins: [mixinDmBhxh],
   data() {
     return {
       isActiveLoading: false,
@@ -516,17 +401,6 @@ export default {
       tylehotrodiaphuongis: [],
       chuanngheo: [],
     };
-  },
-
-  async created() {
-    this.$on("danhmucs-loaded", () => {
-      //   console.log("Tất cả các danh mục đã được tải.");
-      // console.log(this.loaihinhtg);
-      //   console.log(this.dmluongcs);
-      //   console.log(this.nguoithu);
-      //   console.log(this.phuongthucdong);
-      //   console.log(this.doituongdong);
-    });
   },
 
   mounted() {
@@ -549,37 +423,207 @@ export default {
       this.chuanngheo = res3.data;
     },
 
-    addRowDataAr() {
+    async updateAr(data) {
       try {
-        this.tylehotroar.push({
-          tylengansachtw: "",
-          tylengansachdp: "",
-          tylehotrokhac: "",
-          active: 0,
-          ghichu: "",
+        const result = await Swal.fire({
+          title: `Xác nhận cập nhật? Tỷ lệ thay đổi sẽ làm thay đổi số tiền đóng`,
+          showDenyButton: true,
+          confirmButtonText: "Xác nhận",
+          denyButtonText: `Hủy`,
         });
+        if (result.isConfirmed) {
+        }
+        const res = await this.$axios.post(`/api/danhmucs/update-ar`, data);
+        if (res.data.success === true) {
+          const Toast = Swal.mixin({
+            toast: true,
+            position: "top-end",
+            showConfirmButton: false,
+            timer: 2000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+              toast.addEventListener("mouseenter", Swal.stopTimer);
+              toast.addEventListener("mouseleave", Swal.resumeTimer);
+            },
+          });
+          Toast.fire({
+            icon: "success",
+            title: `Cập nhật thành công`,
+          });
+        }
       } catch (error) {
-        console.log(error);
+        const Toast = Swal.mixin({
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 2000,
+          timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.addEventListener("mouseenter", Swal.stopTimer);
+            toast.addEventListener("mouseleave", Swal.resumeTimer);
+          },
+        });
+        Toast.fire({
+          icon: "error",
+          title: `Lỗi! Không cập nhật được`,
+        });
       }
     },
 
-    deleteRowDataAr(index) {
-      this.tylehotroar.splice(index, 1);
+    async updateIStyledong(data) {
+      try {
+        const result = await Swal.fire({
+          title: `Xác nhận cập nhật? Tỷ lệ thay đổi sẽ làm thay đổi số tiền đóng`,
+          showDenyButton: true,
+          confirmButtonText: "Xác nhận",
+          denyButtonText: `Hủy`,
+        });
+        if (result.isConfirmed) {
+        }
+        const res = await this.$axios.post(
+          `/api/danhmucs/update-tyledongis`,
+          data
+        );
+        if (res.data.success === true) {
+          const Toast = Swal.mixin({
+            toast: true,
+            position: "top-end",
+            showConfirmButton: false,
+            timer: 2000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+              toast.addEventListener("mouseenter", Swal.stopTimer);
+              toast.addEventListener("mouseleave", Swal.resumeTimer);
+            },
+          });
+          Toast.fire({
+            icon: "success",
+            title: `Cập nhật thành công`,
+          });
+        }
+      } catch (error) {
+        const Toast = Swal.mixin({
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 2000,
+          timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.addEventListener("mouseenter", Swal.stopTimer);
+            toast.addEventListener("mouseleave", Swal.resumeTimer);
+          },
+        });
+        Toast.fire({
+          icon: "error",
+          title: `Lỗi! Không cập nhật được`,
+        });
+      }
+    },
+
+    async updateNgansachdphtIS(data) {
+      try {
+        const result = await Swal.fire({
+          title: `Xác nhận cập nhật? Tỷ lệ thay đổi sẽ làm thay đổi số tiền đóng`,
+          showDenyButton: true,
+          confirmButtonText: "Xác nhận",
+          denyButtonText: `Hủy`,
+        });
+        if (result.isConfirmed) {
+        }
+        const res = await this.$axios.post(
+          `/api/danhmucs/update-tylediaphuonghtis`,
+          data
+        );
+        if (res.data.success === true) {
+          const Toast = Swal.mixin({
+            toast: true,
+            position: "top-end",
+            showConfirmButton: false,
+            timer: 2000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+              toast.addEventListener("mouseenter", Swal.stopTimer);
+              toast.addEventListener("mouseleave", Swal.resumeTimer);
+            },
+          });
+          Toast.fire({
+            icon: "success",
+            title: `Cập nhật thành công`,
+          });
+        }
+      } catch (error) {
+        const Toast = Swal.mixin({
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 2000,
+          timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.addEventListener("mouseenter", Swal.stopTimer);
+            toast.addEventListener("mouseleave", Swal.resumeTimer);
+          },
+        });
+        Toast.fire({
+          icon: "error",
+          title: `Lỗi! Không cập nhật được`,
+        });
+      }
+    },
+
+    async updateChuanngheo(data) {
+      try {
+        const result = await Swal.fire({
+          title: `Xác nhận cập nhật? Tỷ lệ thay đổi sẽ làm thay đổi số tiền đóng`,
+          showDenyButton: true,
+          confirmButtonText: "Xác nhận",
+          denyButtonText: `Hủy`,
+        });
+        if (result.isConfirmed) {
+        }
+        const res = await this.$axios.post(
+          `/api/danhmucs/update-chuanngheo`,
+          data
+        );
+        if (res.data.success === true) {
+          const Toast = Swal.mixin({
+            toast: true,
+            position: "top-end",
+            showConfirmButton: false,
+            timer: 2000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+              toast.addEventListener("mouseenter", Swal.stopTimer);
+              toast.addEventListener("mouseleave", Swal.resumeTimer);
+            },
+          });
+          Toast.fire({
+            icon: "success",
+            title: `Cập nhật thành công`,
+          });
+        }
+      } catch (error) {
+        const Toast = Swal.mixin({
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 2000,
+          timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.addEventListener("mouseenter", Swal.stopTimer);
+            toast.addEventListener("mouseleave", Swal.resumeTimer);
+          },
+        });
+        Toast.fire({
+          icon: "error",
+          title: `Lỗi! Không cập nhật được`,
+        });
+      }
     },
   },
 };
 </script>
 
 <style scoped lang="css">
-.table_wrapper {
-  display: block;
-  overflow: scroll;
-  white-space: nowrap;
-  position: sticky;
-  left: 0;
-  height: auto;
-}
-
 .titleKk {
   position: relative;
 }

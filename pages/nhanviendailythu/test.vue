@@ -59,7 +59,7 @@
             </span>
             <span>Tìm kiếm</span>
           </button>
-          <button @click="exportExcel" class="button is-small is-danger">
+          <button class="button is-small is-danger">
             <span class="icon">
               <i class="fa fa-refresh"></i>
             </span>
@@ -74,26 +74,21 @@
             class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth"
           >
             <thead style="font-weight: bold">
-              <tr style="font-size: small; background-color: #faf0e6">
-                <td rowspan="2" style="text-align: center; width: 3%">STT</td>
-                <td rowspan="2" style="text-align: center">Điểm thu</td>
-                <td rowspan="2" style="text-align: center">Số hồ sơ</td>
-                <td rowspan="2" style="text-align: center">Mã loại hình</td>
-                <td rowspan="2" style="text-align: center">Tên loại hình</td>
-                <td rowspan="2" style="text-align: center">Đợt kê khai</td>
-                <td rowspan="2" style="text-align: center">Kỳ kê khai</td>
-                <td rowspan="2" style="text-align: center">Ngày kê khai</td>
-                <td rowspan="2" style="text-align: center">Số người</td>
-                <td rowspan="2" style="text-align: center">Trạng thái</td>
-                <td rowspan="2" style="text-align: center">Xem hồ sơ</td>
-                <td colspan="2" style="text-align: center">
+              <tr style="font-size: small; background-color: #fff8dc">
+                <td style="text-align: center; width: 3%">STT</td>
+                <td style="text-align: center">Số hồ sơ</td>
+                <td style="text-align: center">Mã loại hình</td>
+                <td style="text-align: center">Tên loại hình</td>
+                <td style="text-align: center">Đợt kê khai</td>
+                <td style="text-align: center">Kỳ kê khai</td>
+                <td style="text-align: center">Ngày kê khai</td>
+                <td style="text-align: center">Số người</td>
+                <td style="text-align: center">Trạng thái</td>
+                <td style="text-align: center">Xem hồ sơ</td>
+                <td style="text-align: center">
                   Xuất mẫu <br />
                   VT/VNPT
                 </td>
-              </tr>
-              <tr style="font-size: small; background-color: #faf0e6">
-                <td style="text-align: center">VNPT</td>
-                <td style="text-align: center">VIETTEL</td>
               </tr>
             </thead>
             <tbody>
@@ -103,7 +98,6 @@
                 :key="index"
               >
                 <td style="text-align: center">{{ index + 1 }}</td>
-                <td style="text-align: center">{{ item.tendaily }}</td>
                 <td style="text-align: center">{{ item.sohoso }}</td>
                 <td style="text-align: center">{{ item.maloaihinh }}</td>
                 <td style="">{{ item.tenloaihinh }}</td>
@@ -122,19 +116,10 @@
                   ></a>
                 </td>
                 <td style="text-align: center">
-                  <a @click="xuatmauVtVnpt(item, false)"
+                  <a @click="xuatmauVtVnpt(item)"
                     ><span class="icon">
                       <i
                         style="color: red"
-                        class="far fa-file-excel"
-                      ></i> </span
-                  ></a>
-                </td>
-                <td style="text-align: center">
-                  <a @click="xuatmauVtVnpt(item, true)"
-                    ><span class="icon">
-                      <i
-                        style="color: #9370db"
                         class="far fa-file-excel"
                       ></i> </span
                   ></a>
@@ -351,15 +336,16 @@
                       </tr>
                     </tbody>
                   </table>
-                </div>
-                <div class="titleKk">
-                  <hr class="line" />
-                  <div class="topleft">
-                    <span style="color: red; font-weight: 700">2.</span> Tổng số
-                    tiền phải nạp:
-                    <span style="color: red; font-weight: 700">{{
-                      formatCurrency(totalSoTien)
-                    }}</span>
+
+                  <div class="titleKk">
+                    <hr class="line" />
+                    <div class="topleft">
+                      <span style="color: red; font-weight: 700">2.</span> Tổng
+                      số tiền phải nạp:
+                      <span style="color: red; font-weight: 700">{{
+                        formatCurrency(totalSoTien)
+                      }}</span>
+                    </div>
                   </div>
                 </div>
                 <hr class="navbar-divider" />
@@ -368,21 +354,20 @@
                     <div
                       class="field is-grouped is-flex is-justify-content-center"
                     >
-                      <div v-if="isVtVnpt==true" class="control">
-                        <ExportExcel_Viettel :data_execl="data_xuatmau" />
-                      </div>
-                      <div v-else class="control">
-                        <ExportExcel_Vnpt :data_execl="data_xuatmau" />
+                      <div class="control">
+                        <button
+                          @click="exportExcel"
+                          class="button is-success is-small"
+                        >
+                          Xuất Execl
+                        </button>
                       </div>
                       <div class="control">
                         <button
                           @click="isActive = false"
-                          class="button is-small is-danger"
+                          class="button is-warning is-light is-small"
                         >
-                          <span class="icon">
-                            <i class="fas fa-power-off"></i>
-                          </span>
-                          <span>Thoát</span>
+                          Thoát
                         </button>
                       </div>
                     </div>
@@ -398,26 +383,21 @@
 </template>
 
 <script>
-import ExportExcel_Viettel from "@/components/exportExecl/viettel";
-import ExportExcel_Vnpt from "@/components/exportExecl/vnpt";
+const countries = require("../../data/countries");
+const dantoc = require("../../data/dantoc");
+const reles = require("../../data/moiquanhe");
+const mhbhyt = require("../../data/muchuongbhyt");
 import Swal from "sweetalert2";
 import ExcelJS from "exceljs";
 const { DateTime } = require("luxon");
 export default {
-  name: "DanhsachKekhaiPage",
-  middleware: "auth", // middleware for authentication
-  components: {
-    ExportExcel_Viettel,
-    ExportExcel_Vnpt,
-  },
-
+  name: "baohiemxahoi",
+  middleware: "auth",
   data() {
     return {
       data_kekhai: [],
       data_xuatmau: [],
       isActive: false,
-
-      isVtVnpt: false,
 
       // pagi
       currentPage: 1,
@@ -429,13 +409,8 @@ export default {
       ngaykekhai: "",
       sohoso: "",
       dailyview: this.$auth.user.madaily,
-      tochuc: this.$auth.user.matochuc,
-      matochuc_mst: "",
+      realtimeOn: "",
     };
-  },
-
-  mounted() {
-    this.getDateTime();
   },
 
   computed: {
@@ -457,10 +432,10 @@ export default {
     },
 
     visiblePages() {
+      // Trả về một mảng các số trang mà bạn muốn hiển thị
       const pages = [];
-      const maxVisiblePages = 5; // Số lượng trang hiển thị tối đa
+      const maxVisiblePages = 10; // Số lượng trang hiển thị tối đa
 
-      // Xác định phạm vi của các trang hiển thị
       let startPage = Math.max(
         1,
         this.currentPage - Math.floor(maxVisiblePages / 2)
@@ -477,6 +452,22 @@ export default {
 
       return pages;
     },
+  },
+
+  async created() {
+    this.$on("danhmucs-loaded", () => {
+      //   console.log("Tất cả các danh mục đã được tải.");
+      // console.log(this.loaihinhtg);
+      //   console.log(this.dmluongcs);
+      //   console.log(this.nguoithu);
+      //   console.log(this.phuongthucdong);
+      //   console.log(this.doituongdong);
+    });
+  },
+
+  mounted() {
+    this.getDateTime();
+    // this.getData(1); // Tải dữ liệu cho trang đầu tiên
   },
 
   methods: {
@@ -512,6 +503,7 @@ export default {
 
     getDateTime() {
       const nowInVietnam = DateTime.now().setZone("Asia/Ho_Chi_Minh");
+      this.realtimeOn = nowInVietnam.toFormat("dd-MM-yyyy HH:mm:ss");
       const kyKeKhai = nowInVietnam.toFormat("MM/yyyy");
 
       // Lấy các phần tử riêng lẻ
@@ -525,71 +517,28 @@ export default {
       this.kykekhai = kyKeKhai;
     },
 
-    async filterData(page) {
-      // console.log(this.$auth.user);
-      // Tách chuỗi theo dấu gạch ngang
-      const parts = this.tochuc.split("-");
-      const mst = parts[parts.length - 1]; // 2902141757
-      this.matochuc_mst = mst;
-      // Xây dựng đường dẫn API dựa trên mã số thuế
-      const apiEndpoint = `/api/org/kekhai_${this.matochuc_mst}`;
-
-      if (this.$auth.user === true) {
-        const res = await this.$axios.get(
-          `${apiEndpoint}/kykekhai-search-series-pagi?kykekhai=${this.kykekhai}&page=${page}`
-        );
-        // console.log(res.data.kekhai);
-        if (res.data.results.length > 0) {
-          this.data_kekhai = res.data.results;
-          this.totalPages = res.data.info.pages;
-          this.currentPage = page;
-        } else {
-          const Toast = Swal.mixin({
-            toast: true,
-            position: "top-end",
-            showConfirmButton: false,
-            timer: 2000,
-            timerProgressBar: true,
-            didOpen: (toast) => {
-              toast.addEventListener("mouseenter", Swal.stopTimer);
-              toast.addEventListener("mouseleave", Swal.resumeTimer);
-            },
-          });
-          Toast.fire({
-            icon: "error",
-            title: `Không tìm thấy hồ sơ`,
-          });
-        }
-      } else {
-        const res = await this.$axios.get(
-          `${apiEndpoint}/kykekhai-search-series-pagi?kykekhai=${this.kykekhai}&madaily=${this.dailyview}&page=${page}`
-        );
-        // console.log(res.data.kekhai);
-        if (res.data.results.length > 0) {
-          this.data_kekhai = res.data.results;
-          this.totalPages = res.data.info.pages;
-          this.currentPage = page;
-        } else {
-          const Toast = Swal.mixin({
-            toast: true,
-            position: "top-end",
-            showConfirmButton: false,
-            timer: 2000,
-            timerProgressBar: true,
-            didOpen: (toast) => {
-              toast.addEventListener("mouseenter", Swal.stopTimer);
-              toast.addEventListener("mouseleave", Swal.resumeTimer);
-            },
-          });
-          Toast.fire({
-            icon: "error",
-            title: `Không tìm thấy hồ sơ`,
-          });
-        }
-      }
+    async xuatmauVtVnpt(item) {
+      this.isActive = true;
+      // console.log(item);
+      const res = await this.$axios.get(
+        `/api/kekhai/get-all-kekhai-xuatmau?sohoso=${item.sohoso}`
+      );
+      // console.log(res.data.kekhai);
+      this.data_xuatmau = res.data.kekhai;
     },
 
-    // pagi
+    async filterData(page) {
+      // const res = await this.$axios.get(
+      //   `/api/danhmucs/get-all-xaphuongwithphantrang?page=${page}`
+      // );
+      const res = await this.$axios.get(
+        `/api/kekhai/kykekhai-search-series-pagi?kykekhai=${this.kykekhai}&page=${page}`
+      );
+      this.data_kekhai = res.data.results;
+      this.totalPages = res.data.info.pages;
+      this.currentPage = page; // Cập nhật trang hiện tại
+    },
+
     goToPreviousPage() {
       if (this.currentPage > 1) {
         this.filterData(this.currentPage - 1);
@@ -604,20 +553,6 @@ export default {
 
     goToPage(page) {
       this.filterData(page); // Di chuyển đến trang được chỉ định
-    },
-
-    async xuatmauVtVnpt(item, isIvan) {
-      // viettel true; vnpt false; ban đầu là false isVtVnpt
-      this.isVtVnpt = isIvan;
-      // Xây dựng đường dẫn API dựa trên mã số thuế
-      const apiEndpoint = `/api/org/kekhai_${this.matochuc_mst}`;
-      this.isActive = true;
-      // console.log(item);
-      const res = await this.$axios.get(
-        `${apiEndpoint}/get-all-kekhai-xuatmau?sohoso=${item.sohoso}`
-      );
-      // console.log(res.data.kekhai);
-      this.data_xuatmau = res.data.kekhai;
     },
 
     // từ A - BU
@@ -784,11 +719,6 @@ export default {
     },
 
     async exportExcel() {
-      // gọi component
-      <ExportExcel_Viettel />;
-    },
-
-    async exportExcel1() {
       // Tạo workbook mới
       const workbook = new ExcelJS.Workbook();
 
@@ -2222,7 +2152,7 @@ export default {
       // Tạo thẻ <a> để kích hoạt tải xuống
       const a = document.createElement("a");
       a.href = url;
-      a.download = "data.xlsx";
+      a.download = `FileMau-D03TS_TK01_595_HGD_${this.realtimeOn}.xlsx`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
@@ -2232,8 +2162,8 @@ export default {
 </script>
 
 <style scoped lang="css">
-@import "@/assets/customCss/common.css";
-@import "@/assets/customCss/footerTable.css";
+/* @import "@/assets/customCss/common.css";
+@import "@/assets/customCss/footerTable.css"; */
 
 .pagination {
   margin-top: 1em;

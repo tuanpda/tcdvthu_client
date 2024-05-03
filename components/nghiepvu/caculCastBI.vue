@@ -463,15 +463,12 @@
               </div>
               <div class="columns">
                 <div class="column">
-                  <div
-                    v-if="form_response_sucess.length > 0"
-                    class="table_wrapper"
-                  >
+                  <div v-if="form_response_sucess.length > 0">
                     <table
                       class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth"
                     >
                       <thead>
-                        <tr style="background-color: f5fffa; font-size: small">
+                        <tr style="background-color: #85e89d; font-size: small">
                           <td style="text-align: center; font-weight: bold">
                             STT
                           </td>
@@ -479,13 +476,13 @@
                             Họ tên
                           </td>
                           <td style="text-align: center; font-weight: bold">
+                            Mã số BHXH
+                          </td>
+                          <td style="text-align: center; font-weight: bold">
                             Ngày sinh
                           </td>
                           <td style="text-align: center; font-weight: bold">
                             Giới tính
-                          </td>
-                          <td style="text-align: center; font-weight: bold">
-                            Mã số BHXH
                           </td>
                           <td style="text-align: center; font-weight: bold">
                             CCCD
@@ -508,10 +505,10 @@
                           <td style="text-align: center">
                             {{ item.masobhxh }}
                           </td>
-                          <td>
+                          <td style="text-align: center">
                             {{ item.ngaysinh }}
                           </td>
-                          <td>
+                          <td style="text-align: center">
                             {{ item.gioitinh }}
                           </td>
                           <td style="text-align: center">
@@ -1947,6 +1944,12 @@ export default {
     },
 
     async onSave() {
+      const matochuc = this.$auth.user.matochuc;
+      const parts = matochuc.split("-");
+      const mst = parts[parts.length - 1];
+      // Xây dựng đường dẫn API dựa trên mã số thuế
+      const apiEndpoint = `/api/org/kekhai_${mst}`;
+
       if (this.items.length <= 0) {
         const Toast = Swal.mixin({
           toast: true,
@@ -2040,7 +2043,7 @@ export default {
             }
 
             const result = await this.$axios.post(
-              `api/kekhai/add-kekhai-series`,
+              `${apiEndpoint}/add-kekhai-series`,
               dataKekhai
             );
 
