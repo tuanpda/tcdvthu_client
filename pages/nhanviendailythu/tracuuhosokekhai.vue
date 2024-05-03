@@ -103,7 +103,7 @@
                 :key="index"
               >
                 <td style="text-align: center">{{ index + 1 }}</td>
-                <td style="text-align: center">{{ item.tendaily }}</td>
+                <td style="">{{ item.tendaily }}</td>
                 <td style="text-align: center">{{ item.sohoso }}</td>
                 <td style="text-align: center">{{ item.maloaihinh }}</td>
                 <td style="">{{ item.tenloaihinh }}</td>
@@ -275,7 +275,7 @@
                         <td style="text-align: center; font-weight: 500">
                           {{ item.masobhxh }}
                         </td>
-                        <td style="text-align: center; font-weight: 500">
+                        <td style="font-weight: 500">
                           {{ item.hoten }}
                         </td>
                         <td style="text-align: center">
@@ -534,9 +534,9 @@ export default {
       // Xây dựng đường dẫn API dựa trên mã số thuế
       const apiEndpoint = `/api/org/kekhai_${this.matochuc_mst}`;
 
-      if (this.$auth.user === true) {
+      if (this.$auth.user.nvcongty === true) {
         const res = await this.$axios.get(
-          `${apiEndpoint}/kykekhai-search-series-pagi?kykekhai=${this.kykekhai}&page=${page}`
+          `${apiEndpoint}/kykekhai-search-series-pagi-nvcty?kykekhai=${this.kykekhai}&page=${page}`
         );
         // console.log(res.data.kekhai);
         if (res.data.results.length > 0) {

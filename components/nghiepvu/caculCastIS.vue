@@ -1282,7 +1282,7 @@ export default {
         try {
           this.items[index].hoten = data.HoTen;
           this.items[index].ngaysinh = data.NgaySinh;
-          if (data.GioiTinh === 0) {
+          if (data.GioiTinh === "0") {
             this.items[index].gioitinh = "Nữ";
           } else {
             this.items[index].gioitinh = "Nam";

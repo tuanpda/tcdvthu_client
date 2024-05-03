@@ -324,7 +324,7 @@ export default {
       // Tạo tiêu đề cho dòng thứ 3
       const headerTitlesTitle = titleVnpt.map((item) => item.tentruong); // Lấy giá trị "tentruong"
       const row3 = worksheet.addRow(headerTitlesTitle);
-      row3.height = 3
+      row3.height = 1
 
       const rowNumber = 2; // Số hàng
       // Tô màu nền cho hàng 2 từ cột `A` đến `BD`
@@ -356,11 +356,11 @@ export default {
       worksheet.getColumn("C").width = 20;
 
       // Đặt chiều cao về mặc định cho các dòng từ 4 trở đi
-      // for (let i = 4; i <= worksheet.rowCount; i++) {
-      //   const row = worksheet.getRow(i);
-      //   row.height = 10; // Đặt chiều cao về mặc định
-      // }
-      worksheet.getRow(4).height = 'undefined';
+      for (let i = 4; i <= 9999; i++) {
+        const row = worksheet.getRow(i);
+        row.height = 'undefined'; // Đặt chiều cao về mặc định
+      }
+
 
       // format định dạng text cho các cột từ A-BD và tô viền đen
       columnNamesABD.forEach((columnName) => {
@@ -386,7 +386,7 @@ export default {
       // Xác định số thứ tự của cột "X"
       const col = "Z";
       const columnIndex = this.columnToIndex(col);
-      console.log(`Cột ${col} là cột thứ:`, columnIndex); // 24
+      // console.log(`Cột ${col} là cột thứ:`, columnIndex);
 
       // Ghi dữ liệu vào worksheet
       this.data_execl.forEach((item, index) => {
