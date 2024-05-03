@@ -49,9 +49,9 @@
               <td style="text-align: center">Quận / Huyện</td>
               <td style="text-align: center">Xã phường</td>
               <td style="text-align: center">Tổ thôn</td>
-              <!-- <td style="text-align: center">Bệnh viện tỉnh</td>
-              <td style="text-align: center">Bệnh viện</td> -->
               <td style="text-align: center">Ghi chú</td>
+              <td style="text-align: center">Số biên lai</td>
+              <td style="text-align: center">Ngày biên lai</td>
             </tr>
           </thead>
           <tbody>
@@ -128,6 +128,7 @@
               </td>
               <td style="text-align: center">
                 <input
+                  @blur="checkAlertCccd(item.cccd)"
                   v-model="item.cccd"
                   class="input is-small"
                   type="number"
@@ -136,6 +137,7 @@
               </td>
               <td style="text-align: center">
                 <input
+                  @blur="checkAlertSodienthoai(item.dienthoai)"
                   v-model="item.dienthoai"
                   class="input is-small"
                   type="number"
@@ -291,49 +293,34 @@
                 />
               </td>
 
-              <!-- tỉnh bệnh viện -->
-              <!-- <td style="text-align: center">
-                <div class="select is-fullwidth is-small">
-                  <select
-                    @change="benhvienChange($event, index)"
-                    v-model="item.info_tinh.matinh"
-                  >
-                    <option
-                      v-for="(dt, index) in dmtinhthanhpho"
-                      :key="index"
-                      :value="dt.matinh"
-                    >
-                      {{ dt.tentinh }}
-                    </option>
-                  </select>
-                </div>
-              </td> -->
-              <!-- bệnh viện -->
-              <!-- <td style="text-align: center">
-                <input
-                  autoComplete="on"
-                  list="hopSuggestions"
-                  class="custom-input"
-                  @change="hopChange($event, index)"
-                  ref="hopInput"
-                  style="min-width: 200px; height: 30px"
-                />
-                <datalist id="hopSuggestions">
-                  <option
-                    v-for="(item, index) in item.info_benhvien"
-                    :key="index"
-                  >
-                    {{ item.mabenhvien }} - {{ item.tenbenhvien }}
-                  </option>
-                </datalist>
-              </td> -->
-
               <!-- ghi chú -->
               <td style="text-align: center">
                 <input
                   v-model="item.ghichu"
                   class="input is-small"
                   type="text"
+                />
+              </td>
+
+              <!-- biên lai -->
+              <td style="text-align: center">
+                <input
+                  @blur="checkSobienlai(item.sobienlai)"
+                  v-model="item.sobienlai"
+                  class="input is-small"
+                  type="number"
+                  ref="sobienlaiInput"
+                  maxlength="7"
+                  minlength="7"
+                />
+              </td>
+              <td style="text-align: center">
+                <input
+                  @blur="checkNowDateNgaybienlai(item.ngaybienlai)"
+                  v-model="item.ngaybienlai"
+                  class="input is-small"
+                  type="date"
+                  ref="ngaybienlaiInput"
                 />
               </td>
             </tr>
@@ -649,6 +636,7 @@
                     </div>
                     <div style="flex-grow: 1">
                       <input
+                        @blur="checkAlertCccd(datanhaphosomodal.cccd)"
                         v-model="datanhaphosomodal.cccd"
                         class="input is-small"
                         type="number"
@@ -664,6 +652,9 @@
                     </div>
                     <div style="flex-grow: 1">
                       <input
+                        @blur="
+                          checkAlertSodienthoai(datanhaphosomodal.dienthoai)
+                        "
                         v-model="datanhaphosomodal.dienthoai"
                         class="input is-small"
                         type="number"
@@ -677,7 +668,53 @@
               <div class="titleKk" style="margin-top: 10px">
                 <hr class="line" />
                 <div class="topleft">
-                  <span style="color: red; font-weight: 700">2.</span> Thủ tục
+                  <span style="color: red; font-weight: 700">2.</span> Thông tin
+                  biên lai nạp tiền
+                </div>
+              </div>
+              <div class="columns">
+                <div class="column">
+                  <div style="display: flex; align-items: center">
+                    <div style="margin-right: 10px">
+                      <label class="labelFix">Số biên lai</label>
+                    </div>
+                    <div style="flex-grow: 1">
+                      <input
+                        @blur="checkSobienlai(datanhaphosomodal.sobienlai)"
+                        v-model="datanhaphosomodal.sobienlai"
+                        class="input is-small"
+                        type="number"
+                        ref="sobienlaiInput"
+                        maxlength="7"
+                        minlength="7"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div class="column">
+                  <div style="display: flex; align-items: center">
+                    <div style="margin-right: 10px">
+                      <label class="labelFix">Ngày biên lai</label>
+                    </div>
+                    <div style="flex-grow: 1">
+                      <input
+                        @blur="
+                          checkNowDateNgaybienlai(datanhaphosomodal.ngaybienlai)
+                        "
+                        v-model="datanhaphosomodal.ngaybienlai"
+                        class="input is-small"
+                        type="date"
+                        ref="ngaybienlaiInput"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="titleKk" style="margin-top: 10px">
+                <hr class="line" />
+                <div class="topleft">
+                  <span style="color: red; font-weight: 700">3.</span> Thủ tục
                   kê khai
                 </div>
               </div>
@@ -983,6 +1020,8 @@
                       <td style="text-align: center">Xã phường</td>
                       <td style="text-align: center">Tổ thôn</td>
                       <td style="text-align: center">Ghi chú</td>
+                      <td style="text-align: center">Số biên lai</td>
+                      <td style="text-align: center">Ngày biên lai</td>
                     </tr>
                   </thead>
                   <tbody>
@@ -1057,18 +1096,25 @@
                       <td>
                         {{ item.ghichu }}
                       </td>
+                      <!-- biên lai -->
+                      <td style="text-align: center">
+                        {{ item.sobienlai }}
+                      </td>
+                      <td style="text-align: center">
+                        {{ formatISODateToDMY(item.ngaybienlai) }}
+                      </td>
                     </tr>
                   </tbody>
                 </table>
-                <div class="titleKk">
-                  <hr class="line" />
-                  <div class="topleft">
-                    <span style="color: red; font-weight: 700">2.</span> Tổng số
-                    tiền phải nạp:
-                    <span style="color: red; font-weight: 700">{{
-                      formatCurrency(totalSoTien)
-                    }}</span>
-                  </div>
+              </div>
+              <div class="titleKk">
+                <hr class="line" />
+                <div class="topleft">
+                  <span style="color: red; font-weight: 700">2.</span> Tổng số
+                  tiền phải nạp:
+                  <span style="color: red; font-weight: 700">{{
+                    formatCurrency(totalSoTien)
+                  }}</span>
                 </div>
               </div>
               <hr class="navbar-divider" />
@@ -1255,96 +1301,102 @@ export default {
 
   methods: {
     async findNguoihuong(masobhxh, index) {
-      const res = await this.$axios.get(
-        `/api/nguoihuong/find-nguoihuong?MaSoBhxh=${masobhxh}`
-      );
-      this.isLoading = true;
-      // console.log(res.data);
-      if (res.data.length > 0) {
-        this.isLoading = false;
-        const Toast = Swal.mixin({
-          toast: true,
-          position: "top-end",
-          showConfirmButton: false,
-          timer: 3000,
-          timerProgressBar: true,
-          didOpen: (toast) => {
-            toast.addEventListener("mouseenter", Swal.stopTimer);
-            toast.addEventListener("mouseleave", Swal.resumeTimer);
-          },
-        });
-        Toast.fire({
-          icon: "success",
-          title:
-            "Dữ liệu chỉ mang tính chất tham khảo. Xem và sửa nếu cần thiết !",
-        });
-        const data = res.data[0];
+      if (masobhxh !== "") {
         try {
-          this.items[index].hoten = data.HoTen;
-          this.items[index].ngaysinh = data.NgaySinh;
-          if (data.GioiTinh === "0") {
-            this.items[index].gioitinh = "Nữ";
+          const res = await this.$axios.get(
+            `/api/nguoihuong/find-nguoihuong?MaSoBhxh=${masobhxh}`
+          );
+          this.isLoading = true;
+          // console.log(res.data);
+          if (res.data.length > 0) {
+            this.isLoading = false;
+            const Toast = Swal.mixin({
+              toast: true,
+              position: "top-end",
+              showConfirmButton: false,
+              timer: 3000,
+              timerProgressBar: true,
+              didOpen: (toast) => {
+                toast.addEventListener("mouseenter", Swal.stopTimer);
+                toast.addEventListener("mouseleave", Swal.resumeTimer);
+              },
+            });
+            Toast.fire({
+              icon: "success",
+              title:
+                "Dữ liệu chỉ mang tính chất tham khảo. Xem và sửa nếu cần thiết !",
+            });
+            const data = res.data[0];
+            try {
+              this.items[index].hoten = data.HoTen;
+              this.items[index].ngaysinh = data.NgaySinh;
+              if (data.GioiTinh === "0") {
+                this.items[index].gioitinh = "Nữ";
+              } else {
+                this.items[index].gioitinh = "Nam";
+              }
+              this.items[index].cccd = data.Cmnd;
+              this.items[index].dienthoai = data.DienThoai;
+              this.items[index].matinh = data.DiaChiTinhId;
+              // đi tìm tên tỉnh
+              const res_tinh = await this.$axios.get(
+                `/api/nguoihuong/find-tentinh?matinh=${data.DiaChiTinhId}`
+              );
+              if (res_tinh.data.length > 0) {
+                this.items[index].tentinh = res_tinh.data[0].tentinh;
+              }
+              this.items[index].maquanhuyen = data.DiaChiHuyenId;
+              // đi tìm tên quận huyện
+              const res_huyen = await this.$axios.get(
+                `/api/nguoihuong/find-tenhuyen?matinh=${data.DiaChiTinhId}&maquanhuyen=${data.DiaChiHuyenId}`
+              );
+              if (res_huyen.data.length > 0) {
+                this.items[index].tenquanhuyen = res_huyen.data[0].tenquanhuyen;
+              }
+              this.items[index].maxaphuong = data.DiaChiXaId;
+              // đi tìm tên xã
+              const res_xa = await this.$axios.get(
+                `/api/nguoihuong/find-tenxa?matinh=${data.DiaChiTinhId}&maquanhuyen=${data.DiaChiHuyenId}&maxaphuong=${data.DiaChiXaId}`
+              );
+              if (res_xa.data.length > 0) {
+                this.items[index].tenxaphuong = res_xa.data[0].tenxaphuong;
+              }
+              this.items[index].tothon = data.DiaChiSinhSong;
+              this.items[index].benhvientinh = data.TinhKhamChuaBenhId;
+              this.items[index].mabenhvien = data.NoiKhamChuaBenh;
+              // đi tìm tên bệnh viện kcb
+              const maBv = `${this.matinh}${data.NoiKhamChuaBenh}`;
+              const res_bv = await this.$axios.get(
+                `/api/nguoihuong/find-benhvien?mabenhvien=${maBv}`
+              );
+              if (res_bv.data.length > 0) {
+                this.items[index].tenbenhvien = res_bv.data[0].tenbenhvien;
+              }
+            } catch (error) {
+              console.log(error.message);
+            }
           } else {
-            this.items[index].gioitinh = "Nam";
-          }
-          this.items[index].cccd = data.Cmnd;
-          this.items[index].dienthoai = data.DienThoai;
-          this.items[index].matinh = data.DiaChiTinhId;
-          // đi tìm tên tỉnh
-          const res_tinh = await this.$axios.get(
-            `/api/nguoihuong/find-tentinh?matinh=${data.DiaChiTinhId}`
-          );
-          if (res_tinh.data.length > 0) {
-            this.items[index].tentinh = res_tinh.data[0].tentinh;
-          }
-          this.items[index].maquanhuyen = data.DiaChiHuyenId;
-          // đi tìm tên quận huyện
-          const res_huyen = await this.$axios.get(
-            `/api/nguoihuong/find-tenhuyen?matinh=${data.DiaChiTinhId}&maquanhuyen=${data.DiaChiHuyenId}`
-          );
-          if (res_huyen.data.length > 0) {
-            this.items[index].tenquanhuyen = res_huyen.data[0].tenquanhuyen;
-          }
-          this.items[index].maxaphuong = data.DiaChiXaId;
-          // đi tìm tên xã
-          const res_xa = await this.$axios.get(
-            `/api/nguoihuong/find-tenxa?matinh=${data.DiaChiTinhId}&maquanhuyen=${data.DiaChiHuyenId}&maxaphuong=${data.DiaChiXaId}`
-          );
-          if (res_xa.data.length > 0) {
-            this.items[index].tenxaphuong = res_xa.data[0].tenxaphuong;
-          }
-          this.items[index].tothon = data.DiaChiSinhSong;
-          this.items[index].benhvientinh = data.TinhKhamChuaBenhId;
-          this.items[index].mabenhvien = data.NoiKhamChuaBenh;
-          // đi tìm tên bệnh viện kcb
-          const maBv = `${this.matinh}${data.NoiKhamChuaBenh}`;
-          const res_bv = await this.$axios.get(
-            `/api/nguoihuong/find-benhvien?mabenhvien=${maBv}`
-          );
-          if (res_bv.data.length > 0) {
-            this.items[index].tenbenhvien = res_bv.data[0].tenbenhvien;
+            this.isLoading = false;
+            const Toast = Swal.mixin({
+              toast: true,
+              position: "top-end",
+              showConfirmButton: false,
+              timer: 3000,
+              timerProgressBar: true,
+              didOpen: (toast) => {
+                toast.addEventListener("mouseenter", Swal.stopTimer);
+                toast.addEventListener("mouseleave", Swal.resumeTimer);
+              },
+            });
+            Toast.fire({
+              icon: "error",
+              title: "Không tìm thấy dữ liệu trong kho người hưởng",
+            });
+            return;
           }
         } catch (error) {
-          console.log(error.message);
+          console.log(error);
         }
-      } else {
-        this.isLoading = false;
-        const Toast = Swal.mixin({
-          toast: true,
-          position: "top-end",
-          showConfirmButton: false,
-          timer: 3000,
-          timerProgressBar: true,
-          didOpen: (toast) => {
-            toast.addEventListener("mouseenter", Swal.stopTimer);
-            toast.addEventListener("mouseleave", Swal.resumeTimer);
-          },
-        });
-        Toast.fire({
-          icon: "error",
-          title: "Không tìm thấy dữ liệu trong kho người hưởng",
-        });
-        return;
       }
     },
 
@@ -2019,10 +2071,20 @@ export default {
     },
 
     validateMonthYear(tuthang, index) {
+      // Nếu người dùng nhập 6 ký tự mà không có dấu gạch chéo, hãy chèn vào
+      if (/^\d{6}$/.test(tuthang)) {
+        // Chuyển đổi từ "MMYYYY" sang "MM/YYYY"
+        const formatted = `${tuthang.slice(0, 2)}/${tuthang.slice(2, 6)}`;
+        tuthang = formatted; // Cập nhật giá trị với định dạng đúng
+      }
+
       const regex = /^(0[1-9]|1[0-2])\/\d{4}$/; // Định dạng MM/YYYY
       if (!regex.test(tuthang)) {
         this.items[index].tuthang = ""; // Xóa giá trị nếu không đúng định dạng
         alert("Định dạng không đúng. Vui lòng nhập MM/YYYY.");
+      } else {
+        // Nếu định dạng đúng, cập nhật giá trị
+        this.items[index].tuthang = tuthang;
       }
     },
 
@@ -2046,6 +2108,119 @@ export default {
       const cleanedCCCD = cccd.replace(/\D/g, "");
       // Kiểm tra độ dài của CCCD và số đầu tiên
       return cleanedCCCD.length === 12 && cleanedCCCD.charAt(0) === "0";
+    },
+
+    // design at 20h30 03/05/2024
+    // check số biên lai
+    isValidSobienlai(sobienlai) {
+      // Loại bỏ tất cả các ký tự không phải số
+      const cleanedSobienlai = sobienlai.replace(/\D/g, "");
+      // Kiểm tra độ dài của số biên lai
+      return cleanedSobienlai.length === 7;
+    },
+
+    checkSobienlai(sobienlai) {
+      if (sobienlai !== "") {
+        // console.log(sobienlai.length);
+        if (sobienlai.length !== 7) {
+          const Toast = Swal.mixin({
+            toast: true,
+            position: "top-end",
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+              toast.addEventListener("mouseenter", Swal.stopTimer);
+              toast.addEventListener("mouseleave", Swal.resumeTimer);
+            },
+          });
+          Toast.fire({
+            icon: "error",
+            title: "Số biên lai phải có đúng 7 chữ số !",
+          });
+        }
+      }
+    },
+
+    checkNowDateNgaybienlai(ngaybienlai) {
+      const nowInVietnam = DateTime.now().setZone("Asia/Ho_Chi_Minh");
+      const dateNow = nowInVietnam.toFormat("yyyy-MM-dd");
+      // console.log(dateNow);
+      const month = nowInVietnam.month; // Tháng hiện tại
+      const year = nowInVietnam.year; // năm hiện tại
+      const monthYearNow = month + year;
+      // check tháng ngày năm của ngày biên lại nhập vào
+      const dateNgaybienlai = new Date(ngaybienlai);
+      // Lấy giá trị tháng (tháng bắt đầu từ 0, cần cộng 1)
+      const monthBienlai = dateNgaybienlai.getMonth() + 1;
+      const yearBienlai = dateNgaybienlai.getFullYear();
+      const monthYearBienlai = monthBienlai + yearBienlai;
+      // console.log(monthBienlai);
+      // console.log(month);
+      if (monthYearBienlai !== monthYearNow) {
+        const Toast = Swal.mixin({
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.addEventListener("mouseenter", Swal.stopTimer);
+            toast.addEventListener("mouseleave", Swal.resumeTimer);
+          },
+        });
+        Toast.fire({
+          icon: "error",
+          title:
+            "Tháng năm biên lai bạn nhập có tháng năm không phải tháng năm tại thời điểm hiện tại",
+        });
+      }
+    },
+
+    checkAlertCccd(cccd) {
+      if (cccd !== "") {
+        const cleanedCCCD = cccd.replace(/\D/g, "");
+        if (cleanedCCCD.length !== 12) {
+          const Toast = Swal.mixin({
+            toast: true,
+            position: "top-end",
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+              toast.addEventListener("mouseenter", Swal.stopTimer);
+              toast.addEventListener("mouseleave", Swal.resumeTimer);
+            },
+          });
+          Toast.fire({
+            icon: "error",
+            title: "CCCD phải có đúng 12 chữ số !",
+          });
+        }
+      }
+    },
+
+    checkAlertSodienthoai(dienthoai) {
+      if (dienthoai !== "") {
+        const cleanedPhone = dienthoai.replace(/\D/g, "");
+        if (cleanedPhone.length !== 10) {
+          const Toast = Swal.mixin({
+            toast: true,
+            position: "top-end",
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+              toast.addEventListener("mouseenter", Swal.stopTimer);
+              toast.addEventListener("mouseleave", Swal.resumeTimer);
+            },
+          });
+          Toast.fire({
+            icon: "error",
+            title: "Số điện thoại phải có đúng 10 chữ số !",
+          });
+        }
+      }
     },
 
     async checkFormData() {
@@ -2232,7 +2407,7 @@ export default {
     },
 
     async onSave() {
-      const matochuc = this.$auth.user.matochuc
+      const matochuc = this.$auth.user.matochuc;
       const parts = matochuc.split("-");
       const mst = parts[parts.length - 1];
       // Xây dựng đường dẫn API dựa trên mã số thuế
@@ -2300,6 +2475,12 @@ export default {
                 );
                 this.items[i].ngaysinh = ngaysinhTranform;
               }
+
+              // ngày biên lai
+              const ngaybienlaiTranform = this.convertDate(
+                this.items[i].ngaybienlai
+              );
+              this.items[i].ngaybienlai = ngaybienlaiTranform;
 
               // info add db
               this.items[i].createdAt = formattedDate;

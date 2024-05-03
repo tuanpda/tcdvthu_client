@@ -85,7 +85,7 @@
                   <!-- Phân trang -->
                   <div style="margin-top: 10px">
                     <nav
-                      class="pagination is-centered is-rounded"
+                      class="pagination is-centered is-rounded is-small"
                       role="navigation"
                       aria-label="pagination"
                     >
