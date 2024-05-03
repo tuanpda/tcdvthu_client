@@ -13,6 +13,7 @@ const countries = require("../../data/countries");
 const dantoc = require("../../data/dantoc");
 const reles = require("../../data/moiquanhe");
 const mhbhyt = require("../../data/muchuongbhyt");
+const titleVnpt = require("../../data/titleVnpt");
 import ExcelJS from "exceljs";
 const { DateTime } = require("luxon");
 export default {
@@ -27,12 +28,12 @@ export default {
   },
 
   methods: {
-    // từ A - BU
-    generateColumnNamesBU() {
+    // từ A - BD
+    generateColumnNamesAtoBD() {
       const columns = [];
       let columnName = "";
       let num = 1;
-      while (columnName !== "BU") {
+      while (columnName !== "BD") {
         let tempNum = num;
         columnName = "";
         while (tempNum > 0) {
@@ -47,150 +48,402 @@ export default {
       return columns;
     },
 
-    // từ A - BU
-    generateColumnNamesAB() {
-      const columns = [];
-      let columnName = "";
-      let num = 1;
-      while (columnName !== "AB") {
-        let tempNum = num;
-        columnName = "";
-        while (tempNum > 0) {
-          let remainder = (tempNum - 1) % 26;
-          columnName =
-            String.fromCharCode("A".charCodeAt(0) + remainder) + columnName;
-          tempNum = Math.floor((tempNum - 1) / 26);
-        }
-        columns.push(columnName);
-        num++;
+    // Xác định số thứ tự của cột trong excel
+    columnToIndex(columnName) {
+      let index = 0;
+      for (let i = 0; i < columnName.length; i++) {
+        index = index * 26 + (columnName.charCodeAt(i) - "A".charCodeAt(0) + 1);
       }
-      return columns;
-    },
-
-    // từ AC - BU dành cho R7 và R8
-    generateColumnNamesACtoBU() {
-      const columns = [];
-      let columnName = "";
-      let num = 29; // Số bắt đầu cho `AC` (1 cho `A`, 2 cho `B`, ..., 28 cho `AB`)
-
-      while (columnName !== "BU") {
-        // Tạo đến khi cột là `BU`
-        columnName = "";
-        let tempNum = num;
-
-        while (tempNum > 0) {
-          let remainder = (tempNum - 1) % 26; // Hệ 26
-          columnName =
-            String.fromCharCode("A".charCodeAt(0) + remainder) + columnName; // Tạo tên cột
-          tempNum = Math.floor((tempNum - 1) / 26); // Tiếp tục chia
-        }
-
-        columns.push(columnName); // Thêm vào mảng
-        num++; // Chuyển sang cột tiếp theo
-      }
-
-      return columns; // Trả về mảng tên cột từ `AC` đến `BU`
-    },
-
-    // từ AD - BU dành cho R2
-    generateColumnNamesADtoBUR2() {
-      const columns = [];
-      let columnName = "";
-      let num = 30; // Số bắt đầu cho `AC` (1 cho `A`, 2 cho `B`, ..., 28 cho `AB`)
-
-      while (columnName !== "BU") {
-        // Tạo đến khi cột là `BU`
-        columnName = "";
-        let tempNum = num;
-
-        while (tempNum > 0) {
-          let remainder = (tempNum - 1) % 26; // Hệ 26
-          columnName =
-            String.fromCharCode("A".charCodeAt(0) + remainder) + columnName; // Tạo tên cột
-          tempNum = Math.floor((tempNum - 1) / 26); // Tiếp tục chia
-        }
-
-        columns.push(columnName); // Thêm vào mảng
-        num++; // Chuyển sang cột tiếp theo
-      }
-
-      return columns; // Trả về mảng tên cột từ `AC` đến `BU`
-    },
-
-    // mergecell từ A-AV
-    generateColumnNamesMercelltoAV() {
-      const columns = [];
-      let columnName = "";
-      let num = 1; //(1 cho `A`, 2 cho `B`, ..., 28 cho `AB`)
-
-      while (columnName !== "AV") {
-        // Tạo đến khi cột là `AV`
-        columnName = "";
-        let tempNum = num;
-
-        while (tempNum > 0) {
-          let remainder = (tempNum - 1) % 26; // Hệ 26
-          columnName =
-            String.fromCharCode("A".charCodeAt(0) + remainder) + columnName; // Tạo tên cột
-          tempNum = Math.floor((tempNum - 1) / 26); // Tiếp tục chia
-        }
-
-        columns.push(columnName); // Thêm vào mảng
-        num++; // Chuyển sang cột tiếp theo
-      }
-
-      return columns; // Trả về mảng tên cột từ `AC` đến `BU`
-    },
-
-    // mergecell từ AW-BU
-    generateColumnNamesMercellAWtoBUR3() {
-      const columns = [];
-      let columnName = "";
-      let num = 49;
-
-      while (columnName !== "BU") {
-        columnName = "";
-        let tempNum = num;
-
-        while (tempNum > 0) {
-          let remainder = (tempNum - 1) % 26; // Hệ 26
-          columnName =
-            String.fromCharCode("A".charCodeAt(0) + remainder) + columnName; // Tạo tên cột
-          tempNum = Math.floor((tempNum - 1) / 26); // Tiếp tục chia
-        }
-
-        columns.push(columnName); // Thêm vào mảng
-        num++; // Chuyển sang cột tiếp theo
-      }
-
-      return columns; // Trả về mảng tên cột từ `AC` đến `BU`
-    },
-
-    // mergecoltừ AW-BF
-    generateColumnNamesMercolsAWtoBFR45() {
-      const columns = [];
-      let columnName = "";
-      let num = 49;
-
-      while (columnName !== "BF") {
-        columnName = "";
-        let tempNum = num;
-
-        while (tempNum > 0) {
-          let remainder = (tempNum - 1) % 26; // Hệ 26
-          columnName =
-            String.fromCharCode("A".charCodeAt(0) + remainder) + columnName; // Tạo tên cột
-          tempNum = Math.floor((tempNum - 1) / 26); // Tiếp tục chia
-        }
-
-        columns.push(columnName); // Thêm vào mảng
-        num++; // Chuyển sang cột tiếp theo
-      }
-
-      return columns; // Trả về mảng tên cột từ `AC` đến `BU`
+      return index;
     },
 
     async exportExcel() {
+      // Tạo workbook mới
+      const workbook = new ExcelJS.Workbook();
+      // Tạo worksheet mới
+      const worksheet = workbook.addWorksheet("Dữ Liệu", {
+        views: [{ state: "frozen", xSplit: 3, ySplit: 3 }],
+      });
+
+      // 1. TẠO CÁC SHEET PHỤ LỤC 1 BÊN
+      // Tạo worksheet DM Quốc tịch
+      // console.log(countries);
+      const worksheetDmQt = workbook.addWorksheet("DM Quốc tịch");
+      worksheetDmQt.columns = [
+        { header: "Mã quốc gia", key: "code", width: 15 }, // Cột 1
+        { header: "Tên Quốc gia/ Vùng lãnh thổ", key: "name", width: 30 }, // Cột 2 với chiều rộng 30
+      ];
+      // Tô màu cho tiêu đề
+      const headerRow = worksheetDmQt.getRow(1); // Lấy hàng tiêu đề
+      headerRow.eachCell((cell) => {
+        cell.fill = {
+          type: "pattern",
+          pattern: "solid",
+          fgColor: { argb: "FFADD8E6" }, // Màu xanh nước biển nhạt
+        };
+      });
+      // Căn giữa tiêu đề
+      headerRow.eachCell((cell) => {
+        cell.alignment = {
+          horizontal: "center", // Căn giữa theo chiều ngang
+          vertical: "middle", // Căn giữa theo chiều dọc (tùy chọn)
+        };
+      });
+      // Tạo các hàng từ dữ liệu JSON
+      countries.forEach((country) => {
+        const row = worksheetDmQt.addRow([country.code, country.name]); // Thêm từng hàng vào Excel
+        // Chỉ căn giữa cột đầu tiên
+        row.getCell(1).alignment = {
+          horizontal: "center", // Căn giữa dữ liệu theo chiều ngang
+          vertical: "middle", // Căn giữa theo chiều dọc (tùy chọn)
+        };
+      });
+      worksheetDmQt.autoFilter = {
+        from: "A1",
+        to: "B1",
+      };
+
+      // Tạo worksheet DM dân tộc
+      // console.log(dantoc);
+      const worksheetDmDt = workbook.addWorksheet("Dân tộc");
+      worksheetDmDt.columns = [
+        { header: "Mã dân tộc", key: "id", width: 15 }, // Cột 1
+        { header: "Tên dân tộc", key: "name", width: 30 }, // Cột 2 với chiều rộng 30
+      ];
+      // Tô màu cho tiêu đề
+      const headerRowdt = worksheetDmDt.getRow(1); // Lấy hàng tiêu đề
+      headerRowdt.eachCell((cell) => {
+        cell.fill = {
+          type: "pattern",
+          pattern: "solid",
+          fgColor: { argb: "FFADD8E6" }, // Màu xanh nước biển nhạt
+        };
+      });
+      // Căn giữa tiêu đề
+      headerRowdt.eachCell((cell) => {
+        cell.alignment = {
+          horizontal: "center", // Căn giữa theo chiều ngang
+          vertical: "middle", // Căn giữa theo chiều dọc (tùy chọn)
+        };
+      });
+      // Tạo các hàng từ dữ liệu JSON
+      dantoc.forEach((dt) => {
+        const row = worksheetDmDt.addRow([dt.id, dt.name]); // Thêm từng hàng vào Excel
+        // Chỉ căn giữa cột đầu tiên
+        row.getCell(1).alignment = {
+          horizontal: "center", // Căn giữa dữ liệu theo chiều ngang
+          vertical: "middle", // Căn giữa theo chiều dọc (tùy chọn)
+        };
+      });
+      worksheetDmDt.autoFilter = {
+        from: "A1",
+        to: "B1",
+      };
+
+      // Tạo worksheet DM mối quan hệ
+      const worksheetDmMqh = workbook.addWorksheet("Mối quan hệ");
+      worksheetDmMqh.columns = [
+        { header: "Mã mối quan hệ", key: "code", width: 20 }, // Cột 1
+        { header: "Mối quan hệ", key: "name", width: 30 }, // Cột 2 với chiều rộng 30
+      ];
+      // Tô màu cho tiêu đề
+      const headerRowmqh = worksheetDmMqh.getRow(1); // Lấy hàng tiêu đề
+      headerRowmqh.eachCell((cell) => {
+        cell.fill = {
+          type: "pattern",
+          pattern: "solid",
+          fgColor: { argb: "FFADD8E6" }, // Màu xanh nước biển nhạt
+        };
+      });
+      // Căn giữa tiêu đề
+      headerRowmqh.eachCell((cell) => {
+        cell.alignment = {
+          horizontal: "center", // Căn giữa theo chiều ngang
+          vertical: "middle", // Căn giữa theo chiều dọc (tùy chọn)
+        };
+      });
+      // Tạo các hàng từ dữ liệu JSON
+      reles.forEach((dt) => {
+        const row = worksheetDmMqh.addRow([dt.code, dt.name]); // Thêm từng hàng vào Excel
+        // Chỉ căn giữa cột đầu tiên
+        row.getCell(1).alignment = {
+          horizontal: "center", // Căn giữa dữ liệu theo chiều ngang
+          vertical: "middle", // Căn giữa theo chiều dọc (tùy chọn)
+        };
+      });
+      worksheetDmMqh.autoFilter = {
+        from: "A1",
+        to: "B1",
+      };
+
+      // Tạo worksheet DM mức hưởng bhyt
+      const worksheetDmMhbhyt = workbook.addWorksheet("Mức hưởng BHYT");
+      worksheetDmMhbhyt.columns = [
+        { header: "Mã", key: "code", width: 15 }, // Cột 1
+        { header: "Diễn giải", key: "name", width: 100 }, // Cột 2 với chiều rộng 30
+      ];
+      // Tô màu cho tiêu đề
+      const headerRowMhbhyt = worksheetDmMhbhyt.getRow(1); // Lấy hàng tiêu đề
+      headerRowMhbhyt.eachCell((cell) => {
+        cell.fill = {
+          type: "pattern",
+          pattern: "solid",
+          fgColor: { argb: "FFADD8E6" }, // Màu xanh nước biển nhạt
+        };
+      });
+      // Căn giữa tiêu đề
+      headerRowMhbhyt.eachCell((cell) => {
+        cell.alignment = {
+          horizontal: "center", // Căn giữa theo chiều ngang
+          vertical: "middle", // Căn giữa theo chiều dọc (tùy chọn)
+        };
+      });
+      // Tạo các hàng từ dữ liệu JSON
+      mhbhyt.forEach((dt) => {
+        const row = worksheetDmMhbhyt.addRow([dt.code, dt.name]); // Thêm từng hàng vào Excel
+        // Chỉ căn giữa cột đầu tiên
+        row.getCell(1).alignment = {
+          horizontal: "center", // Căn giữa dữ liệu theo chiều ngang
+          vertical: "middle", // Căn giữa theo chiều dọc (tùy chọn)
+        };
+        row.getCell(2).alignment = {
+          wrapText: true, // Bọc văn bản để tránh tràn nội dung
+        };
+      });
+      worksheetDmMhbhyt.autoFilter = {
+        from: "A1",
+        to: "B1",
+      };
+
+      // Tạo worksheet DM DMHC
+      const worksheetDmDmhc = workbook.addWorksheet("DMHC");
+      worksheetDmDmhc.getCell("A1").value = {
+        text: "Tra cứu danh mục hành chính, bệnh viện",
+        hyperlink:
+          "http://viettel-ca.vn/download/soft/danh_muc_hanh_chinh.xlsx",
+        tooltip: "Download từ trang chủ của Viettel",
+      };
+      worksheetDmDmhc.getCell("A1").font = {
+        underline: true, // Gạch dưới
+        color: { argb: "0000FF" }, // Màu xanh lam
+      };
+      worksheetDmDmhc.getColumn(1).width = 60;
+
+      // 2. THIẾT KẾ SHEET DỮ LIỆU
+      // cột định nghĩa từ A - BD
+      const columnNamesABD = this.generateColumnNamesAtoBD();
+
+      // style AB1
+      const myFontsAB1 = {
+        timesNewRoman: {
+          name: "Times New Roman", // Tên kiểu chữ
+          size: 10, // Kích thước chữ
+          bold: true, // Không in đậm
+          italic: false, // Không in nghiêng
+          underline: false, // Không gạch chân
+          color: { argb: "FFFF0000" }, // Màu đỏ (ARGB hex)
+        },
+      };
+
+      // style C1
+      const myFontsC1 = {
+        timesNewRoman: {
+          name: "Times New Roman", // Tên kiểu chữ
+          size: 10, // Kích thước chữ
+          bold: true, // Không in đậm
+          italic: true, // Không in nghiêng
+          underline: true, // Không gạch chân
+          color: { argb: "FF3BB5F5" }, // Màu xanh nhạt (ARGB hex)
+        },
+      };
+
+      // style row 2
+      const myFontsRow2 = {
+        timesNewRoman: {
+          name: "Times New Roman", // Tên kiểu chữ
+          size: 10, // Kích thước chữ
+          bold: true, // Không in đậm
+          italic: false, // Không in nghiêng
+          underline: false, // Không gạch chân
+          color: { argb: "FFFFFFFF" }, // Màu trắng (ARGB hex)
+        },
+      };
+
+      // tô màu viền đen
+      const blackBorder = {
+        style: "thin", // Kiểu đường viền mỏng
+        color: { argb: "FF000000" }, // Màu đen (ARGB code)
+      };
+
+      // Định nghĩa màu nền
+      // màu nền AB1
+      const backgroundColorAB1 = {
+        type: "pattern",
+        pattern: "solid", // Màu nền đơn sắc
+        fgColor: { argb: "FFFADEFA" }, // Màu đỏ nhạt (ARGB)
+      };
+      // màu nền row 2
+      const backgroundColorRow2 = {
+        type: "pattern",
+        pattern: "solid", // Màu nền đơn sắc
+        fgColor: { argb: "FF4472C4" }, // Màu xanh nhạt (ARGB)
+      };
+
+      // ROW 1
+      // AB1
+      worksheet.mergeCells("A1:B1");
+      worksheet.getCell("A1:B1").value =
+        "CHÚ Ý: Những cột màu xanh đậm là bắt buộc phải nhập; Dữ liệu nhập bắt đàu từ dòng thứ 4";
+      worksheet.getRow(1).height = 100;
+      worksheet.getCell("A1:B1").style.font = myFontsAB1.timesNewRoman;
+      worksheet.getCell("A1:B1").fill = backgroundColorAB1;
+      worksheet.getCell("A1:B1").alignment = {
+        wrapText: true,
+        vertical: "top",
+        horizontal: "left",
+      };
+      // C1
+      worksheet.getCell("C1").value = {
+        text: "Tra cứu tại https://baohiemxahoi.gov.vn/tracuu/Pages/tra-cuu-ho-gia-dinh.aspx",
+        hyperlink:
+          "https://baohiemxahoi.gov.vn/tracuu/Pages/tra-cuu-ho-gia-dinh.aspx",
+        tooltip: "Bấm vào link để xem chi tiết",
+      };
+      worksheet.getCell("C1").style.font = myFontsC1.timesNewRoman;
+      worksheet.getCell("C1").alignment = {
+        wrapText: true,
+        vertical: "top",
+        horizontal: "left",
+      };
+
+      // ROW 2
+      // Tạo tiêu đề cho dòng thứ 2
+      const headerTitles = titleVnpt.map((item) => item.diengiai); // Lấy giá trị "diengiai"
+      const row2 = worksheet.addRow(headerTitles);
+      row2.height = 40
+      // Tạo tiêu đề cho dòng thứ 3
+      const headerTitlesTitle = titleVnpt.map((item) => item.tentruong); // Lấy giá trị "tentruong"
+      const row3 = worksheet.addRow(headerTitlesTitle);
+      row3.height = 3
+
+      const rowNumber = 2; // Số hàng
+      // Tô màu nền cho hàng 2 từ cột `A` đến `BD`
+      columnNamesABD.forEach((columnName) => {
+        const cell = worksheet.getCell(`${columnName}${rowNumber}`);
+        worksheet.getCell(`${columnName}${rowNumber}`).style.font =
+          myFontsRow2.timesNewRoman;
+        cell.fill = backgroundColorRow2;
+      });
+
+      // Đặt chiều rộng, cao và aligment cho tất cả các cột
+      const numColumns = headerTitles.length; // Số lượng cột
+      for (let i = 1; i <= numColumns; i++) {
+        worksheet.getColumn(i).width = 15; // Đặt chiều rộng là 15
+        worksheet.getColumn(i).alignment = {
+          wrapText: true,
+          horizontal: "center", // Căn giữa theo chiều ngang
+          vertical: "middle", //middle
+        };
+      }
+
+      // Đặt lại độ rộng 1 số cột
+      worksheet.getColumn("A").width = 10;
+      worksheet.getColumn("B").width = 25;
+      worksheet.getColumn("B").alignment = {
+        horizontal: "left", // Căn giữa theo chiều ngang
+        vertical: "middle", //middle
+      };
+      worksheet.getColumn("C").width = 20;
+
+      // Đặt chiều cao về mặc định cho các dòng từ 4 trở đi
+      // for (let i = 4; i <= worksheet.rowCount; i++) {
+      //   const row = worksheet.getRow(i);
+      //   row.height = 10; // Đặt chiều cao về mặc định
+      // }
+      worksheet.getRow(4).height = 'undefined';
+
+      // format định dạng text cho các cột từ A-BD và tô viền đen
+      columnNamesABD.forEach((columnName) => {
+        const column = worksheet.getColumn(columnName);
+        // Đặt định dạng văn bản
+        column.numFmt = "@";
+        // Lặp qua tất cả các dòng và đặt viền cho mỗi ô
+        worksheet.eachRow((row, rowNumber) => {
+          row.getCell(columnName).border = {
+            top: blackBorder,
+            bottom: blackBorder,
+            left: blackBorder,
+            right: blackBorder,
+          };
+        });
+      });
+
+      // xử lý dữ liệu
+      // console.log(this.data_xuatmau);
+      // Bắt đầu từ dòng 9
+      const startRow = 4;
+
+      // Xác định số thứ tự của cột "X"
+      const col = "Z";
+      const columnIndex = this.columnToIndex(col);
+      console.log(`Cột ${col} là cột thứ:`, columnIndex); // 24
+
+      // Ghi dữ liệu vào worksheet
+      this.data_execl.forEach((item, index) => {
+        const rowNumber = startRow + index; // Dòng hiện tại
+
+        // Thêm hàng dữ liệu vào worksheet
+        const row = worksheet.getRow(rowNumber);
+
+        // Gán các trường dữ liệu khác vào các cột tương ứng
+        row.getCell(2).value = item.hoten; // Cột B
+        row.getCell(3).value = item.masobhxh; // Cột C
+
+        row.getCell(6).value = item.maphuongan; // Cột F
+
+        row.getCell(11).value = item.tienluongcs; // Cột K
+
+        row.getCell(14).value = item.tungay; // Cột N
+
+        row.getCell(17).value = item.tentinh; // Cột Q
+        row.getCell(18).value = item.matinh; // Cột R
+        row.getCell(19).value = item.tenquanhuyen; // Cột S
+        row.getCell(20).value = item.maquanhuyen; // Cột T
+        row.getCell(21).value = item.tenxaphuong; // Cột U
+        row.getCell(22).value = item.maxaphuong; // Cột V
+        row.getCell(23).value = item.tothon; // Cột V
+
+        row.getCell(24).value = item.sothang; // Cột X
+        row.getCell(26).value = item.ngaysinh; // Cột Z
+        if (item.gioitinh == "Nam") {
+          row.getCell(27).value = "1"; // Cột AA
+        } else {
+          row.getCell(27).value = "0"; // Cột AA
+        }
+
+        row.commit(); // Xác nhận thay đổi cho hàng
+      });
+
+      // Xuất workbook thành tệp Excel
+      const buffer = await workbook.xlsx.writeBuffer();
+      // Tạo blob để tải xuống
+      const blob = new Blob([buffer], {
+        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      });
+
+      // Tạo URL để tải xuống
+      const url = window.URL.createObjectURL(blob);
+
+      // Tạo thẻ <a> để kích hoạt tải xuống
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "data.xlsx";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    },
+
+    async exportExcel1() {
       // Tạo workbook mới
       const workbook = new ExcelJS.Workbook();
 

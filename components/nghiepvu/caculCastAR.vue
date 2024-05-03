@@ -2292,7 +2292,7 @@ export default {
             if (result.status === 200) {
               this.form_response_sucess = [];
               this.formKekhai = {};
-              console.log(result.data.data);
+              // console.log(result.data.data);
               this.form_response_sucess = result.data.data;
               const ttHoso = result.data.data[0];
               this.formKekhai = {

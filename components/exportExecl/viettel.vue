@@ -1611,6 +1611,9 @@ export default {
         row.commit(); // Xác nhận thay đổi cho hàng
       });
 
+      const nowInVietnam = DateTime.now().setZone("Asia/Ho_Chi_Minh");
+      const formattedDate = nowInVietnam.toFormat("dd-MM-yyyy HH:mm:ss");
+
       // Xuất workbook thành tệp Excel
       const buffer = await workbook.xlsx.writeBuffer();
       // Tạo blob để tải xuống
@@ -1624,7 +1627,7 @@ export default {
       // Tạo thẻ <a> để kích hoạt tải xuống
       const a = document.createElement("a");
       a.href = url;
-      a.download = "data.xlsx";
+      a.download = `FileMau-D03TS_TK01_595_HGD_${formattedDate}.xlsx`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
