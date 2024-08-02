@@ -20,11 +20,17 @@
             <div class="titleKk">
               <hr class="line" />
               <div class="topleft">
-                <span style="color: red; font-weight: 700">1.</span> Thông tin điểm Thu
+                <span style="color: red; font-weight: 700">1.</span> Thông tin
+                điểm Thu
               </div>
             </div>
             <div class="columns">
-              <div class="column" style="font-size: 15px; font-weight: bold; color: #2e8b57;">{{ user.tendaily }}</div>
+              <div
+                class="column"
+                style="font-size: 15px; font-weight: bold; color: #2e8b57"
+              >
+                {{ user.tendaily }}
+              </div>
               <div class="column">
                 <div class="control has-icons-left">
                   <div class="select is-small is-fullwidth">
@@ -54,7 +60,7 @@
               <hr class="line" />
               <div class="topleft">
                 <span style="color: red; font-weight: 700">2.</span> Thông tin
-                người nạp tiền
+                người nạp hồ sơ
               </div>
             </div>
             <div class="columns">
@@ -64,7 +70,12 @@
                     <label class="labelFix">Họ tên người nạp tiền</label>
                   </div>
                   <div style="flex-grow: 1">
-                    <input v-model="user.name" type="text" class="input is-small" disabled />
+                    <input
+                      v-model="user.name"
+                      type="text"
+                      class="input is-small"
+                      disabled
+                    />
                   </div>
                 </div>
                 <div
@@ -74,7 +85,12 @@
                     <label class="labelFix">Tỉnh LH</label>
                   </div>
                   <div style="flex-grow: 1">
-                    <input v-model="user.tentinh" disabled type="text" class="input is-small" />
+                    <input
+                      v-model="user.tentinh"
+                      disabled
+                      type="text"
+                      class="input is-small"
+                    />
                   </div>
                 </div>
                 <div
@@ -84,7 +100,12 @@
                     <label class="labelFix">Địa chỉ liên hệ</label>
                   </div>
                   <div style="flex-grow: 1">
-                    <input v-model="user.diachi" disabled type="text" class="input is-small" />
+                    <input
+                      v-model="user.diachi"
+                      disabled
+                      type="text"
+                      class="input is-small"
+                    />
                   </div>
                 </div>
               </div>
@@ -94,7 +115,12 @@
                     <label class="labelFix">Số CCCD</label>
                   </div>
                   <div style="flex-grow: 1">
-                    <input v-model="user.cccd" disabled type="text" class="input is-small" />
+                    <input
+                      v-model="user.cccd"
+                      disabled
+                      type="text"
+                      class="input is-small"
+                    />
                   </div>
                 </div>
                 <div
@@ -104,7 +130,12 @@
                     <label class="labelFix">Huyện LH</label>
                   </div>
                   <div style="flex-grow: 1">
-                    <input v-model="user.tenhuyen" disabled type="text" class="input is-small" />
+                    <input
+                      v-model="user.tenhuyen"
+                      disabled
+                      type="text"
+                      class="input is-small"
+                    />
                   </div>
                 </div>
                 <div
@@ -114,7 +145,12 @@
                     <label class="labelFix">Email</label>
                   </div>
                   <div style="flex-grow: 1">
-                    <input v-model="user.email" disabled type="text" class="input is-small" />
+                    <input
+                      v-model="user.email"
+                      disabled
+                      type="text"
+                      class="input is-small"
+                    />
                   </div>
                 </div>
               </div>
@@ -124,7 +160,12 @@
                     <label class="labelFix">Số điện thoại</label>
                   </div>
                   <div style="flex-grow: 1">
-                    <input v-model="user.sodienthoai" disabled type="text" class="input is-small" />
+                    <input
+                      v-model="user.sodienthoai"
+                      disabled
+                      type="text"
+                      class="input is-small"
+                    />
                   </div>
                 </div>
                 <div
@@ -134,7 +175,27 @@
                     <label class="labelFix">Xã LH</label>
                   </div>
                   <div style="flex-grow: 1">
-                    <input v-model="user.tenxa" disabled type="text" class="input is-small" />
+                    <input
+                      v-model="user.tenxa"
+                      disabled
+                      type="text"
+                      class="input is-small"
+                    />
+                  </div>
+                </div>
+                <div
+                  style="display: flex; align-items: center; margin-top: 15px"
+                >
+                  <div style="margin-right: 10px">
+                    <label class="labelFix">Mã số BHXH</label>
+                  </div>
+                  <div style="flex-grow: 1">
+                    <input
+                      v-model="user.masobhxh"
+                      disabled
+                      type="text"
+                      class="input is-small"
+                    />
                   </div>
                 </div>
               </div>

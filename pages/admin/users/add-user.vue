@@ -21,6 +21,16 @@
             <button
               @click="isActive = true"
               style="margin-bottom: 3px"
+              class="button is-small is-danger"
+            >
+              <span class="icon is-small">
+                <i class="fas fa-code"></i>
+              </span>
+              <span>Import Users</span>
+            </button>
+            <button
+              @click="isActive = true"
+              style="margin-bottom: 3px"
               class="button is-small is-info"
             >
               <span class="icon is-small">
@@ -146,9 +156,7 @@
         <div v-if="isLoading" class="loading-overlay">
           <!-- Biểu tượng loading -->
           <div class="loading-spinner"></div>
-          <span
-            >waitting some minute ...</span
-          >
+          <span>waitting some minute ...</span>
         </div>
 
         <!-- modal add user -->
@@ -258,11 +266,16 @@
                     </datalist>
                   </div>
 
-                  <label class="label is-small">Điểm thu - Công ty DV thu?</label>
+                  <label class="label is-small"
+                    >Điểm thu - Công ty DV thu?</label
+                  >
                   <div class="field">
                     <div class="control">
                       <div class="select is-small">
-                        <select @change="nhanvienCtyChange($event)" :disabled="isDisabled_Daily">
+                        <select
+                          @change="nhanvienCtyChange($event)"
+                          :disabled="isDisabled_Daily"
+                        >
                           <option selected>-- Chọn phân cấp --</option>
                           <option value="true">Nhân viên công ty</option>
                           <option value="false">Điểm thu</option>
@@ -662,7 +675,7 @@ export default {
         this.form.maxa = position[0].trim();
         this.form.tenxa = position[1].trim();
       }
-      this.checkDailyOpen = true
+      this.checkDailyOpen = true;
 
       // try {
       //   const response = await this.$axios.get(
@@ -677,13 +690,12 @@ export default {
       // }
     },
 
-    nhanvienCtyChange(event){
+    nhanvienCtyChange(event) {
       const selectedOption = event.target.value;
       // console.log(selectedOption); // nhận giá trị true hoặc false - true là nhân viên công ty - giá trị mặc định là false
-      if(selectedOption){
-        this.form.nvcongty = selectedOption
+      if (selectedOption) {
+        this.form.nvcongty = selectedOption;
       }
-
     },
 
     onFileChange(e) {
@@ -714,7 +726,7 @@ export default {
       // Loại bỏ tất cả các ký tự không phải số
       const cleanedCCCD = bhxh.replace(/\D/g, "");
       // Kiểm tra độ dài của CCCD và số đầu tiên
-      return cleanedCCCD.length === 10
+      return cleanedCCCD.length === 10;
     },
 
     // check số cccd
@@ -935,14 +947,14 @@ export default {
             //   text: `Mật khẩu của bạn là (ghi nhớ mật khẩu trước khi tắt thông báo): ${passtranfomer}`,
             // });
             this.fetchDataUsers();
-              // tạo chuỗi active
-              // this.linkActive = `http://localhost:3000/${this.form.email}/actived`;
-              this.linkActive = `http://ansinhbhxh.online:4042/${this.form.email}/actived`;
-              //   // gửi mail kích hoạt và mật khẩu gọi API send mail
-              const data_send_mail = {
-                email: this.form.email,
-                subject: `Mail kích hoạt tài khoản đăng ký sử dụng phần mềm hỗ trợ Tổ chức dịch vụ thu`,
-                content: `
+            // tạo chuỗi active
+            // this.linkActive = `http://localhost:3000/${this.form.email}/actived`;
+            this.linkActive = `http://ansinhbhxh.online:4042/${this.form.email}/actived`;
+            //   // gửi mail kích hoạt và mật khẩu gọi API send mail
+            const data_send_mail = {
+              email: this.form.email,
+              subject: `Mail kích hoạt tài khoản đăng ký sử dụng phần mềm hỗ trợ Tổ chức dịch vụ thu`,
+              content: `
               <p>Xin chào bạn ${this.form.cccd}!</p>
               <p>Chúng tôi đã nhận được đăng ký sử dụng phần mềm từ bạn hoặc cá nhân tổ chức nào đó lấy thông tin email của bạn để đăng ký (nếu trường hợp không phải là bạn thì bạn hãy bỏ qua email này và không bấm vào link kích hoạt mà gửi email phản hồi lại cho chúng tôi thông qua email sonthucompany@gmail.com)</p>
               <hr />
@@ -957,26 +969,38 @@ export default {
               <p>Link kích hoạt tài khoản của bạn là: <a href="${this.linkActive}">Link kích hoạt tài khoản</a></p>
               <p>* LƯU Ý THỜI GIAN KÍCH HOẠT TỪ KHI TẠO TÀI KHOẢN LÀ 5 PHÚT. SAU 5 PHÚT LINK SẼ KHÔNG CÒN TỒN TẠI *</p>
             `,
-              };
+            };
 
-              // GỌI ENDPOINT SEND EMAIL ĐẾN CHO NGƯỜI ĐĂNG KÝ
-              const res_send_mail = await this.$axios.post(
-                `/api/nodemailer/email/send`,
-                data_send_mail
-              );
-              // console.log(res_send_mail.status == 200);
-              if (res_send_mail.status == 200) {
-                // Khi gửi email thành công, dừng hiển thị biểu tượng loading
-                this.isLoading = false;
-                this.isActive = false;
-                this.form = [];
-                // console.log(this.form);
-                Swal.fire({
-                  title: "Tạo thành công tài khoản",
-                  text: "Đã tạo tài khoản, User cần đăng nhập Email của mình để kích hoạt!",
-                });
-                this.fetchDataUsers();
-              }
+            // GỌI ENDPOINT SEND EMAIL ĐẾN CHO NGƯỜI ĐĂNG KÝ -- tạm khoá chức năng gửi mail
+            // const res_send_mail = await this.$axios.post(
+            //   `/api/nodemailer/email/send`,
+            //   data_send_mail
+            // );
+            // console.log(res_send_mail.status == 200);
+            // if (res_send_mail.status == 200) {
+            //   // Khi gửi email thành công, dừng hiển thị biểu tượng loading
+            //   this.isLoading = false;
+            //   this.isActive = false;
+            //   this.form = [];
+            //   // console.log(this.form);
+            //   Swal.fire({
+            //     title: "Tạo thành công tài khoản",
+            //     text: `Tên đăng nhập là: ${this.form.cccd}`,
+            //     text: `Mật khẩu nhập là: ${passtranfomer}`,
+            //   });
+            //   this.fetchDataUsers();
+            // }
+            this.isLoading = false;
+            this.isActive = false;
+            Swal.fire({
+              title: "Tạo thành công tài khoản",
+              text: `Tên đăng nhập là: ${this.form.cccd}; Mật khẩu nhập là: ${passtranfomer}`,
+            });
+            this.fetchDataUsers();
+            this.form = [];
+            this.tinhthpData = [];
+            this.quanhuyenData = [];
+            this.xaphuongData = [];
           } else {
             // Dừng hiển thị biểu tượng loading
             this.isLoading = false;

@@ -368,7 +368,7 @@
                     <div
                       class="field is-grouped is-flex is-justify-content-center"
                     >
-                      <div v-if="isVtVnpt==true" class="control">
+                      <div v-if="isVtVnpt == true" class="control">
                         <ExportExcel_Viettel :data_execl="data_xuatmau" />
                       </div>
                       <div v-else class="control">
@@ -532,11 +532,10 @@ export default {
       const mst = parts[parts.length - 1]; // 2902141757
       this.matochuc_mst = mst;
       // Xây dựng đường dẫn API dựa trên mã số thuế
-      const apiEndpoint = `/api/org/kekhai_${this.matochuc_mst}`;
 
       if (this.$auth.user.nvcongty === true) {
         const res = await this.$axios.get(
-          `${apiEndpoint}/kykekhai-search-series-pagi-nvcty?kykekhai=${this.kykekhai}&page=${page}`
+          `/api/kykekhai-search-series-pagi-nvcty?kykekhai=${this.kykekhai}&page=${page}`
         );
         // console.log(res.data.kekhai);
         if (res.data.results.length > 0) {
@@ -562,9 +561,8 @@ export default {
         }
       } else {
         const res = await this.$axios.get(
-          `${apiEndpoint}/kykekhai-search-series-pagi?kykekhai=${this.kykekhai}&madaily=${this.dailyview}&page=${page}`
+          `/api/kekhai/kykekhai-search-series-pagi?kykekhai=${this.kykekhai}&madaily=${this.dailyview}&dotkekhai=${this.dotkekhai}&ngaykekhai=${this.ngaykekhai}&sohoso=${this.sohoso}&page=${page}`
         );
-        // console.log(res.data.kekhai);
         if (res.data.results.length > 0) {
           this.data_kekhai = res.data.results;
           this.totalPages = res.data.info.pages;
@@ -609,12 +607,10 @@ export default {
     async xuatmauVtVnpt(item, isIvan) {
       // viettel true; vnpt false; ban đầu là false isVtVnpt
       this.isVtVnpt = isIvan;
-      // Xây dựng đường dẫn API dựa trên mã số thuế
-      const apiEndpoint = `/api/org/kekhai_${this.matochuc_mst}`;
       this.isActive = true;
       // console.log(item);
       const res = await this.$axios.get(
-        `${apiEndpoint}/get-all-kekhai-xuatmau?sohoso=${item.sohoso}`
+        `/api/kekhai/get-all-kekhai-xuatmau?sohoso=${item.sohoso}`
       );
       // console.log(res.data.kekhai);
       this.data_xuatmau = res.data.kekhai;

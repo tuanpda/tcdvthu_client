@@ -2423,10 +2423,6 @@ export default {
 
     async onSave() {
       const matochuc = this.$auth.user.matochuc;
-      const parts = matochuc.split("-");
-      const mst = parts[parts.length - 1];
-      // Xây dựng đường dẫn API dựa trên mã số thuế
-      const apiEndpoint = `/api/org/kekhai_${mst}`;
 
       if (this.items.length <= 0) {
         const Toast = Swal.mixin({
@@ -2527,7 +2523,7 @@ export default {
             }
 
             const result = await this.$axios.post(
-              `${apiEndpoint}/add-kekhai-series`,
+              `/api/kekhai/add-kekhai-series`,
               dataKekhai
             );
 
@@ -2547,12 +2543,41 @@ export default {
               this.isActive_xacnhan = false;
               this.isActive = true;
               this.items = [];
+
+              // gửi thông tin lên cổng BHXHVN
+              try {
+                const result = await this.$axios.post(
+                  `/api/kekhai/pushinfotoportbhxhvn`,
+                  dataKekhai
+                );
+                console.log(result);
+              } catch (error) {
+                console.error("Error posting data:", error);
+                throw error;
+              }
             }
           } catch (error) {
             // console.log(error);
             this.isLoading = false;
           }
         }
+      }
+    },
+
+    async postThongTin(data) {
+      const url = `${apiEndpoint}/pushinfotoportbhxhvn`;
+
+      const headers = {
+        "Content-Type": "application/json",
+        Charset: "utf-8",
+      };
+
+      try {
+        const response = await this.$axios.post(url, data, { headers });
+        return response.data;
+      } catch (error) {
+        console.error("Error posting data:", error);
+        throw error;
       }
     },
 

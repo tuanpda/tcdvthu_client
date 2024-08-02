@@ -29,6 +29,7 @@
                 <td style="text-align: center; color: white">CCCD</td>
                 <td style="text-align: center; color: white">Email</td>
                 <td style="text-align: center; color: white">Điện thoại</td>
+                <td style="text-align: center; color: white">Quyền</td>
                 <td style="text-align: center; width: 40%; color: white">
                   Địa chỉ
                 </td>
@@ -60,6 +61,11 @@
                 </td>
                 <td style="text-align: center">
                   {{ item.sodienthoai }}
+                </td>
+                <td style="text-align: center">
+                  <template v-if="item.role === 1">
+                    <span>Quản trị viên</span>
+                  </template>
                 </td>
                 <td style="text-align: left">
                   {{ item.diachi }}

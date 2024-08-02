@@ -47,16 +47,14 @@ export default {
   axios: {
     // Workaround to avoid enforcing hard-coded localhost:3000: https://github.com/nuxt-community/axios-module/issues/308
     // baseURL: "/",
-    baseURL: "http://14.224.129.177:9999", // máy chủ tuanpda
+    // baseURL: "http://192.168.160.7:1552", // máy chủ nhân hoà
     // baseURL: "http://localhost:9999",
     timeout: 20000,
   },
 
   server: {
-    port: 4042, // default: 3000
-    // port: 80,
-    // host: "192.168.1.97", // server tuanpda
-    host: "103.170.123.199", // server nhân hòa
+    port: 4042,
+    host: "192.168.160.7", // server nhân hòa
     // host: "localhost", // local
   },
 
