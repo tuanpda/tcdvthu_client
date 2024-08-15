@@ -13,9 +13,17 @@ export default {
     ],
     link: [
       { rel: "icon", type: "image/x-icon", href: "/logobhxh.png" },
+      // {
+      //   rel: "stylesheet",
+      //   href: "/fontawesome-free-6.5.1-web/css/all.css",
+      // },
       {
         rel: "stylesheet",
-        href: "/fontawesome-free-6.5.1-web/css/all.css",
+        href: "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css",
+        integrity:
+          "sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==",
+        crossorigin: "anonymous",
+        referrerpolicy: "no-referrer",
       },
     ],
   },
@@ -47,15 +55,16 @@ export default {
   axios: {
     // Workaround to avoid enforcing hard-coded localhost:3000: https://github.com/nuxt-community/axios-module/issues/308
     // baseURL: "/",
-    baseURL: "http://192.168.160.7:1552", // máy chủ nhân hoà
-    // baseURL: "http://localhost:9999",
+    // baseURL: "http://192.168.160.7:1552", // máy chủ nhân hoà
+    // baseURL: "http://14.224.129.177:1552",
+    baseURL: "http://localhost:1552",
     timeout: 20000,
   },
 
   server: {
     port: 4042,
-    host: "192.168.160.7", // server nhân hòa
-    // host: "localhost", // local
+    // host: "192.168.160.7", // server nhân hòa
+    host: "localhost", // local
   },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
