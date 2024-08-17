@@ -65,7 +65,7 @@ export default {
     port: 4042,
     // host: "192.168.160.7", // server nhân hòa
     // host: "14.224.129.177", // server tuanpda
-    // host: "localhost", // local
+    // host: "localhost",
     host: "192.168.1.97",
   },
 

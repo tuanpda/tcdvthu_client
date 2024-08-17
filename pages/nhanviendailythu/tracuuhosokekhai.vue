@@ -526,6 +526,8 @@ export default {
     },
 
     async filterData(page) {
+      console.log(this.data_kekhai);
+
       // console.log(this.$auth.user);
       // Tách chuỗi theo dấu gạch ngang
       const parts = this.tochuc.split("-");
@@ -534,8 +536,11 @@ export default {
       // Xây dựng đường dẫn API dựa trên mã số thuế
 
       if (this.$auth.user.nvcongty === true) {
+        // const res = await this.$axios.get(
+        //   `/api/kekhai/kykekhai-search-series-pagi-nvcty?kykekhai=${this.kykekhai}&page=${page}`
+        // );
         const res = await this.$axios.get(
-          `/api/kykekhai-search-series-pagi-nvcty?kykekhai=${this.kykekhai}&page=${page}`
+          `/api/kekhai/kykekhai-search-series-pagi-nvcty?kykekhai=${this.kykekhai}&dotkekhai=${this.dotkekhai}&ngaykekhai=${this.ngaykekhai}&sohoso=${this.sohoso}&page=${page}`
         );
         // console.log(res.data.kekhai);
         if (res.data.results.length > 0) {
