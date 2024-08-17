@@ -64,8 +64,9 @@ export default {
   server: {
     port: 4042,
     // host: "192.168.160.7", // server nhân hòa
-    host: "14.224.129.177", // server tuanpda
+    // host: "14.224.129.177", // server tuanpda
     // host: "localhost", // local
+    host: "192.168.1.97",
   },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
