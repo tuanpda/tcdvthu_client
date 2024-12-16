@@ -18,12 +18,13 @@
     "numeral": "^2.0.6",
     "nuxt": "^2.15.8",
     "text-mask-addons": "^3.8.0",
+    "uuid": "^11.0.3",
     "v-mask": "^2.3.0",
     "vue": "^2.7.10",
     "vue-server-renderer": "^2.7.10",
     "vue-sweetalert2": "^5.0.5",
     "vue-template-compiler": "^2.7.10",
     "vue-toasted": "^1.1.28",
-    "xlsx": "^0.17.0"
+    "xlsx": "^0.17.5"
   }
 }

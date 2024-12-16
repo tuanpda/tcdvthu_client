@@ -8,9 +8,10 @@
       <div class="navbar-brand">
         <a class="navbar-item" href="/">
           <img
-            src="@/assets/logos/an-sinh-bhxh-high-resolution-logo-white-transparent.png"
+            src="@/assets/logos/an-sinh-ph-din-high-resolution-logo.png"
             width="200"
             height="100"
+            style="background-color: white"
           />
         </a>
 
@@ -40,15 +41,21 @@
         <div class="navbar-start">
           <!-- Danh mục -->
           <div class="navbar-item has-dropdown is-hoverable">
-            <a class="navbar-link" @click="toggleDropdown_danhmuc">
-              <span
-                style="color: hsl(0deg, 0%, 100%)"
-                class="icon is-small is-left"
-              >
+            <a
+              class="navbar-link"
+              @click="toggleDropdown_danhmuc"
+              style="
+                color: hsl(0deg, 0%, 100%);
+                font-weight: bold;
+                font-size: large;
+              "
+            >
+              <span class="icon is-small is-left">
                 <i class="fas fa-layer-group"></i>
               </span>
               &ensp; Danh mục
             </a>
+
             <div
               @click="toggleDropdown_danhmuc"
               class="navbar-dropdown is-boxed"
@@ -81,13 +88,19 @@
               </nuxt-link>
             </div>
           </div>
+
           <!-- Kê khai -->
           <div class="navbar-item has-dropdown is-hoverable">
-            <a class="navbar-link" @click="toggleDropdown_danhmuc">
-              <span
-                style="color: hsl(0deg, 0%, 100%)"
-                class="icon is-small is-left"
-              >
+            <a
+              class="navbar-link"
+              @click="toggleDropdown_danhmuc"
+              style="
+                color: hsl(0deg, 0%, 100%);
+                font-weight: bold;
+                font-size: large;
+              "
+            >
+              <span class="icon is-small is-left">
                 <i class="fas fa-broom"></i>
               </span>
               &ensp; Kê khai
@@ -132,6 +145,36 @@
               </nuxt-link>
             </div>
           </div>
+
+          <!-- xử lý hồ sơ -->
+          <div class="navbar-item has-dropdown is-hoverable">
+            <a
+              class="navbar-link"
+              @click="toggleDropdown_danhmuc"
+              style="
+                color: hsl(0deg, 0%, 100%);
+                font-weight: bold;
+                font-size: large;
+              "
+            >
+              <span class="icon is-small is-left">
+                <i class="fas fa-paperclip"></i>
+              </span>
+              &ensp; Hồ sơ
+            </a>
+            <div
+              @click="toggleDropdown_danhmuc"
+              class="navbar-dropdown is-boxed"
+              v-show="isDropdownOpen_danhmuc"
+            >
+              <nuxt-link to="/nhanviendailythu/timkiemhoso" class="navbar-item">
+                <span style="color: #3850b7" class="icon is-small is-left">
+                  <i class="fas fa-search"></i>
+                </span>
+                &ensp; Tìm kiếm hồ sơ kê khai
+              </nuxt-link>
+            </div>
+          </div>
         </div>
 
         <div class="navbar-end">
@@ -144,7 +187,7 @@
                 height="80"
                 style="border-radius: 50%; border: 2px solid #ffd863"
               />
-              &ensp; hi, {{ user.username }}!</a
+              &ensp; Xin chào, {{ user.username }}!</a
             >
             <div
               @click="toggleDropdown_user"

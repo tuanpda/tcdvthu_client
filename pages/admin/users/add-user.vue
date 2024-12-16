@@ -19,7 +19,7 @@
         <div class="field is-tuanpda">
           <div class="control">
             <button
-              @click="isActive = true"
+              @click="onImport"
               style="margin-bottom: 3px"
               class="button is-small is-danger"
             >
@@ -284,6 +284,22 @@
                     </div>
                   </div>
 
+                  <label class="label is-small">Gửi lên cổng BHXH VN?</label>
+                  <div class="field">
+                    <div class="control">
+                      <div class="select is-small">
+                        <select
+                          @change="sentChange($event)"
+                          :disabled="isDisabled_Daily"
+                        >
+                          <option selected>-- Chọn quyền --</option>
+                          <option value="true">Cho phép</option>
+                          <option value="false">Không cho phép</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+
                   <div class="field">
                     <label class="label is-small">Địa chỉ</label>
                     <div class="control">
@@ -416,6 +432,124 @@
             </div>
           </div>
         </div>
+
+        <!-- modal import user -->
+        <div class="">
+          <div :class="{ 'is-active': isActive_import }" class="modal">
+            <div class="modal-background"></div>
+            <div class="modal-content modal-card-import box">
+              <section class="modal-card-body">
+                <div style="text-align: end">
+                  <button
+                    @click="isActive_import = false"
+                    class="button is-small is-danger"
+                  >
+                    Thoát
+                  </button>
+                </div>
+
+                <div class="columns">
+                  <div class="column is-10">
+                    <div class="file is-small is-info has-name">
+                      <label class="file-label">
+                        <input
+                          ref="fileInput"
+                          @change="onFileChange_import"
+                          class="file-input"
+                          type="file"
+                          name="resume"
+                          accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                        />
+                        <span class="file-cta">
+                          <span class="file-icon">
+                            <i class="fas fa-upload"></i>
+                          </span>
+                          <span class="file-label"> Chọn file excel </span>
+                        </span>
+                        <span class="file-name">
+                          {{ fileName_import }}
+                        </span>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <!-- progress import -->
+                </div>
+
+                <div class="columns">
+                  <div class="column">
+                    <div style="text-align: right; margin-bottom: 5px">
+                      <button @click="clickImport" class="button is-small">
+                        <a
+                          href="http://27.73.37.94:81/filemauimport/importusers.xlsx"
+                          >Download File mẫu Import</a
+                        >
+                      </button>
+                      <button
+                        :disabled="!isImport"
+                        @click="clickImport"
+                        class="button is-small is-success"
+                      >
+                        Import người dùng
+                      </button>
+                    </div>
+
+                    <div class="table_wrapper">
+                      <table
+                        class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth"
+                      >
+                        <thead style="font-size: small; font-weight: bold">
+                          <tr style="">
+                            <td style="text-align: center; width: 3%">STT</td>
+                            <td style="text-align: center">Họ tên</td>
+                            <td style="text-align: center">Tên người dùng</td>
+                            <td style="text-align: center">CCCD</td>
+                            <td style="text-align: center">Email</td>
+                            <td style="text-align: center">Điện thoại</td>
+                            <td style="text-align: center; width: 40%">
+                              Địa chỉ
+                            </td>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr
+                            v-for="(item, index) in data_import"
+                            :key="index"
+                            style="font-size: small"
+                          >
+                            <td style="text-align: center">
+                              {{ index + 1 }}
+                            </td>
+                            <td style="">
+                              {{ item.name }}
+                            </td>
+                            <td style="">
+                              {{ item.username }}
+                            </td>
+                            <td style="text-align: center">
+                              {{ item.cccd }}
+                            </td>
+                            <td>
+                              {{ item.email }}
+                            </td>
+                            <td style="text-align: center">
+                              {{ item.sodienthoai }}
+                            </td>
+                            <td>
+                              {{ item.diachi }}
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </section>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -423,8 +557,8 @@
 
 <script>
 import { mapState, mapActions } from "vuex";
-import { viCharMap } from "@/utils/viCharMap.js";
 import Swal from "sweetalert2";
+import * as XLSX from "xlsx";
 export default {
   name: "AddUserAdminPage",
   layout: "admin",
@@ -436,6 +570,7 @@ export default {
     return {
       users_data: [],
       isActive: false,
+      isActive_import: false,
       checkHuyenxaOpen: false,
       checkXaphuongOpen: false,
       checkDailyOpen: false,
@@ -482,6 +617,11 @@ export default {
       sortKey: "ttqt",
       currentPage: 1,
       itemsPerPage: 10,
+      //
+      isImport: false,
+      data_import: [],
+      fileName_import: "",
+      selectedFile_import: null,
     };
   },
 
@@ -698,6 +838,15 @@ export default {
       }
     },
 
+    sentChange(event) {
+      const selectedOption = event.target.value;
+      console.log(selectedOption);
+
+      if (selectedOption) {
+        this.form.res_sent = selectedOption;
+      }
+    },
+
     onFileChange(e) {
       this.fileName = e.target.files[0];
       this.url = URL.createObjectURL(this.fileName);
@@ -874,6 +1023,92 @@ export default {
       return true;
     },
 
+    onFileChange_import(e) {
+      if (!e.target.files[0]) {
+        return;
+      }
+      this.perproc = 0;
+      this.fileName_import = e.target.files[0].name;
+      this.selectedFile_import = e.target.files[0];
+
+      if (
+        this.selectedFile_import.type ==
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+      ) {
+        // console.log(this.selectedFile_import);
+        //console.log(this.selectedFile.type);
+      } else {
+        this.$toasted.show("Chỉ chấp nhận file excel xlsx, 2007 + ", {
+          duration: 2000,
+          theme: "bubble",
+        });
+      }
+
+      const files = e.target.files;
+      const fileReader = new FileReader(); // construction function that can read the file content
+      this.isLoading = true;
+      fileReader.onload = (ev) => {
+        try {
+          const data = ev.target.result;
+          const workbook = XLSX.read(data, {
+            type: "binary", // binary
+          });
+          const wsname = workbook.SheetNames[0]; //take the first sheet
+          const ws = XLSX.utils.sheet_to_json(workbook.Sheets[wsname]); //Get the data in this table
+
+          let titles = Object.keys(ws[0]);
+          const firstThreeTitles = titles.slice(0, 3);
+          // console.log(firstThreeTitles);
+
+          if (
+            firstThreeTitles[0] == "matochuc" &&
+            firstThreeTitles[1] == "tentochuc" &&
+            firstThreeTitles[2] == "matinh"
+          ) {
+            this.data_import = ws;
+            this.isLoading = false;
+            this.isImport = true;
+          } else {
+            this.data_import = [];
+            const Toast = Swal.mixin({
+              toast: true,
+              position: "top-end",
+              showConfirmButton: false,
+              timer: 2000,
+              timerProgressBar: true,
+              didOpen: (toast) => {
+                toast.addEventListener("mouseenter", Swal.stopTimer);
+                toast.addEventListener("mouseleave", Swal.resumeTimer);
+              },
+            });
+            Toast.fire({
+              icon: "error",
+              title: `File không hợp lệ.`,
+            });
+            this.isLoading = false;
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      };
+      // read file, trigger onload
+      fileReader.readAsBinaryString(files[0]);
+    },
+
+    onImport() {
+      this.isActive_import = true;
+    },
+
+    async clickImport() {
+      try {
+        await this.$axios.$post("/api/users/import-uses", this.data_import);
+        // Swal.fire("Import dữ liệu thành công", "", "success");
+      } catch (error) {
+        console.log(error);
+        Swal.fire("Có lỗi xảy ra", "Import dữ liệu thất bại.", "warning");
+      }
+    },
+
     async onSave() {
       // Kiểm tra dữ liệu trước khi ghi
       const isDataValid = await this.checkFormData();
@@ -933,6 +1168,9 @@ export default {
         data.append("createdBy", this.form.createdBy);
         data.append("updatedAt", this.form.updatedAt);
         data.append("updatedBy", this.form.updatedBy);
+        data.append("res_sent", this.form.res_sent);
+        data.append("macqbhxh", "04013");
+        data.append("tencqbhxh", "Bảo hiểm xã hội huyện Diễn Châu");
 
         try {
           const response = await this.$store.dispatch(
@@ -1086,6 +1324,11 @@ export default {
 .modal-card {
   width: 850px;
   height: 550px;
+}
+
+.modal-card-import {
+  width: 1250px;
+  height: 650px;
 }
 
 /* Tùy chỉnh giao diện của input */

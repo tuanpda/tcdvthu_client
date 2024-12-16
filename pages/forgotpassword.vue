@@ -6,29 +6,30 @@
           <div class="column is-4 is-offset-4">
             <div class="centered-image">
               <img
-                src="@/assets/logos/an-sinh-bhxh-high-resolution-logo-black-transparent.png"
+                src="@/assets/logos/ansinhphudien-login-logo.png"
                 alt="Your Image"
-                width="250"
+                width="150"
                 height="150"
               />
             </div>
             <div class="box" style="margin-top: 10px; color: red">
-              <p class="subtitle is-5">Lấy lại mật khẩu đăng nhập</p>
+              <div style="margin-bottom: 10px">
+                <span style="font-weight: bold; font-size: 20px; color: #0000cd"
+                  >LẤY LẠI MẬT KHẨU ĐĂNG NHẬP</span
+                >
+              </div>
               <br />
               <form>
                 <div class="field">
                   <div class="control has-icons-left has-icons-right">
                     <input
-                      class="input is-small"
+                      class="input"
                       type="email"
                       placeholder="Nhập Email đã đăng ký tài khoản"
                       v-model="formReset.email"
                     />
                     <span class="icon is-small is-left">
-                      <i
-                        style="color: #37e7ac"
-                        class="fas fa-envelope-open-text"
-                      ></i>
+                      <i style="" class="fas fa-envelope-open-text"></i>
                     </span>
                   </div>
                 </div>
@@ -36,12 +37,12 @@
                   <div class="control has-icons-left">
                     <input
                       v-model="formReset.masobhxh"
-                      class="input is-small"
+                      class="input"
                       type="text"
                       placeholder="Nhập Mã số Bhxh đã đăng ký tài khoản"
                     />
                     <span class="icon is-small is-left">
-                      <i style="color: #37e7ac" class="fab fa-adn"></i>
+                      <i style="" class="fab fa-adn"></i>
                     </span>
                   </div>
                 </div>
@@ -49,12 +50,12 @@
                   <div class="control has-icons-left">
                     <input
                       v-model="formReset.cccd"
-                      class="input is-small"
+                      class="input"
                       type="text"
                       placeholder="Nhập số CCCD đã đăng ký tài khoản"
                     />
                     <span class="icon is-small is-left">
-                      <i style="color: #37e7ac" class="far fa-address-card"></i>
+                      <i style="" class="far fa-address-card"></i>
                     </span>
                   </div>
                 </div>
@@ -63,15 +64,13 @@
                 <div class="field" style="padding-top: 10px">
                   <button
                     @click.prevent="resetPass"
-                    class="button is-small is-block is-danger is-fullwidth"
+                    class="button is-block is-success is-fullwidth"
                   >
-                    Gửi mật khẩu về Email đã đăng ký
+                    Lấy lại mật khẩu
                   </button>
                 </div>
                 <div class="field" style="padding-top: 10px">
-                  <button
-                    class="button is-small is-block is-primary is-fullwidth"
-                  >
+                  <button class="button is-block is-info is-fullwidth">
                     <a href="/login">Trở về trang Đăng nhập</a>
                   </button>
                 </div>
@@ -157,8 +156,8 @@ export default {
 
 <style scoped>
 .hero.is-success {
-  background: #f2f6fa;
-  background-image: url("../assets/images/login1.jpg");
+  background: #d3d3d3;
+  background-image: url("../assets/images/login2.jpg");
   background-size: cover;
 }
 
@@ -170,8 +169,8 @@ export default {
 
 .box {
   margin-top: 5rem;
-  background-color: transparent;
-  border: 2px solid white;
+  /* background-color: transparent; */
+  border: 5px solid white;
 }
 
 .avatar {

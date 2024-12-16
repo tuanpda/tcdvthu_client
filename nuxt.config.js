@@ -12,7 +12,7 @@ export default {
       { name: "format-detection", content: "telephone=no" },
     ],
     link: [
-      { rel: "icon", type: "image/x-icon", href: "/logobhxh.png" },
+      { rel: "icon", type: "image/x-icon", href: "/logo-asxh.png" },
       // {
       //   rel: "stylesheet",
       //   href: "/fontawesome-free-6.5.1-web/css/all.css",
@@ -55,18 +55,20 @@ export default {
   axios: {
     // Workaround to avoid enforcing hard-coded localhost:3000: https://github.com/nuxt-community/axios-module/issues/308
     // baseURL: "/",
-    // baseURL: "http://192.168.160.7:1552", // máy chủ nhân hoà
-    baseURL: "http://14.224.129.177:1552", // máy chủ tuanpda
+    // baseURL: "http://192.168.160.7:2612", // máy chủ nhân hoà
+    // baseURL: "http://14.224.129.177:1552", // máy chủ tuanpda
+    baseURL: "http://192.168.1.5:1552", // máy chủ tuanpda
     // baseURL: "http://localhost:1552",
     timeout: 20000,
   },
 
   server: {
-    port: 4042,
+    port: 2612,
+    host: "192.168.1.5", // tnhh phủ diễn
     // host: "192.168.160.7", // server nhân hòa
     // host: "14.224.129.177", // server tuanpda
     // host: "localhost",
-    host: "192.168.1.97",
+    // host: "192.168.1.97",
   },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build

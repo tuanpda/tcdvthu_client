@@ -6,27 +6,31 @@
           <div class="column is-4 is-offset-4">
             <div class="centered-image">
               <img
-                src="@/assets/logos/an-sinh-bhxh-high-resolution-logo-black-transparent.png"
+                src="@/assets/logos/ansinhphudien-login-logo.png"
                 alt="Your Image"
-                width="250"
+                width="150"
                 height="150"
               />
             </div>
-            <div class="box" style="margin-top: 10px; color: red">
-              <p class="subtitle is-5">ĐĂNG NHẬP HỆ THỐNG</p>
+            <div class="box" style="margin-top: 10px">
+              <div style="margin-bottom: 10px">
+                <span style="font-weight: bold; font-size: 20px; color: #ffa07a"
+                  >ĐĂNG NHẬP HỆ THỐNG</span
+                >
+              </div>
               <br />
               <form>
                 <div class="field">
                   <div class="control has-icons-left has-icons-right">
                     <input
-                      class="input is-small"
+                      class="input"
                       type="username"
                       placeholder="Tên đăng nhập"
                       v-model="username"
                       autofocus=""
                     />
                     <span class="icon is-small is-left">
-                      <i style="color: #37e7ac" class="fas fa-user"></i>
+                      <i class="fas fa-user"></i>
                     </span>
                     <span class="icon is-medium is-right">
                       <i class="fas fa-check"></i>
@@ -37,26 +41,28 @@
                   <div class="control has-icons-left">
                     <input
                       v-model="password"
-                      class="input is-small"
+                      class="input"
                       type="password"
                       placeholder="Mật khẩu"
                       autocomplete="current-password"
                     />
                     <span class="icon is-small is-left">
-                      <i style="color: #37e7ac" class="fas fa-lock"></i>
+                      <i class="fas fa-lock"></i>
                     </span>
                   </div>
                 </div>
                 <div class="field" style="padding-top: 10px">
                   <button
                     @click.prevent="signIn"
-                    class="button is-small is-block is-danger is-fullwidth"
+                    class="button is-block is-success is-fullwidth"
                   >
                     Đăng nhập
                   </button>
                 </div>
                 <div class="field" style="padding-top: 10px">
-                  <a href="/forgotpassword"><span class="forgotpas">Quên mật khẩu ?</span></a>
+                  <a href="/forgotpassword"
+                    ><span class="forgotpas">Quên mật khẩu ?</span></a
+                  >
                 </div>
               </form>
             </div>
@@ -110,7 +116,8 @@ export default {
               errorMessage = "Đăng nhập thất bại";
               break;
             case 4:
-              errorMessage = "Tài khoản chưa được kích hoạt. Liên hệ quản trị hệ thống !!!";
+              errorMessage =
+                "Tài khoản chưa được kích hoạt. Liên hệ quản trị hệ thống !!!";
               break;
             case 7:
               errorMessage = "Đăng nhập thất bại";
@@ -133,8 +140,8 @@ export default {
 
 <style scoped>
 .hero.is-success {
-  background: #f2f6fa;
-  background-image: url("../assets/images/login1.jpg");
+  background: #d3d3d3;
+  background-image: url("../assets/images/login2.jpg");
   background-size: cover;
 }
 
@@ -146,8 +153,8 @@ export default {
 
 .box {
   margin-top: 5rem;
-  background-color: transparent;
-  border: 2px solid white;
+  /* background-color: transparent; */
+  border: 5px solid white;
 }
 
 .avatar {
@@ -176,10 +183,10 @@ p.subtitle {
 }
 
 .forgotpas {
-  color: white;
+  color: #800000;
   font-weight: 600;
   font-size: 13px;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   transition: color 0.3s; /* Thời gian chuyển tiếp khi thay đổi màu */
 }
 

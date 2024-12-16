@@ -410,10 +410,7 @@
                 >
               </div>
               <div style="text-align: end">
-                <button
-                  @click="isActive = false"
-                  class="button is-small is-info"
-                >
+                <button @click="xacnhanThoat" class="button is-small is-info">
                   Thoát
                 </button>
               </div>
@@ -423,14 +420,16 @@
                 <hr class="line" />
                 <div class="topleft">
                   <span style="color: red; font-weight: 700">1.</span> Thông tin
-                  hồ sơ nạp
+                  lưu hồ sơ kê khai
                 </div>
               </div>
               <div class="columns">
                 <div class="column">
                   <div style="display: flex; align-items: center">
                     <div style="margin-right: 10px">
-                      <label class="labelFix">Số hồ sơ: </label>
+                      <span style="font-size: 8; font-weight: bold"
+                        >Số hồ sơ:
+                      </span>
                     </div>
                     <div style="flex-grow: 1">
                       <span style="color: red; font-weight: 600">{{
@@ -442,7 +441,9 @@
                 <div class="column">
                   <div style="display: flex; align-items: center">
                     <div style="margin-right: 10px">
-                      <label class="labelFix">Đợt Kê khai: </label>
+                      <span style="font-size: 8; font-weight: bold"
+                        >Đợt Kê khai:
+                      </span>
                     </div>
                     <div style="flex-grow: 1">
                       <span style="color: red; font-weight: 600">{{
@@ -456,7 +457,9 @@
                 <div class="column">
                   <div style="display: flex; align-items: center">
                     <div style="margin-right: 10px">
-                      <label class="labelFix">Kỳ kê khai: </label>
+                      <span style="font-size: 8; font-weight: bold"
+                        >Kỳ kê khai:
+                      </span>
                     </div>
                     <div style="flex-grow: 1">
                       <span style="color: red; font-weight: 600">{{
@@ -468,7 +471,9 @@
                 <div class="column">
                   <div style="display: flex; align-items: center">
                     <div style="margin-right: 10px">
-                      <label class="labelFix">Ngày Kê khai: </label>
+                      <span style="font-size: 8; font-weight: bold"
+                        >Ngày Kê khai:
+                      </span>
                     </div>
                     <div style="flex-grow: 1">
                       <span style="color: red; font-weight: 600">{{
@@ -515,6 +520,9 @@
                           <td style="text-align: center; font-weight: bold">
                             Số điện thoại
                           </td>
+                          <td style="text-align: center; font-weight: bold">
+                            Gửi lên cổng BHXHVN
+                          </td>
                         </tr>
                       </thead>
                       <tbody>
@@ -542,9 +550,103 @@
                           <td style="text-align: center">
                             {{ item.dienthoai }}
                           </td>
+                          <td style="text-align: center">
+                            <button
+                              @click="guiDulieuLenCongBhxhvn(item)"
+                              class="button is-small is-success"
+                              :disabled="item.isSent || !isRoleSent"
+                            >
+                              <span class="icon is-small" v-if="!item.isSent">
+                                <i
+                                  class="fas fa-spell-check"
+                                  style="color: #ffd863"
+                                ></i>
+                              </span>
+                              <span v-if="!item.isSent">Gửi</span>
+                              <span v-else>Đã gửi</span>
+                            </button>
+                          </td>
                         </tr>
                       </tbody>
                     </table>
+                  </div>
+                </div>
+              </div>
+
+              <div class="titleKk" style="margin-top: 10px">
+                <hr class="line" />
+                <div class="topleft">
+                  <span style="color: red; font-weight: 700">3.</span> Danh sách
+                  kê khai lỗi
+                </div>
+              </div>
+              <div class="columns">
+                <div class="column">
+                  <div v-if="form_response_failed.length > 0">
+                    <table
+                      class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth"
+                    >
+                      <thead>
+                        <tr style="background-color: #85e89d; font-size: small">
+                          <td style="text-align: center; font-weight: bold">
+                            STT
+                          </td>
+                          <td style="text-align: center; font-weight: bold">
+                            Họ tên
+                          </td>
+                          <td style="text-align: center; font-weight: bold">
+                            Mã số BHXH
+                          </td>
+                          <td style="text-align: center; font-weight: bold">
+                            Ngày sinh
+                          </td>
+                          <td style="text-align: center; font-weight: bold">
+                            Giới tính
+                          </td>
+                          <td style="text-align: center; font-weight: bold">
+                            CCCD
+                          </td>
+                          <td style="text-align: center; font-weight: bold">
+                            Số điện thoại
+                          </td>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr
+                          v-for="(item, index) in form_response_failed"
+                          :key="index"
+                          style="font-size: small"
+                        >
+                          <td style="text-align: center">{{ index + 1 }}</td>
+                          <td>
+                            {{ item.hoten }}
+                          </td>
+                          <td style="text-align: center">
+                            {{ item.masobhxh }}
+                          </td>
+                          <td style="text-align: center">
+                            {{ item.ngaysinh }}
+                          </td>
+                          <td style="text-align: center">
+                            {{ item.gioitinh }}
+                          </td>
+                          <td style="text-align: center">
+                            {{ item.cccd }}
+                          </td>
+                          <td style="text-align: center">
+                            {{ item.dienthoai }}
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div v-else>
+                    <div>
+                      <span
+                        style="font-size: 12; font-weight: bold; color: #3cb371"
+                        >Không có hồ sơ lỗi !</span
+                      >
+                    </div>
                   </div>
                 </div>
               </div>
@@ -764,6 +866,7 @@
                     <select
                       @change="phuonganChange($event, addedIndex)"
                       ref="phuonganSelect"
+                      v-model="selectedOptionpa"
                     >
                       <option selected disabled>- Chọn phương án -</option>
                       <option
@@ -785,6 +888,7 @@
                       <select
                         @change="nguoithuChange($event, addedIndex)"
                         ref="nguoithuSelect"
+                        v-model="selectedOptionnt"
                       >
                         <option selected disabled>- Chọn người thứ ? -</option>
                         <option
@@ -839,6 +943,7 @@
                       <select
                         @change="phuongthucdChange($event, addedIndex)"
                         ref="phuongthucdongSelect"
+                        v-model="selectedOptionptd"
                       >
                         <option selected disabled>
                           - Chọn phương thức đóng -
@@ -1112,7 +1217,7 @@
                       <td style="text-align: center; font-weight: 500">
                         {{ item.masobhxh }}
                       </td>
-                      <td style="text-align: center; font-weight: 500">
+                      <td style="text-align: left; font-weight: 500">
                         {{ item.hoten }}
                       </td>
                       <td style="text-align: center">
@@ -1263,6 +1368,9 @@ export default {
       isActive_xacnhan: false,
       mask: currencyMask,
       items: [],
+      selectedOptionpa: "- Chọn phương án -",
+      selectedOptionptd: "- Chọn phương thức đóng -",
+      selectedOptionnt: "- Chọn người thứ ? -",
       phuongan: [
         {
           maphuongan: "TM",
@@ -1284,6 +1392,7 @@ export default {
       checkXaphuongOpen: false, // khóa xã phường khi load form
       isLoading: false,
       form_response_sucess: [],
+      form_response_failed: [],
       formKekhai: {
         sohoso: "",
         dotkekhai: "",
@@ -1294,10 +1403,13 @@ export default {
       // phục vụ việc nhập item từ modal
       addedIndex: 0,
       datanhaphosomodal: {},
+      isRoleSent: false,
     };
   },
 
-  mounted() {},
+  mounted() {
+    this.isRoleSent = this.$auth.user.res_sent;
+  },
 
   async created() {
     this.$on("danhmucs-loaded", () => {
@@ -1319,7 +1431,7 @@ export default {
       }
       if (this.phuongthucdong.length > 0) {
         this.phuongthucdong = this.phuongthucdong.filter(
-          (item) => item.maloaihinh !== "IS"
+          (item) => item.maloaihinh == "ARBI"
         );
       }
     });
@@ -1472,7 +1584,11 @@ export default {
     addHosokekhai() {
       this.addedIndex = 0; // là chỉ mục index của item hiện tại đang được nhập tại modal
       // Mở trạng thái nhập hồ sơ
+      this.selectedOptionpa = "- Chọn phương án -";
+      this.selectedOptionptd = "- Chọn phương thức đóng -";
+      this.selectedOptionnt = "- Chọn người thứ ? -";
       this.isActive_nhaphoso = true;
+
       // Số lượng phần tử trước khi thêm
       const previousLength = this.items.length;
       // Thêm dòng mới vào mảng
@@ -1680,6 +1796,7 @@ export default {
       const manguoithu = e.target.value;
       const nguoithu = e.target.options[e.target.selectedIndex].text;
       this.items[index].nguoithu = manguoithu;
+      // console.log(nguoithu);
 
       const cast =
         this.luongcoso * 0.045 * parseInt(this.items[index].maphuongthucdong);
@@ -2120,38 +2237,38 @@ export default {
         }
 
         // biên lai
-        if (!this.isValidSobienlai(this.items[i].sobienlai)) {
-          this.$toasted.show("Số biên lai phải 7 số", {
-            duration: 3000,
-            theme: "bubble",
-          });
-          if (this.$refs.sobienlaiInput[i]) {
-            this.$refs.sobienlaiInput[i].focus();
-          }
-          return false;
-        }
+        // if (!this.isValidSobienlai(this.items[i].sobienlai)) {
+        //   this.$toasted.show("Số biên lai phải 7 số", {
+        //     duration: 3000,
+        //     theme: "bubble",
+        //   });
+        //   if (this.$refs.sobienlaiInput[i]) {
+        //     this.$refs.sobienlaiInput[i].focus();
+        //   }
+        //   return false;
+        // }
 
-        if (!this.items[i].sobienlai) {
-          this.$toasted.show("Chưa nhập số biên lai", {
-            duration: 3000,
-            theme: "bubble",
-          });
-          if (this.$refs.sobienlaiInput[i]) {
-            this.$refs.sobienlaiInput[i].focus();
-          }
-          return false;
-        }
+        // if (!this.items[i].sobienlai) {
+        //   this.$toasted.show("Chưa nhập số biên lai", {
+        //     duration: 3000,
+        //     theme: "bubble",
+        //   });
+        //   if (this.$refs.sobienlaiInput[i]) {
+        //     this.$refs.sobienlaiInput[i].focus();
+        //   }
+        //   return false;
+        // }
 
-        if (!this.items[i].ngaybienlai) {
-          this.$toasted.show("Chưa nhập ngày biên lai", {
-            duration: 3000,
-            theme: "bubble",
-          });
-          if (this.$refs.ngaybienlaiInput[i]) {
-            this.$refs.ngaybienlaiInput[i].focus();
-          }
-          return false;
-        }
+        // if (!this.items[i].ngaybienlai) {
+        //   this.$toasted.show("Chưa nhập ngày biên lai", {
+        //     duration: 3000,
+        //     theme: "bubble",
+        //   });
+        //   if (this.$refs.ngaybienlaiInput[i]) {
+        //     this.$refs.ngaybienlaiInput[i].focus();
+        //   }
+        //   return false;
+        // }
       }
       // Nếu tất cả thông tin đều hợp lệ, trả về true để cho phép quá trình lưu dữ liệu
       return true;
@@ -2177,6 +2294,138 @@ export default {
         return "DD/MM/YYYY";
       } else {
         return "UNKNOWN";
+      }
+    },
+
+    calculateEndDate(tuNgay, soThang) {
+      // Chuyển đổi tuNgay từ chuỗi "dd/mm/yyyy" sang đối tượng Date
+      const [day, month, year] = tuNgay.split("/").map(Number);
+      let startDate = new Date(year, month - 1, day); // Month in Date is 0-based
+
+      // Cộng thêm số tháng vào ngày bắt đầu
+      startDate.setMonth(startDate.getMonth() + Number(soThang));
+
+      // Trừ một ngày để có ngày cuối cùng của tháng trước tháng kết thúc
+      startDate.setDate(startDate.getDate() - 1);
+
+      // Lấy ngày, tháng, năm của ngày kết thúc
+      let endDay = String(startDate.getDate()).padStart(2, "0");
+      let endMonth = String(startDate.getMonth() + 1).padStart(2, "0"); // Month is 0-based, so add 1
+      let endYear = startDate.getFullYear();
+
+      // Trả về ngày kết thúc dưới dạng "dd/mm/yyyy"
+      return `${endDay}/${endMonth}/${endYear}`;
+    },
+
+    generateUniqueString() {
+      return `${Date.now()}-${Math.random().toString(36).substring(2, 15)}`;
+    },
+
+    async xacnhanThoat() {
+      const result = await Swal.fire({
+        title: `Xác nhận thoát. Hãy gửi dữ lên cổng trước khi thoát nhé ?`,
+        showDenyButton: true,
+        confirmButtonText: "Xác nhận",
+        denyButtonText: `Hủy thoát`,
+      });
+      if (result.isConfirmed) {
+        this.isActive = false;
+      }
+    },
+
+    async guiDulieuLenCongBhxhvn(data) {
+      // console.log(data);
+      const dataPost = {
+        hosoIdentity: data.hosoIdentity,
+        maSoBhxh: data.masobhxh,
+        hoTen: data.hoten,
+        soCccd: data.cccd,
+        ngaySinh: data.ngaysinh,
+        gioiTinh: data.gioitinh,
+        loaiDt: data.tenloaihinh,
+        soTien: data.soTien,
+        soThang: data.soThang,
+        maToChucDvt: data.maToChucDvt,
+        tenToChucDvt: data.tentochuc,
+        maNhanVienThu: data.maNhanVienThu,
+        tenNhanVienThu: data.tenNhanVienThu,
+        maCqBhxh: data.maCqBhxh,
+        tenCqBhxh: data.tenCqBhxh,
+        keyfrombhvn: data.key,
+        tuNgay: data.tuNgay,
+        denNgay: data.denNgay,
+      };
+
+      const result = await Swal.fire({
+        title: `Xác nhận gửi hồ sơ lên cổng BHXH VN ?`,
+        showDenyButton: true,
+        confirmButtonText: "Xác nhận",
+        denyButtonText: `Hủy`,
+      });
+      if (result.isConfirmed) {
+        // const url = '10.0.119.10:8186/dvtService/api/DVT/insertThongtin'
+        const url = `/api/kekhai/pushinfotoportbhxhvn`;
+
+        const headers = {
+          "Content-Type": "application/json",
+          Charset: "utf-8",
+        };
+
+        try {
+          const response = await this.$axios.post(url, dataPost, { headers });
+          // console.log(response);
+          // response.data.data
+          const resDatafromBHXHVN = {
+            maLoi: response.data.data.maLoi,
+            moTaLoi: response.data.data.moTaLoi,
+            maXacNhan: response.data.data.maXacNhan,
+            noiDung: response.data.data.noiDung,
+            soHoSo: this.formKekhai.sohoso,
+            dotKeKhai: this.formKekhai.dotkekhai,
+            kyKeKhai: this.formKekhai.kykekhai,
+            ngayKeKhai: this.formKekhai.ngaykekhai,
+            createdBy: this.$auth.user.username,
+          };
+
+          // Kết hợp dataPost và resDatafromBHXHVN
+          const combinedData = {
+            ...dataPost,
+            ...resDatafromBHXHVN,
+          };
+
+          // console.log(combinedData);
+
+          if (response.data.data.maLoi == 0) {
+            const result = await this.$axios.post(
+              `/api/kekhai/saveresponsefrombhvntodb`,
+              combinedData
+            );
+            // console.log(result);
+            if (result.data.success == true) {
+              // Cập nhật trạng thái isSent
+              data.isSent = true;
+
+              const Toast = Swal.mixin({
+                toast: true,
+                position: "top-end",
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                  toast.addEventListener("mouseenter", Swal.stopTimer);
+                  toast.addEventListener("mouseleave", Swal.resumeTimer);
+                },
+              });
+              Toast.fire({
+                icon: "success",
+                title: "Đã gửi thông tin hồ sơ lên cổng thành công",
+              });
+            }
+          }
+        } catch (error) {
+          console.error("Error posting data:", error);
+          throw error;
+        }
       }
     },
 
@@ -2250,12 +2499,13 @@ export default {
 
               const tungayTranform = this.convertDate(this.items[i].tungay);
               this.items[i].tungay = tungayTranform;
+              // console.log(this.items[i].tungay);
 
               // ngày biên lai
-              const ngaybienlaiTranform = this.convertDate(
-                this.items[i].ngaybienlai
-              );
-              this.items[i].ngaybienlai = ngaybienlaiTranform;
+              // const ngaybienlaiTranform = this.convertDate(
+              //   this.items[i].ngaybienlai
+              // );
+              // this.items[i].ngaybienlai = ngaybienlaiTranform;
 
               // info add db
               this.items[i].createdAt = formattedDate;
@@ -2268,6 +2518,41 @@ export default {
               this.items[i].nvt_cccd = this.$auth.user.cccd;
               this.items[i].kykekhai = kyKeKhaiFrm;
               this.items[i].ngaykekhai = formattedDate;
+
+              const uniqueString = this.generateUniqueString();
+              this.items[i].hosoIdentity =
+                uniqueString +
+                this.items[i].masobhxh +
+                this.items[i].cccd +
+                this.$auth.user.username;
+
+              // **** thêm các thông tin để gửi dữ liệu lên cổng tiếp nhận BHXH VN
+              // số tiền, số tháng kiểu float và kiểu int cho từng loại
+              // mã tổ chức dịch vụ thu cho công ty an sinh hưng nguyên
+              // IS0104S: BHXH tự nguyện
+              // IL0001S: Lực lượng tham gia bảo vệ ANTT ở cơ sở
+              // BI0099S: BHYT Hộ gia đình
+              // AR0099S: BHYT HGĐ làm nông lâm ngư Nghiệp
+              // Vậy đối với AR thì mã TCDV thu là: AR0099S
+
+              // mã tổ chức dịch vụ thu cho công ty An sinh Phủ Diễn
+              // IS0012M: BHXH tự nguyện
+              // IL0001S: Lực lượng tham gia bảo vệ ANTT ở cơ sở
+              // BI0007M: BHYT Hộ gia đình
+              // AR0013M: BHYT HGĐ làm nông lâm ngư Nghiệp
+              // IL0002M
+
+              let maToChucDvt = "BI0007M";
+              let soTien = this.items[i].sotien;
+              let soThang = this.items[i].maphuongthucdong;
+              let maNhanVienThu = "NVT" + this.items[i].nvt_cccd;
+              let tenNhanVienThu = this.$auth.user.name;
+              let maCqBhxh = this.$auth.user.macqbhxh;
+              let tenCqBhxh = this.$auth.user.tencqbhxh;
+              let key = "0123"; // do bhxh vn cung cấp
+              let tuNgay = tungayTranform;
+              let denNgay = this.calculateEndDate(tuNgay, soThang);
+
               // Loại bỏ dữ liệu không cần thiết bằng destructuring
               const {
                 info_benhvien,
@@ -2280,20 +2565,51 @@ export default {
               } = this.items[i];
 
               // Thêm vào mảng mới
-              dataKekhai.push(filteredItem);
+              // Tạo một đối tượng chứa các phần khai báo mới
+              const additionalData = {
+                maToChucDvt,
+                soTien,
+                soThang,
+                maNhanVienThu,
+                tenNhanVienThu,
+                maCqBhxh,
+                tenCqBhxh,
+                key,
+                tuNgay,
+                denNgay,
+              };
+
+              // Thêm cả filteredItem và additionalData vào mảng dataKekhai
+              dataKekhai.push({
+                ...filteredItem,
+                ...additionalData,
+              });
             }
+
+            // console.log(dataKekhai);
 
             const result = await this.$axios.post(
               `/api/kekhai/add-kekhai-series`,
               dataKekhai
             );
 
+            // console.log(result);
+
             if (result.status === 200) {
               this.form_response_sucess = [];
               this.formKekhai = {};
               // console.log(result.data.data);
-              this.form_response_sucess = result.data.data;
-              const ttHoso = result.data.data[0];
+              this.form_response_sucess = result.data.listSuccess;
+              this.form_response_sucess = this.form_response_sucess.map(
+                (item) => ({
+                  ...item,
+                  isSent: false, // Gán trạng thái gửi mặc định là chưa gửi
+                })
+              );
+              // console.log(this.form_response_sucess);
+
+              this.form_response_failed = result.data.listFailed;
+              const ttHoso = result.data.listSuccess[0];
               this.formKekhai = {
                 sohoso: ttHoso.sohoso,
                 dotkekhai: ttHoso.dotkekhai,
@@ -2301,6 +2617,8 @@ export default {
                 ngaykekhai: ttHoso.ngaykekhai,
               };
               this.isLoading = false;
+              // console.log(this.formKekhai);
+
               this.isActive_xacnhan = false;
               this.isActive = true;
               this.items = [];

@@ -14,58 +14,91 @@
         </div>
       </div>
 
-      <div class="columns">
-        <div class="column">
-          <label class="label">Kỳ Kê khai</label>
-          <input
-            v-model="kykekhai"
-            @blur="validateMonthYear"
-            type="text"
-            placeholder="MM/YYYY"
-            class="input is-small"
-          />
-        </div>
-        <div class="column">
-          <label class="label">Đợt Kê khai</label>
-          <div class="input-group">
+      <div class="box">
+        <div class="columns">
+          <div class="column">
+            <label class="label">Điểm thu</label>
+            <div class="autocomplete">
+              <input
+                class="input is-small is-danger"
+                type="text"
+                v-model="diemthu"
+                @input="onInput"
+                :disabled="isDiemthu"
+              />
+              <div class="autocomplete-items" v-if="suggestions.length">
+                <div
+                  class="autocomplete-item"
+                  v-for="suggestion in suggestions"
+                  @click="selectSuggestion(suggestion)"
+                >
+                  {{ suggestion }}
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="column">
+            <label class="label">Kỳ Kê khai</label>
             <input
-              type="number"
-              min="1"
-              max="12"
+              v-model="kykekhai"
+              @blur="validateMonthYear"
+              type="text"
+              placeholder="MM/YYYY"
               class="input is-small"
-              placeholder="Đợt kê khai của hồ sơ"
-              v-model="dotkekhai"
+            />
+          </div>
+          <div class="column">
+            <label class="label">Đợt Kê khai</label>
+            <div class="input-group">
+              <input
+                type="number"
+                min="1"
+                max="12"
+                class="input is-small"
+                placeholder="Đợt kê khai của hồ sơ"
+                v-model="dotkekhai"
+              />
+            </div>
+          </div>
+          <div class="column">
+            <label class="label">Số hồ sơ</label
+            ><input
+              v-model="sohoso"
+              type="text"
+              class="input is-small"
+              placeholder="Số hồ sơ đã nạp"
             />
           </div>
         </div>
-        <div class="column">
-          <label class="label">Ngày kê khai</label
-          ><input v-model="ngaykekhai" type="date" class="input is-small" />
+        <div class="columns">
+          <div class="column is-3">
+            <label class="label">Ngày kê khai (từ)</label
+            ><input v-model="ngaykekhaitu" type="date" class="input is-small" />
+          </div>
+          <div class="column is-3">
+            <label class="label">Ngày kê khai (đến)</label
+            ><input
+              v-model="ngaykekhaiden"
+              type="date"
+              class="input is-small"
+            />
+          </div>
         </div>
-        <div class="column">
-          <label class="label">Số hồ sơ</label
-          ><input
-            v-model="sohoso"
-            type="text"
-            class="input is-small"
-            placeholder="Số hồ sơ đã nạp"
-          />
-        </div>
-        <div class="column">
-          <label class="label">Tìm kiếm</label
-          ><button @click="filterData(1)" class="button is-small is-success">
+        <hr class="navbar-divider" />
+        <footer class="has-text-right">
+          <button @click="filterData(1)" class="button is-success is-small">
             <span class="icon">
               <i class="fas fa-search"></i>
             </span>
-            <span>Tìm kiếm</span>
+            <span>Tìm kiếm hồ sơ</span>
           </button>
-          <button @click="exportExcel" class="button is-small is-danger">
+          <button class="button is-small is-danger">
             <span class="icon">
               <i class="fa fa-refresh"></i>
             </span>
             <span>Refresh</span>
           </button>
-        </div>
+        </footer>
       </div>
 
       <div style="margin-top: 20px">
@@ -109,11 +142,11 @@
                 <td style="">{{ item.tenloaihinh }}</td>
                 <td style="text-align: center">{{ item.dotkekhai }}</td>
                 <td style="text-align: center">{{ item.kykekhai }}</td>
-                <td style="text-align: center">{{ item.ngaykekhai }}</td>
+                <td style="text-align: right">{{ item.ngaykekhai }}</td>
                 <td style="text-align: center">{{ item.so_luong }}</td>
                 <td style="text-align: center">{{ item.trangthai }}</td>
                 <td style="text-align: center">
-                  <a
+                  <a @click="view_details(item)"
                     ><span class="icon">
                       <i
                         style="color: #00947e"
@@ -393,6 +426,232 @@
           </div>
         </div>
       </div>
+
+      <!-- modal xem hồ sơ -->
+      <div class="">
+        <div :class="{ 'is-active': isActive_detail }" class="modal">
+          <div class="modal-background"></div>
+          <div class="modal-content modal-card box">
+            <section class="modal-card-body">
+              <div>
+                <span style="font-weight: 800; font-size: 15px; color: #3cb371"
+                  >Chi tiết hồ sơ kê khai</span
+                >
+              </div>
+              <div style="text-align: end">
+                <button
+                  @click="isActive_detail = false"
+                  class="button is-small is-info"
+                >
+                  Thoát
+                </button>
+              </div>
+
+              <div>
+                <div class="titleKk">
+                  <hr class="line" />
+                  <div class="topleft">
+                    <span style="color: red; font-weight: 700">1.</span> Danh
+                    sách
+                  </div>
+                </div>
+                <div class="table_wrapper">
+                  <table
+                    class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth"
+                  >
+                    <thead style="font-weight: bold">
+                      <tr style="font-size: small; background-color: #fff8dc">
+                        <td style="text-align: center; width: 3%">STT</td>
+                        <td style="text-align: center">Gửi lên cổng</td>
+                        <td style="text-align: center">Trạng thái</td>
+                        <td style="text-align: center">Mã xác nhận</td>
+                        <td style="text-align: center">Mô tả lỗi</td>
+                        <td style="text-align: center">In Biên lai</td>
+                        <td style="text-align: center">Mã số BHXH</td>
+                        <td style="text-align: center">Họ tên</td>
+                        <td style="text-align: center">Ngày sinh</td>
+                        <td style="text-align: center">Giới tính</td>
+                        <td style="text-align: center">CCCD</td>
+                        <td style="text-align: center">Điện thoại</td>
+                        <td style="text-align: center">Phương án</td>
+                        <td style="text-align: center">Lương cơ sở</td>
+                        <td style="text-align: center">Tỷ lệ NSTW %</td>
+                        <td style="text-align: center">Tỷ lệ NSĐP %</td>
+                        <td style="text-align: center">Tỷ lệ HT khác</td>
+                        <td style="text-align: center">Từ ngày</td>
+                        <td style="text-align: center">Số tháng</td>
+                        <td style="text-align: center">Số tiền phải đóng</td>
+                        <td style="text-align: center">Tỉnh / Thành phố</td>
+                        <td style="text-align: center">Quận / Huyện</td>
+                        <td style="text-align: center">Xã phường</td>
+                        <td style="text-align: center">Tổ thôn</td>
+                        <td style="text-align: center">Bệnh viện tỉnh</td>
+                        <td style="text-align: center">Bệnh viện</td>
+                        <td style="text-align: center">Ghi chú</td>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr
+                        v-for="(item, index) in data_kekhai_details"
+                        :key="index"
+                        style="font-size: small"
+                      >
+                        <td style="text-align: center; vertical-align: middle">
+                          {{ index + 1 }}
+                        </td>
+                        <td style="text-align: center">
+                          <template v-if="item.trangthai == 1">
+                            <button
+                              @click="guiDulieuLenCongBhxhvn(item)"
+                              class="button is-small is-success"
+                              :disabled="item.isSent || !isRoleSent"
+                            >
+                              <span class="icon is-small" v-if="!item.isSent">
+                                <i
+                                  class="fas fa-spell-check"
+                                  style="color: #ffd863"
+                                ></i>
+                              </span>
+                              <span v-if="!item.isSent">Gửi</span>
+                              <span v-else>Đã gửi</span>
+                            </button>
+                          </template>
+                          <template v-else>
+                            <span style="color: tomato; font-weight: 800"
+                              >Đã gửi</span
+                            >
+                          </template>
+                        </td>
+                        <td style="text-align: center; font-weight: 500">
+                          {{ item.trangthai }}
+                        </td>
+                        <td style="text-align: center; font-weight: 500">
+                          {{ item.maxacnhan }}
+                        </td>
+                        <td style="text-align: center; font-weight: 500">
+                          <!-- <template v-if="motaloi"></template>
+                          <template></template> -->
+                        </td>
+                        <td style="text-align: center">
+                          <template v-if="item.trangthai == 0">
+                            <a>
+                              <span
+                                style="color: #ff69b4"
+                                class="icon is-small is-left"
+                              >
+                                <i class="fas fa-print"></i>
+                              </span>
+                            </a>
+                          </template>
+                          <template v-else>
+                            <span style="font-weight: 800; color: red"></span>
+                          </template>
+                        </td>
+                        <td style="text-align: center; font-weight: 500">
+                          {{ item.masobhxh }}
+                        </td>
+                        <td style="font-weight: 500">
+                          {{ item.hoten }}
+                        </td>
+                        <td style="text-align: center">
+                          {{ item.ngaysinh }}
+                        </td>
+                        <td style="text-align: center">
+                          {{ item.gioitinh }}
+                        </td>
+                        <td style="text-align: center; font-weight: 500">
+                          {{ item.cccd }}
+                        </td>
+                        <td style="text-align: center; font-weight: 500">
+                          {{ item.dienthoai }}
+                        </td>
+                        <td style="text-align: center">
+                          {{ item.tenphuongan }}
+                        </td>
+                        <td style="text-align: center">
+                          {{ formatCurrency(item.tienluongcs) }}
+                        </td>
+                        <td style="text-align: center">
+                          {{ item.tylensnnht }}
+                        </td>
+                        <td style="text-align: center">
+                          {{ item.tylensdp }}
+                        </td>
+                        <td style="text-align: center">
+                          {{ item.hotrokhac }}
+                        </td>
+                        <td style="text-align: center">
+                          {{ item.tungay }}
+                        </td>
+                        <td style="text-align: center">
+                          {{ item.tenphuongthucdong }}
+                        </td>
+                        <td
+                          style="
+                            text-align: center;
+                            font-weight: 500;
+                            color: red;
+                          "
+                        >
+                          {{ formatCurrency(item.sotien) }}
+                        </td>
+                        <!-- tỉnh-->
+                        <td style="text-align: center">
+                          {{ item.tentinh }}
+                        </td>
+                        <!-- quận huyện -->
+                        <td style="text-align: center">
+                          {{ item.tenquanhuyen }}
+                        </td>
+                        <!-- xã phường -->
+                        <td>
+                          {{ item.tenxaphuong }}
+                        </td>
+                        <!-- tổ thôn -->
+                        <td>
+                          {{ item.tothon }}
+                        </td>
+                        <!-- tỉnh bệnh viện -->
+                        <td style="text-align: center">
+                          {{ item.benhvientinh }}
+                        </td>
+                        <!-- bệnh viện -->
+                        <td>
+                          {{ item.tenbenhvien }}
+                        </td>
+                        <!-- ghi chú -->
+                        <td>
+                          {{ item.ghichu }}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <hr class="navbar-divider" />
+                <div class="columns">
+                  <div class="column" style="margin-top: 10px">
+                    <div
+                      class="field is-grouped is-flex is-justify-content-center"
+                    >
+                      <div class="control">
+                        <button
+                          @click="isActive_detail = false"
+                          class="button is-small is-danger"
+                        >
+                          <span class="icon">
+                            <i class="fas fa-power-off"></i>
+                          </span>
+                          <span>Thoát</span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -416,7 +675,7 @@ export default {
       data_kekhai: [],
       data_xuatmau: [],
       isActive: false,
-
+      isActive_detail: false,
       isVtVnpt: false,
 
       // pagi
@@ -426,16 +685,41 @@ export default {
       // new code
       kykekhai: "",
       dotkekhai: "",
-      ngaykekhai: "",
+      ngaykekhaitu: "",
+      ngaykekhaiden: "",
       sohoso: "",
       dailyview: this.$auth.user.madaily,
       tochuc: this.$auth.user.matochuc,
       matochuc_mst: "",
+
+      data_kekhai_details: [],
+      isRoleSent: false,
+
+      // input suggest
+      suggestions: [],
+      suggestions_diemthu: [],
+      dmdiemthu: [],
+      diemthu: "",
+      madaily: "",
+      isDiemthu: false,
+      dtaDiemthu: [
+        { madaily: "17389", tendaily: "Thị Trấn Diễn Châu" },
+        { madaily: "17404", tendaily: "Xã Diễn Hoàng" },
+        { madaily: "17392", tendaily: "Xã Diễn Lâm" },
+      ],
     };
   },
 
   mounted() {
     this.getDateTime();
+    this.isRoleSent = this.$auth.user.res_sent;
+    // console.log(this.$auth.user.res_sent);
+
+    if (this.$auth.user.nvcongty == 0) {
+      this.madaily = this.$auth.user.madaily;
+      this.diemthu = this.$auth.user.tendaily;
+      this.isDiemthu = true;
+    }
   },
 
   computed: {
@@ -480,6 +764,29 @@ export default {
   },
 
   methods: {
+    // suggest điểm thu
+    onInput() {
+      if (!this.diemthu) {
+        this.suggestions = [];
+        return;
+      }
+      const MAX_SUGGESTIONS = 5; // Số lượng suggest tối đa
+      this.suggestions = this.dtaDiemthu
+        .map((c) => c.tendaily)
+        .filter((tendaily) =>
+          tendaily.toLowerCase().includes(this.diemthu.toLowerCase())
+        )
+        .map((tendaily) => tendaily.trim())
+        .slice(0, MAX_SUGGESTIONS);
+    },
+    selectSuggestion(suggestion) {
+      if (suggestion) {
+        this.diemthu = suggestion.trim();
+        this.suggestions = [];
+      }
+    },
+    // end suggest điểm thu
+
     validateMonthYear() {
       const regex = /^(0[1-9]|1[0-2])\/\d{4}$/; // Định dạng MM/YYYY
       if (!regex.test(this.kykekhai)) {
@@ -525,9 +832,165 @@ export default {
       this.kykekhai = kyKeKhai;
     },
 
-    async filterData(page) {
-      console.log(this.data_kekhai);
+    async view_details(data) {
+      this.data_kekhai_details = [];
 
+      const rs = await this.$axios.get(
+        `/api/kekhai/get-all-kekhai-xuatmau?sohoso=${data.sohoso}`
+      );
+      // console.log(rs.data.kekhai);
+      this.data_kekhai_details = rs.data.kekhai;
+      this.data_kekhai_details = this.data_kekhai_details.map((item) => ({
+        ...item,
+        isSent: false, // Gán trạng thái gửi mặc định là chưa gửi
+      }));
+      this.isActive_detail = true;
+    },
+
+    calculateEndDate(tuNgay, soThang) {
+      // Chuyển đổi tuNgay từ chuỗi "dd/mm/yyyy" sang đối tượng Date
+      const [day, month, year] = tuNgay.split("/").map(Number);
+      let startDate = new Date(year, month - 1, day); // Month in Date is 0-based
+
+      // Cộng thêm số tháng vào ngày bắt đầu
+      startDate.setMonth(startDate.getMonth() + Number(soThang));
+
+      // Trừ một ngày để có ngày cuối cùng của tháng trước tháng kết thúc
+      startDate.setDate(startDate.getDate() - 1);
+
+      // Lấy ngày, tháng, năm của ngày kết thúc
+      let endDay = String(startDate.getDate()).padStart(2, "0");
+      let endMonth = String(startDate.getMonth() + 1).padStart(2, "0"); // Month is 0-based, so add 1
+      let endYear = startDate.getFullYear();
+
+      // Trả về ngày kết thúc dưới dạng "dd/mm/yyyy"
+      return `${endDay}/${endMonth}/${endYear}`;
+    },
+
+    async guiDulieuLenCongBhxhvn(data) {
+      // console.log(data);
+      let matochucDvt = "";
+      if (data.maloaihinh == "AR") {
+        matochucDvt = "AR0013M";
+      } else if (data.maloaihinh == "BI") {
+        matochucDvt = "BI0007M";
+      } else {
+        matochucDvt = "IS0012M";
+      }
+
+      const dataPost = {
+        hosoIdentity: data.hosoIdentity,
+        maSoBhxh: data.masobhxh,
+        hoTen: data.hoten,
+        soCccd: data.cccd,
+        ngaySinh: data.ngaysinh,
+        gioiTinh: data.gioitinh,
+        loaiDt: data.tenloaihinh,
+        soTien: data.sotien,
+        soThang: data.maphuongthucdong,
+        maToChucDvt: matochucDvt,
+        tenToChucDvt: data.tentochuc,
+        maNhanVienThu: "NVT" + data.cccd,
+        tenNhanVienThu: this.$auth.user.name,
+        maCqBhxh: this.$auth.user.macqbhxh,
+        tenCqBhxh: this.$auth.user.tencqbhxh,
+        keyfrombhvn: data.key,
+        tuNgay: data.tungay,
+        denNgay: this.calculateEndDate(data.tungay, data.maphuongthucdong),
+        soHoSo: data.sohoso,
+        dotKeKhai: data.dotkekhai,
+        kyKeKhai: data.kykekhai,
+        ngayKeKhai: data.ngaykekhai,
+        createdBy: this.$auth.user.username,
+      };
+
+      // console.log(dataPost);
+
+      const result = await Swal.fire({
+        title: `Xác nhận gửi hồ sơ lên cổng BHXH VN ?`,
+        showDenyButton: true,
+        confirmButtonText: "Xác nhận",
+        denyButtonText: `Hủy`,
+      });
+      if (result.isConfirmed) {
+        // const url = '10.0.119.10:8186/dvtService/api/DVT/insertThongtin'
+        const url = `/api/kekhai/pushinfotoportbhxhvn`;
+
+        const headers = {
+          "Content-Type": "application/json",
+          Charset: "utf-8",
+        };
+
+        try {
+          const response = await this.$axios.post(url, dataPost, { headers });
+          // console.log(response);
+          // response.data.data
+          const resDatafromBHXHVN = {
+            maLoi: response.data.data.maLoi,
+            moTaLoi: response.data.data.moTaLoi,
+            maXacNhan: response.data.data.maXacNhan,
+            noiDung: response.data.data.noiDung,
+          };
+
+          // Kết hợp dataPost và resDatafromBHXHVN
+          const combinedData = {
+            ...dataPost,
+            ...resDatafromBHXHVN,
+          };
+
+          // console.log(combinedData);
+
+          if (response.data.data.maLoi == 0) {
+            const result = await this.$axios.post(
+              `/api/kekhai/saveresponsefrombhvntodb`,
+              combinedData
+            );
+            // console.log(result);
+            if (result.data.success == true) {
+              // Cập nhật trạng thái isSent
+              data.isSent = true;
+
+              const Toast = Swal.mixin({
+                toast: true,
+                position: "top-end",
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                  toast.addEventListener("mouseenter", Swal.stopTimer);
+                  toast.addEventListener("mouseleave", Swal.resumeTimer);
+                },
+              });
+              Toast.fire({
+                icon: "success",
+                title: "Đã gửi thông tin hồ sơ lên cổng thành công",
+              });
+
+              // đổi trạng thái của hồ sơ trong kê khai
+              let bodyRes = {};
+              bodyRes = result.data.datares;
+              // console.log(bodyRes);
+              bodyRes._id = data._id;
+
+              const resUpdate = await this.$axios.post(
+                `/api/kekhai/updatestatushoso`,
+                bodyRes
+              );
+              // console.log(resUpdate);
+
+              this.view_details(data);
+            }
+          }
+        } catch (error) {
+          console.error("Error posting data:", error);
+          throw error;
+        }
+      }
+    },
+
+    async filterData(page) {
+      this.data_kekhai = [];
+      // console.log(this.data_kekhai);
       // console.log(this.$auth.user);
       // Tách chuỗi theo dấu gạch ngang
       const parts = this.tochuc.split("-");
@@ -539,55 +1002,63 @@ export default {
         // const res = await this.$axios.get(
         //   `/api/kekhai/kykekhai-search-series-pagi-nvcty?kykekhai=${this.kykekhai}&page=${page}`
         // );
-        const res = await this.$axios.get(
-          `/api/kekhai/kykekhai-search-series-pagi-nvcty?kykekhai=${this.kykekhai}&dotkekhai=${this.dotkekhai}&ngaykekhai=${this.ngaykekhai}&sohoso=${this.sohoso}&page=${page}`
-        );
-        // console.log(res.data.kekhai);
-        if (res.data.results.length > 0) {
-          this.data_kekhai = res.data.results;
-          this.totalPages = res.data.info.pages;
-          this.currentPage = page;
-        } else {
-          const Toast = Swal.mixin({
-            toast: true,
-            position: "top-end",
-            showConfirmButton: false,
-            timer: 2000,
-            timerProgressBar: true,
-            didOpen: (toast) => {
-              toast.addEventListener("mouseenter", Swal.stopTimer);
-              toast.addEventListener("mouseleave", Swal.resumeTimer);
-            },
-          });
-          Toast.fire({
-            icon: "error",
-            title: `Không tìm thấy hồ sơ`,
-          });
+        try {
+          const res = await this.$axios.get(
+            `/api/kekhai/kykekhai-search-series-pagi-nvcty?kykekhai=${this.kykekhai}&dotkekhai=${this.dotkekhai}&ngaykekhai=${this.ngaykekhaitu}&ngaykekhaiden=${this.ngaykekhaiden}&sohoso=${this.sohoso}&tendaily=${this.diemthu}&page=${page}`
+          );
+          // console.log(res.data.kekhai);
+          if (res.data.results.length > 0) {
+            this.data_kekhai = res.data.results;
+            this.totalPages = res.data.info.pages;
+            this.currentPage = page;
+          } else {
+            const Toast = Swal.mixin({
+              toast: true,
+              position: "top-end",
+              showConfirmButton: false,
+              timer: 2000,
+              timerProgressBar: true,
+              didOpen: (toast) => {
+                toast.addEventListener("mouseenter", Swal.stopTimer);
+                toast.addEventListener("mouseleave", Swal.resumeTimer);
+              },
+            });
+            Toast.fire({
+              icon: "error",
+              title: `Không tìm thấy hồ sơ`,
+            });
+          }
+        } catch (error) {
+          console.log(error);
         }
       } else {
-        const res = await this.$axios.get(
-          `/api/kekhai/kykekhai-search-series-pagi?kykekhai=${this.kykekhai}&madaily=${this.dailyview}&dotkekhai=${this.dotkekhai}&ngaykekhai=${this.ngaykekhai}&sohoso=${this.sohoso}&page=${page}`
-        );
-        if (res.data.results.length > 0) {
-          this.data_kekhai = res.data.results;
-          this.totalPages = res.data.info.pages;
-          this.currentPage = page;
-        } else {
-          const Toast = Swal.mixin({
-            toast: true,
-            position: "top-end",
-            showConfirmButton: false,
-            timer: 2000,
-            timerProgressBar: true,
-            didOpen: (toast) => {
-              toast.addEventListener("mouseenter", Swal.stopTimer);
-              toast.addEventListener("mouseleave", Swal.resumeTimer);
-            },
-          });
-          Toast.fire({
-            icon: "error",
-            title: `Không tìm thấy hồ sơ`,
-          });
+        try {
+          const res = await this.$axios.get(
+            `/api/kekhai/kykekhai-search-series-pagi?kykekhai=${this.kykekhai}&madaily=${this.dailyview}&dotkekhai=${this.dotkekhai}&ngaykekhai=${this.ngaykekhaitu}&ngaykekhaiden=${this.ngaykekhaiden}&sohoso=${this.sohoso}&page=${page}`
+          );
+          if (res.data.results.length > 0) {
+            this.data_kekhai = res.data.results;
+            this.totalPages = res.data.info.pages;
+            this.currentPage = page;
+          } else {
+            const Toast = Swal.mixin({
+              toast: true,
+              position: "top-end",
+              showConfirmButton: false,
+              timer: 2000,
+              timerProgressBar: true,
+              didOpen: (toast) => {
+                toast.addEventListener("mouseenter", Swal.stopTimer);
+                toast.addEventListener("mouseleave", Swal.resumeTimer);
+              },
+            });
+            Toast.fire({
+              icon: "error",
+              title: `Không tìm thấy hồ sơ`,
+            });
+          }
+        } catch (error) {
+          console.log(error);
         }
       }
     },
