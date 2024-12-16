@@ -698,20 +698,16 @@ export default {
       // input suggest
       suggestions: [],
       suggestions_diemthu: [],
-      dmdiemthu: [],
       diemthu: "",
       madaily: "",
       isDiemthu: false,
-      dtaDiemthu: [
-        { madaily: "17389", tendaily: "Thị Trấn Diễn Châu" },
-        { madaily: "17404", tendaily: "Xã Diễn Hoàng" },
-        { madaily: "17392", tendaily: "Xã Diễn Lâm" },
-      ],
+      dtaDiemthu: [],
     };
   },
 
   mounted() {
     this.getDateTime();
+    this.getDmDiemthu();
     this.isRoleSent = this.$auth.user.res_sent;
     // console.log(this.$auth.user.res_sent);
 
@@ -772,11 +768,11 @@ export default {
       }
       const MAX_SUGGESTIONS = 5; // Số lượng suggest tối đa
       this.suggestions = this.dtaDiemthu
-        .map((c) => c.tendaily)
-        .filter((tendaily) =>
-          tendaily.toLowerCase().includes(this.diemthu.toLowerCase())
+        .map((c) => c.tenDiemThu)
+        .filter((tenDiemThu) =>
+          tenDiemThu.toLowerCase().includes(this.diemthu.toLowerCase())
         )
-        .map((tendaily) => tendaily.trim())
+        .map((tenDiemThu) => tenDiemThu.trim())
         .slice(0, MAX_SUGGESTIONS);
     },
     selectSuggestion(suggestion) {
@@ -815,6 +811,12 @@ export default {
       const formattedDate = `${day}/${month}/${year}`;
 
       return formattedDate;
+    },
+
+    async getDmDiemthu() {
+      const res = await this.$axios.get(`/api/kekhai/danhmucdaily`);
+      // console.log(res);
+      this.dtaDiemthu = res.data;
     },
 
     getDateTime() {
@@ -993,9 +995,9 @@ export default {
       // console.log(this.data_kekhai);
       // console.log(this.$auth.user);
       // Tách chuỗi theo dấu gạch ngang
-      const parts = this.tochuc.split("-");
-      const mst = parts[parts.length - 1]; // 2902141757
-      this.matochuc_mst = mst;
+      // const parts = this.tochuc.split("-");
+      // const mst = parts[parts.length - 1]; // 2902141757
+      // this.matochuc_mst = mst;
       // Xây dựng đường dẫn API dựa trên mã số thuế
 
       if (this.$auth.user.nvcongty === true) {

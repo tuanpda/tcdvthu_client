@@ -27,7 +27,7 @@
           </div>
         </div>
         <div class="columns">
-          <div class="column">
+          <div class="column is-8">
             <template v-if="diemthu.nvcongty == 1">
               <h4 class="title is-5">
                 <span class="icon">

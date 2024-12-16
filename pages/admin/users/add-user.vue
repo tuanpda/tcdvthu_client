@@ -1,553 +1,646 @@
 <template>
-  <div class="columns">
-    <div class="column container">
-      <br />
-      <div class="box">
-        <div class="columns">
-          <div class="column">
-            <div class="control">
-              <span style="color: #ea4aaa" class="icon is-small is-left">
-                <i class="far fa-address-card"></i>
-              </span>
-              <span style="font-weight: bold; color: #ea4aaa"
-                >Thêm mới người dùng</span
-              >
-            </div>
-          </div>
-        </div>
-        <!-- functions -->
-        <div class="field is-tuanpda">
+  <div class="column">
+    <div class="box">
+      <div class="columns">
+        <div class="column">
           <div class="control">
-            <button
-              @click="onImport"
-              style="margin-bottom: 3px"
-              class="button is-small is-danger"
+            <span style="color: #ea4aaa" class="icon is-small is-left">
+              <i class="far fa-address-card"></i>
+            </span>
+            <span style="font-weight: bold; color: #ea4aaa"
+              >Thêm mới người dùng</span
             >
-              <span class="icon is-small">
-                <i class="fas fa-code"></i>
-              </span>
-              <span>Import Users</span>
-            </button>
-            <button
-              @click="isActive = true"
-              style="margin-bottom: 3px"
-              class="button is-small is-info"
-            >
-              <span class="icon is-small">
-                <i class="fa fa-save"></i>
-              </span>
-              <span>Thêm người dùng</span>
-            </button>
           </div>
         </div>
+      </div>
 
-        <!-- table data -->
-        <div class="table_wrapper">
-          <table
-            class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth"
+      <!-- functions -->
+      <div class="field is-tuanpda">
+        <div class="control">
+          <button
+            @click="onImport"
+            style="margin-bottom: 3px"
+            class="button is-small is-danger"
           >
-            <thead style="font-size: small; font-weight: bold">
-              <tr style="background-color: hsl(207deg, 61%, 53%)">
-                <td style="text-align: center; width: 3%; color: white">STT</td>
-                <td style="text-align: center; color: white">Họ tên</td>
-                <td style="text-align: center; color: white">Tên người dùng</td>
-                <td style="text-align: center; color: white">CCCD</td>
-                <td style="text-align: center; color: white">Email</td>
-                <td style="text-align: center; color: white">Điện thoại</td>
-                <td style="text-align: center; width: 40%; color: white">
-                  Địa chỉ
-                </td>
-                <td style="text-align: center; color: white">Tình trạng</td>
-              </tr>
-            </thead>
-            <tbody>
-              <tr
-                v-for="(item, index) in paginatedTable"
-                :key="index"
-                style="font-size: small"
-              >
-                <td style="text-align: center">
-                  {{ index + 1 }}
-                </td>
-                <td style="">
-                  {{ item.name }}
-                </td>
-                <td style="">
-                  {{ item.username }}
-                </td>
-                <td style="text-align: center">
-                  {{ item.cccd }}
-                </td>
-                <td>
-                  {{ item.email }}
-                </td>
-                <td style="text-align: center">
-                  {{ item.sodienthoai }}
-                </td>
-                <td>
-                  {{ item.diachi }}
-                </td>
-                <td style="text-align: center">
-                  <span v-if="item.active === false">
-                    <i style="color: #ffd863" class="fa fa-circle"></i>
-                  </span>
-                  <span v-else>
-                    <i style="color: #00947e" class="fa fa-circle"></i>
-                  </span>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+            <span class="icon is-small">
+              <i class="fas fa-code"></i>
+            </span>
+            <span>Import Users</span>
+          </button>
+          <button
+            @click="isActive = true"
+            style="margin-bottom: 3px"
+            class="button is-small is-info"
+          >
+            <span class="icon is-small">
+              <i class="fa fa-save"></i>
+            </span>
+            <span>Thêm người dùng</span>
+          </button>
         </div>
-        <!-- pagi -->
-        <div class="pagination-container">
-          <div class="pagination-input">
-            <input
-              type="number"
-              min="1"
-              max="100"
-              v-model="itemsPerPage"
-              class="input is-small"
-              style="width: 100%"
-            />
-          </div>
-          <div class="pagination">
-            <button
-              class="button is-small is-success"
-              @click="changePage(1)"
-              :disabled="currentPage === 1"
-            >
-              Đầu tiên
-            </button>
-            <button
-              class="button is-small is-info"
-              @click="changePage(currentPage - 1)"
-              :disabled="currentPage === 1"
-            >
-              Trước
-            </button>
-            <button
-              class="button is-small"
-              v-for="(page, index) in pages"
+      </div>
+
+      <!-- table data -->
+      <div class="table_wrapper">
+        <table
+          class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth"
+        >
+          <thead style="font-size: small; font-weight: bold">
+            <tr style="background-color: hsl(207deg, 61%, 53%)">
+              <td style="text-align: center; width: 3%; color: white">STT</td>
+              <td style="text-align: center; color: white">Họ tên</td>
+              <td style="text-align: center; color: white">Tên người dùng</td>
+              <td style="text-align: center; color: white">CCCD</td>
+              <td style="text-align: center; color: white">Email</td>
+              <td style="text-align: center; color: white">Điện thoại</td>
+              <td style="text-align: center; color: white">Điểm thu</td>
+              <td style="text-align: center; color: white">Tình trạng</td>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              v-for="(item, index) in paginatedTable"
               :key="index"
-              @click="changePage(page)"
-              :class="{ active: page === currentPage }"
+              style="font-size: small"
             >
-              {{ page }}
-            </button>
-            <button
-              class="button is-small is-info"
-              @click="changePage(currentPage + 1)"
-              :disabled="currentPage === pageCount"
-            >
-              Sau
-            </button>
-            <button
-              class="button is-small is-success"
-              @click="changePage(pageCount)"
-              :disabled="currentPage === pageCount"
-            >
-              Cuối
-            </button>
-          </div>
+              <td style="text-align: center">
+                {{ index + 1 }}
+              </td>
+              <td style="">
+                {{ item.name }}
+              </td>
+              <td style="text-align: center">
+                {{ item.username }}
+              </td>
+              <td style="text-align: center">
+                {{ item.cccd }}
+              </td>
+              <td>
+                {{ item.email }}
+              </td>
+              <td style="text-align: center">
+                {{ item.sodienthoai }}
+              </td>
+              <td style="text-align: center">
+                {{ item.tendaily }}
+              </td>
+              <td style="text-align: center">
+                <span v-if="item.active === false">
+                  <i style="color: #ffd863" class="fa fa-circle"></i>
+                </span>
+                <span v-else>
+                  <i style="color: #00947e" class="fa fa-circle"></i>
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <!-- pagi -->
+      <div class="pagination-container">
+        <div class="pagination-input">
+          <input
+            type="number"
+            min="1"
+            max="100"
+            v-model="itemsPerPage"
+            class="input is-small"
+            style="width: 100%"
+          />
         </div>
+        <div class="pagination">
+          <button
+            class="button is-small is-success"
+            @click="changePage(1)"
+            :disabled="currentPage === 1"
+          >
+            Đầu tiên
+          </button>
+          <button
+            class="button is-small is-info"
+            @click="changePage(currentPage - 1)"
+            :disabled="currentPage === 1"
+          >
+            Trước
+          </button>
+          <button
+            class="button is-small"
+            v-for="(page, index) in pages"
+            :key="index"
+            @click="changePage(page)"
+            :class="{ active: page === currentPage }"
+          >
+            {{ page }}
+          </button>
+          <button
+            class="button is-small is-info"
+            @click="changePage(currentPage + 1)"
+            :disabled="currentPage === pageCount"
+          >
+            Sau
+          </button>
+          <button
+            class="button is-small is-success"
+            @click="changePage(pageCount)"
+            :disabled="currentPage === pageCount"
+          >
+            Cuối
+          </button>
+        </div>
+      </div>
 
+      <!-- Biểu tượng loading -->
+      <div v-if="isLoading" class="loading-overlay">
         <!-- Biểu tượng loading -->
-        <div v-if="isLoading" class="loading-overlay">
-          <!-- Biểu tượng loading -->
-          <div class="loading-spinner"></div>
-          <span>waitting some minute ...</span>
-        </div>
+        <div class="loading-spinner"></div>
+        <span>waitting some minute ...</span>
+      </div>
 
-        <!-- modal add user -->
-        <div class="">
-          <div :class="{ 'is-active': isActive }" class="modal">
-            <div class="modal-background"></div>
-            <div class="modal-content modal-card box">
-              <section class="modal-card-body">
-                <div style="text-align: end">
-                  <button
-                    @click="isActive = false"
-                    class="button is-small is-info"
-                  >
-                    Thoát
-                  </button>
+      <!-- modal add user -->
+      <div class="">
+        <div :class="{ 'is-active': isActive }" class="modal">
+          <div class="modal-background"></div>
+          <div class="modal-content modal-card box">
+            <section class="modal-card-body">
+              <div style="text-align: end">
+                <button
+                  @click="isActive = false"
+                  class="button is-small is-info"
+                >
+                  Thoát
+                </button>
+              </div>
+
+              <label class="label is-small">Tên tổ chức</label>
+              <div class="field">
+                <div class="control">
+                  <div class="select is-small">
+                    <select @change="TcdvthugChange($event)">
+                      <option selected>-- Chọn tổ chức dịch vụ thu --</option>
+                      <option
+                        v-for="(item, index) in tochucdvt"
+                        :key="index"
+                        :value="item.matochuc"
+                      >
+                        {{ item.tentochuc }}
+                      </option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <div style="margin-top: 10px">
+                <div class="field">
+                  <label class="label is-small">Họ tên</label>
+                  <div class="control">
+                    <input
+                      v-model="form.name"
+                      ref="nameInput"
+                      class="input is-small"
+                      type="text"
+                      placeholder="Nhập vào họ tên"
+                      id="fullName"
+                    />
+                  </div>
                 </div>
 
-                <label class="label is-small">Tên tổ chức</label>
+                <!-- select tỉnh thành phố -->
+                <div class="field">
+                  <label class="label is-small">Tỉnh / Thành phố</label>
+                  <input
+                    autoComplete="on"
+                    list="provinceSuggestions"
+                    class="custom-input"
+                    @blur="provinceChange"
+                    ref="provinceInput"
+                  />
+                  <datalist id="provinceSuggestions">
+                    <option v-for="(item, index) in dm_Tinhs" :key="index">
+                      {{ item.matinh }} - {{ item.tentinh }}
+                    </option>
+                  </datalist>
+                </div>
+
+                <!-- select quận huyện -->
+                <div class="field">
+                  <label class="label is-small">Quận huyện / Thị xã</label>
+                  <input
+                    :disabled="isDisabled_Huyenxa"
+                    autoComplete="on"
+                    list="districtSuggestions"
+                    class="custom-input"
+                    @blur="quanhuyenChange"
+                    ref="districtInput"
+                  />
+                  <datalist id="districtSuggestions">
+                    <option v-for="(item, index) in quanhuyenData" :key="index">
+                      {{ item.maquanhuyen }} - {{ item.tenquanhuyen }}
+                    </option>
+                  </datalist>
+                </div>
+
+                <!-- select xã phường -->
+                <div class="field">
+                  <label class="label is-small">Xã phường</label>
+                  <input
+                    :disabled="isDisabled_Xaphuong"
+                    autoComplete="on"
+                    list="xaphuongSuggestions"
+                    class="custom-input"
+                    @blur="xaphuongChange"
+                    ref="xphuongInput"
+                  />
+                  <datalist id="xaphuongSuggestions">
+                    <option v-for="(item, index) in xaphuongData" :key="index">
+                      {{ item.maxaphuong }} - {{ item.tenxaphuong }}
+                    </option>
+                  </datalist>
+                </div>
+
+                <label class="label is-small">Điểm thu - Công ty DV thu?</label>
                 <div class="field">
                   <div class="control">
                     <div class="select is-small">
-                      <select @change="TcdvthugChange($event)">
-                        <option selected>-- Chọn tổ chức dịch vụ thu --</option>
-                        <option
-                          v-for="(item, index) in tochucdvt"
-                          :key="index"
-                          :value="item.matochuc"
-                        >
-                          {{ item.tentochuc }}
-                        </option>
+                      <select
+                        @change="nhanvienCtyChange($event)"
+                        :disabled="isDisabled_Daily"
+                      >
+                        <option selected>-- Chọn phân cấp --</option>
+                        <option value="true">Nhân viên công ty</option>
+                        <option value="false">Điểm thu</option>
                       </select>
                     </div>
                   </div>
                 </div>
 
-                <div style="margin-top: 10px">
-                  <div class="field">
-                    <label class="label is-small">Họ tên</label>
-                    <div class="control">
-                      <input
-                        v-model="form.name"
-                        ref="nameInput"
-                        class="input is-small"
-                        type="text"
-                        placeholder="Nhập vào họ tên"
-                        id="fullName"
-                      />
-                    </div>
-                  </div>
-
-                  <!-- select tỉnh thành phố -->
-                  <div class="field">
-                    <label class="label is-small">Tỉnh / Thành phố</label>
-                    <input
-                      autoComplete="on"
-                      list="provinceSuggestions"
-                      class="custom-input"
-                      @blur="provinceChange"
-                      ref="provinceInput"
-                    />
-                    <datalist id="provinceSuggestions">
-                      <option v-for="(item, index) in dm_Tinhs" :key="index">
-                        {{ item.matinh }} - {{ item.tentinh }}
-                      </option>
-                    </datalist>
-                  </div>
-
-                  <!-- select quận huyện -->
-                  <div class="field">
-                    <label class="label is-small">Quận huyện / Thị xã</label>
-                    <input
-                      :disabled="isDisabled_Huyenxa"
-                      autoComplete="on"
-                      list="districtSuggestions"
-                      class="custom-input"
-                      @blur="quanhuyenChange"
-                      ref="districtInput"
-                    />
-                    <datalist id="districtSuggestions">
-                      <option
-                        v-for="(item, index) in quanhuyenData"
-                        :key="index"
+                <label class="label is-small">Gửi lên cổng BHXH VN?</label>
+                <div class="field">
+                  <div class="control">
+                    <div class="select is-small">
+                      <select
+                        @change="sentChange($event)"
+                        :disabled="isDisabled_Daily"
                       >
-                        {{ item.maquanhuyen }} - {{ item.tenquanhuyen }}
-                      </option>
-                    </datalist>
-                  </div>
-
-                  <!-- select xã phường -->
-                  <div class="field">
-                    <label class="label is-small">Xã phường</label>
-                    <input
-                      :disabled="isDisabled_Xaphuong"
-                      autoComplete="on"
-                      list="xaphuongSuggestions"
-                      class="custom-input"
-                      @blur="xaphuongChange"
-                      ref="xphuongInput"
-                    />
-                    <datalist id="xaphuongSuggestions">
-                      <option
-                        v-for="(item, index) in xaphuongData"
-                        :key="index"
-                      >
-                        {{ item.maxaphuong }} - {{ item.tenxaphuong }}
-                      </option>
-                    </datalist>
-                  </div>
-
-                  <label class="label is-small"
-                    >Điểm thu - Công ty DV thu?</label
-                  >
-                  <div class="field">
-                    <div class="control">
-                      <div class="select is-small">
-                        <select
-                          @change="nhanvienCtyChange($event)"
-                          :disabled="isDisabled_Daily"
-                        >
-                          <option selected>-- Chọn phân cấp --</option>
-                          <option value="true">Nhân viên công ty</option>
-                          <option value="false">Điểm thu</option>
-                        </select>
-                      </div>
-                    </div>
-                  </div>
-
-                  <label class="label is-small">Gửi lên cổng BHXH VN?</label>
-                  <div class="field">
-                    <div class="control">
-                      <div class="select is-small">
-                        <select
-                          @change="sentChange($event)"
-                          :disabled="isDisabled_Daily"
-                        >
-                          <option selected>-- Chọn quyền --</option>
-                          <option value="true">Cho phép</option>
-                          <option value="false">Không cho phép</option>
-                        </select>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="field">
-                    <label class="label is-small">Địa chỉ</label>
-                    <div class="control">
-                      <input
-                        v-model="form.diachi"
-                        class="input is-small"
-                        type="text"
-                        placeholder="Nhập vào địa chỉ"
-                        ref="diachiInput"
-                      />
-                    </div>
-                  </div>
-
-                  <div class="field">
-                    <label class="label is-small">Mã số BHXH</label>
-                    <div class="control">
-                      <input
-                        v-model="form.masobhxh"
-                        class="input is-small"
-                        type="number"
-                        maxlength="10"
-                        minlength="10"
-                        placeholder="Nhập vào Mã số BHXH"
-                        ref="masobhxhInput"
-                      />
-                    </div>
-                  </div>
-
-                  <div class="field">
-                    <label class="label is-small">Căn cước công dân</label>
-                    <div class="control">
-                      <input
-                        v-model="form.cccd"
-                        class="input is-small"
-                        type="number"
-                        maxlength="12"
-                        minlength="12"
-                        placeholder="Nhập vào CCCD"
-                        ref="cccdInput"
-                      />
-                    </div>
-                  </div>
-
-                  <div class="field">
-                    <label class="label is-small">Số điện thoại</label>
-                    <div class="control">
-                      <input
-                        v-model="form.sodienthoai"
-                        class="input is-small"
-                        type="number"
-                        placeholder="Nhập vào số điện thoại"
-                        ref="sdtInput"
-                      />
-                    </div>
-                  </div>
-
-                  <div class="field">
-                    <label class="label is-small">Email</label>
-                    <div class="control">
-                      <input
-                        v-model="form.email"
-                        class="input is-small"
-                        type="email"
-                        placeholder="Nhập vào email"
-                        ref="emailInput"
-                      />
-                    </div>
-                  </div>
-
-                  <div class="field">
-                    <label class="label is-small">Ảnh đại diện</label>
-                    <div class="file is-small has-name is-info">
-                      <label class="file-label">
-                        <input
-                          ref="fileInput"
-                          @change="onFileChange"
-                          class="file-input"
-                          type="file"
-                          name="resume"
-                        />
-                        <span class="file-cta">
-                          <span class="file-icon">
-                            <i class="fas fa-upload"></i>
-                          </span>
-                          <span class="file-label"> Chọn ảnh đại diện </span>
-                        </span>
-                        <span class="file-name">
-                          {{ fileName }}
-                        </span>
-                      </label>
-                    </div>
-                  </div>
-
-                  <div class="field">
-                    <div v-if="url" class="column">
-                      <div id="preview">
-                        <img :src="url" />
-                      </div>
-                      <span style="color: red" class="icon is-small is-left">
-                        <i @click="remove" class="far fa-trash-alt"
-                          ><a>Xóa ảnh</a></i
-                        >
-                      </span>
-                    </div>
-                  </div>
-
-                  <hr />
-
-                  <div class="field is-grouped-function">
-                    <div class="control">
-                      <button
-                        @click="onSave()"
-                        class="button is-success is-small"
-                      >
-                        Ghi dữ liệu
-                      </button>
-                    </div>
-                    &nbsp;
-                    <div class="control">
-                      <button
-                        @click="isActive = false"
-                        class="button is-info is-small"
-                      >
-                        Thoát
-                      </button>
+                        <option selected>-- Chọn quyền --</option>
+                        <option value="true">Cho phép</option>
+                        <option value="false">Không cho phép</option>
+                      </select>
                     </div>
                   </div>
                 </div>
-              </section>
-            </div>
+
+                <div class="field">
+                  <label class="label is-small">Địa chỉ</label>
+                  <div class="control">
+                    <input
+                      v-model="form.diachi"
+                      class="input is-small"
+                      type="text"
+                      placeholder="Nhập vào địa chỉ"
+                      ref="diachiInput"
+                    />
+                  </div>
+                </div>
+
+                <div class="field">
+                  <label class="label is-small">Mã số BHXH</label>
+                  <div class="control">
+                    <input
+                      v-model="form.masobhxh"
+                      class="input is-small"
+                      type="number"
+                      maxlength="10"
+                      minlength="10"
+                      placeholder="Nhập vào Mã số BHXH"
+                      ref="masobhxhInput"
+                    />
+                  </div>
+                </div>
+
+                <div class="field">
+                  <label class="label is-small">Căn cước công dân</label>
+                  <div class="control">
+                    <input
+                      v-model="form.cccd"
+                      class="input is-small"
+                      type="number"
+                      maxlength="12"
+                      minlength="12"
+                      placeholder="Nhập vào CCCD"
+                      ref="cccdInput"
+                    />
+                  </div>
+                </div>
+
+                <div class="field">
+                  <label class="label is-small">Số điện thoại</label>
+                  <div class="control">
+                    <input
+                      v-model="form.sodienthoai"
+                      class="input is-small"
+                      type="number"
+                      placeholder="Nhập vào số điện thoại"
+                      ref="sdtInput"
+                    />
+                  </div>
+                </div>
+
+                <div class="field">
+                  <label class="label is-small">Email</label>
+                  <div class="control">
+                    <input
+                      v-model="form.email"
+                      class="input is-small"
+                      type="email"
+                      placeholder="Nhập vào email"
+                      ref="emailInput"
+                    />
+                  </div>
+                </div>
+
+                <div class="field">
+                  <label class="label is-small">Ảnh đại diện</label>
+                  <div class="file is-small has-name is-info">
+                    <label class="file-label">
+                      <input
+                        ref="fileInput"
+                        @change="onFileChange"
+                        class="file-input"
+                        type="file"
+                        name="resume"
+                      />
+                      <span class="file-cta">
+                        <span class="file-icon">
+                          <i class="fas fa-upload"></i>
+                        </span>
+                        <span class="file-label"> Chọn ảnh đại diện </span>
+                      </span>
+                      <span class="file-name">
+                        {{ fileName }}
+                      </span>
+                    </label>
+                  </div>
+                </div>
+
+                <div class="field">
+                  <div v-if="url" class="column">
+                    <div id="preview">
+                      <img :src="url" />
+                    </div>
+                    <span style="color: red" class="icon is-small is-left">
+                      <i @click="remove" class="far fa-trash-alt"
+                        ><a>Xóa ảnh</a></i
+                      >
+                    </span>
+                  </div>
+                </div>
+
+                <hr />
+
+                <div class="field is-grouped-function">
+                  <div class="control">
+                    <button
+                      @click="onSave()"
+                      class="button is-success is-small"
+                    >
+                      Ghi dữ liệu
+                    </button>
+                  </div>
+                  &nbsp;
+                  <div class="control">
+                    <button
+                      @click="isActive = false"
+                      class="button is-info is-small"
+                    >
+                      Thoát
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </section>
           </div>
         </div>
+      </div>
 
-        <!-- modal import user -->
-        <div class="">
-          <div :class="{ 'is-active': isActive_import }" class="modal">
-            <div class="modal-background"></div>
-            <div class="modal-content modal-card-import box">
-              <section class="modal-card-body">
-                <div style="text-align: end">
-                  <button
-                    @click="isActive_import = false"
-                    class="button is-small is-danger"
+      <!-- modal import user -->
+      <div class="">
+        <div :class="{ 'is-active': isActive_import }" class="modal">
+          <div class="modal-background"></div>
+          <div class="modal-content modal-card-import box">
+            <section class="modal-card-body">
+              <div style="text-align: end">
+                <button @click="exitImport" class="button is-small is-danger">
+                  Thoát
+                </button>
+              </div>
+
+              <div class="columns">
+                <div class="column is-10">
+                  <div class="file is-small is-info has-name">
+                    <label class="file-label">
+                      <input
+                        ref="fileInput"
+                        @change="onFileChange_import"
+                        class="file-input"
+                        type="file"
+                        name="resume"
+                        accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                      />
+                      <span class="file-cta">
+                        <span class="file-icon">
+                          <i class="fas fa-upload"></i>
+                        </span>
+                        <span class="file-label"> Chọn file excel </span>
+                      </span>
+                      <span class="file-name">
+                        {{ fileName_import }}
+                      </span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <!-- progress import -->
+              </div>
+
+              <div class="column">
+                <div v-if="res_Data_Exist.length > 0">
+                  <span style="color: #ea4aaa; font-weight: 600"
+                    >Có dữ liệu trùng, kéo xuống dưới để xem chi tiết</span
                   >
-                    Thoát
+                </div>
+                <div style="text-align: right; margin-bottom: 5px">
+                  <button @click="clickImport" class="button is-small">
+                    <a
+                      href="http://27.73.37.94:81/filemauimport/importusers.xlsx"
+                      >Download File mẫu Import</a
+                    >
+                  </button>
+                  <button
+                    :disabled="!isImport || res_Data_Exist.length > 0"
+                    @click="clickImport"
+                    class="button is-small is-success"
+                  >
+                    Import người dùng
                   </button>
                 </div>
 
-                <div class="columns">
-                  <div class="column is-10">
-                    <div class="file is-small is-info has-name">
-                      <label class="file-label">
-                        <input
-                          ref="fileInput"
-                          @change="onFileChange_import"
-                          class="file-input"
-                          type="file"
-                          name="resume"
-                          accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-                        />
-                        <span class="file-cta">
-                          <span class="file-icon">
-                            <i class="fas fa-upload"></i>
-                          </span>
-                          <span class="file-label"> Chọn file excel </span>
-                        </span>
-                        <span class="file-name">
-                          {{ fileName_import }}
-                        </span>
-                      </label>
-                    </div>
-                  </div>
-                </div>
-
-                <div>
-                  <!-- progress import -->
-                </div>
-
-                <div class="columns">
-                  <div class="column">
-                    <div style="text-align: right; margin-bottom: 5px">
-                      <button @click="clickImport" class="button is-small">
-                        <a
-                          href="http://27.73.37.94:81/filemauimport/importusers.xlsx"
-                          >Download File mẫu Import</a
+                <template>
+                  <div class="table_wrapper">
+                    <table
+                      class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth"
+                    >
+                      <thead style="font-size: small; font-weight: bold">
+                        <tr style="">
+                          <td style="text-align: center; width: 3%">STT</td>
+                          <td style="text-align: center">Tiến trình import</td>
+                          <td style="text-align: center">Status Import</td>
+                          <td style="text-align: center">Họ tên</td>
+                          <td style="text-align: center">Tên người dùng</td>
+                          <td style="text-align: center">CCCD</td>
+                          <td style="text-align: center">Điện thoại</td>
+                          <td style="text-align: center">Địa chỉ</td>
+                          <td style="text-align: center">Mã Điểm thu</td>
+                          <td style="text-align: center">Tên điểm thu</td>
+                          <td style="text-align: center">Mã số BHXH</td>
+                        </tr>
+                      </thead>
+                      <tbody v-if="data_import.length > 0">
+                        <tr
+                          v-for="(item, index) in data_import"
+                          :key="index"
+                          style="font-size: small"
                         >
-                      </button>
-                      <button
-                        :disabled="!isImport"
-                        @click="clickImport"
-                        class="button is-small is-success"
-                      >
-                        Import người dùng
-                      </button>
-                    </div>
-
-                    <div class="table_wrapper">
-                      <table
-                        class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth"
-                      >
-                        <thead style="font-size: small; font-weight: bold">
-                          <tr style="">
-                            <td style="text-align: center; width: 3%">STT</td>
-                            <td style="text-align: center">Họ tên</td>
-                            <td style="text-align: center">Tên người dùng</td>
-                            <td style="text-align: center">CCCD</td>
-                            <td style="text-align: center">Email</td>
-                            <td style="text-align: center">Điện thoại</td>
-                            <td style="text-align: center; width: 40%">
-                              Địa chỉ
-                            </td>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr
-                            v-for="(item, index) in data_import"
-                            :key="index"
-                            style="font-size: small"
-                          >
-                            <td style="text-align: center">
-                              {{ index + 1 }}
-                            </td>
-                            <td style="">
-                              {{ item.name }}
-                            </td>
-                            <td style="">
-                              {{ item.username }}
-                            </td>
-                            <td style="text-align: center">
-                              {{ item.cccd }}
-                            </td>
-                            <td>
-                              {{ item.email }}
-                            </td>
-                            <td style="text-align: center">
-                              {{ item.sodienthoai }}
-                            </td>
-                            <td>
-                              {{ item.diachi }}
-                            </td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
+                          <td style="text-align: center">
+                            {{ index + 1 }}
+                          </td>
+                          <td tyle="text-align: center">
+                            <progress
+                              class="progress is-success"
+                              :value="item.process"
+                              max="100"
+                            ></progress>
+                          </td>
+                          <td style="text-align: center">
+                            <template v-if="item.statusImport == 0">
+                              <span style="font-weight: 500; color: red"
+                                >Chưa import</span
+                              >
+                            </template>
+                            <template v-else>
+                              <span style="font-weight: 500; color: #00947e"
+                                >Thành công</span
+                              >
+                            </template>
+                          </td>
+                          <td style="">
+                            {{ item.name }}
+                          </td>
+                          <td style="">
+                            {{ item.username }}
+                          </td>
+                          <td style="text-align: center">
+                            {{ item.cccd }}
+                          </td>
+                          <td style="text-align: center">
+                            {{ item.sodienthoai }}
+                          </td>
+                          <td>
+                            {{ item.diachi }}
+                          </td>
+                          <td>
+                            {{ item.madaily }}
+                          </td>
+                          <td>
+                            {{ item.tendaily }}
+                          </td>
+                          <td>
+                            {{ item.masobhxh }}
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
                   </div>
-                </div>
-              </section>
-            </div>
+                </template>
+
+                <!-- dữ liệu trùng -->
+                <template v-if="res_Data_Exist.length > 0">
+                  <div class="table_wrapper">
+                    <div style="margin-bottom: 5px; margin-top: 5px">
+                      <span style="font-weight: bold; color: red"
+                        >Người dùng đã tồn tại trong CSDL (Trùng CCCD)</span
+                      >
+                      |
+                      <a @click="catTrung"
+                        ><span style="font-weight: bold"
+                          >Xác nhận cắt bỏ các dòng trùng để tiếp tục
+                          import</span
+                        ></a
+                      >
+                    </div>
+                    <table
+                      class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth"
+                    >
+                      <thead
+                        style="
+                          font-size: small;
+                          font-weight: bold;
+                          background-color: #ea4aaa;
+                        "
+                      >
+                        <tr style="">
+                          <td style="text-align: center; width: 3%">STT</td>
+                          <td style="text-align: center">Họ tên</td>
+                          <td style="text-align: center">Tên người dùng</td>
+                          <td style="text-align: center">CCCD</td>
+                          <td style="text-align: center">Điện thoại</td>
+                          <td style="text-align: center">Địa chỉ</td>
+                          <td style="text-align: center">Mã Điểm thu</td>
+                          <td style="text-align: center">Tên điểm thu</td>
+                          <td style="text-align: center">Mã số BHXH</td>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr
+                          v-for="(item, index) in res_Data_Exist"
+                          :key="index"
+                          style="font-size: small"
+                        >
+                          <td style="text-align: center">
+                            {{ index + 1 }}
+                          </td>
+                          <td style="">
+                            {{ item.name }}
+                          </td>
+                          <td style="">
+                            {{ item.username }}
+                          </td>
+                          <td style="text-align: center; color: #ea4aaa">
+                            {{ item.cccd }}
+                          </td>
+                          <td style="text-align: center">
+                            {{ item.sodienthoai }}
+                          </td>
+                          <td>
+                            {{ item.diachi }}
+                          </td>
+                          <td>
+                            {{ item.madaily }}
+                          </td>
+                          <td>
+                            {{ item.tendaily }}
+                          </td>
+                          <td>
+                            {{ item.masobhxh }}
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </template>
+              </div>
+            </section>
           </div>
         </div>
       </div>
@@ -622,6 +715,9 @@ export default {
       data_import: [],
       fileName_import: "",
       selectedFile_import: null,
+      res_Data_Success: [],
+      res_Data_Failed: [],
+      res_Data_Exist: [],
     };
   },
 
@@ -1066,6 +1162,13 @@ export default {
             firstThreeTitles[2] == "matinh"
           ) {
             this.data_import = ws;
+            this.data_import = this.data_import.map((item) => ({
+              ...item,
+              process: 0,
+              statusImport: 0,
+            }));
+            // console.log(this.data_import);
+
             this.isLoading = false;
             this.isImport = true;
           } else {
@@ -1100,12 +1203,91 @@ export default {
     },
 
     async clickImport() {
-      try {
-        await this.$axios.$post("/api/users/import-uses", this.data_import);
-        // Swal.fire("Import dữ liệu thành công", "", "success");
-      } catch (error) {
-        console.log(error);
-        Swal.fire("Có lỗi xảy ra", "Import dữ liệu thất bại.", "warning");
+      this.res_Data_Exist = [];
+      this.res_Data_Failed = [];
+      this.res_Data_Success = [];
+      const users = await this.$axios.get(`/api/users/`);
+
+      // console.log(users);
+      const cccd_users = users.data
+        .map((user) => user.cccd)
+        .filter((cccd) => cccd);
+      const data_import_filtered = this.data_import.filter((record) => {
+        if (!record.cccd) {
+          console.warn("Bản ghi thiếu CCCD:", record);
+          return false;
+        }
+        if (cccd_users.includes(record.cccd)) {
+          this.res_Data_Exist.push(record); // Đẩy vào mảng res_Data_Exist nếu CCCD trùng
+          return false; // Loại bỏ khỏi data_import
+        }
+        return true; // Giữ lại trong data_import
+      });
+      // console.log(data_import_filtered);
+      // console.log(this.res_Data_Exist);
+      this.data_import = data_import_filtered;
+      // console.log(this.data_import);
+
+      if (this.res_Data_Exist.length <= 0) {
+        const result = await Swal.fire({
+          title: `Xác nhận tạo user từ import file execl ?`,
+          showDenyButton: true,
+          confirmButtonText: "Xác nhận",
+          denyButtonText: `Hủy`,
+        });
+        if (result.isConfirmed) {
+          try {
+            this.isLoading = true;
+            for (const item of this.data_import) {
+              const res = await this.$axios.$post("/api/users/account", item);
+              // console.log(res.success);
+              if (res.success == true) {
+                await this.animateProgress(item, 100, 10); // Tăng dần lên 100
+                item.statusImport = 1;
+              } else {
+                item.process = 0;
+                item.statusImport = 0;
+              }
+            }
+            this.isLoading = false;
+            this.isImport = false;
+            Swal.fire("Tạo thành công các User từ file Excel !");
+            this.fetchDataUsers();
+          } catch (error) {
+            console.log(error);
+            Swal.fire("Có lỗi xảy ra", "Import dữ liệu thất bại.", "warning");
+            this.fetchDataUsers();
+          }
+        }
+      }
+    },
+
+    exitImport() {
+      this.data_import = [];
+      this.res_Data_Exist = [];
+      this.isActive_import = false;
+      this.fileName_import = "";
+      this.selectedFile_import = null;
+    },
+
+    async animateProgress(item, target, step) {
+      return new Promise((resolve) => {
+        const interval = setInterval(() => {
+          if (item.process >= target) {
+            clearInterval(interval);
+            resolve();
+          } else {
+            item.process += step; // Tăng dần theo step
+            if (item.process > target) item.process = target; // Đảm bảo không vượt quá target
+          }
+        }, 100); // Mỗi 100ms tăng một lần
+      });
+    },
+
+    catTrung() {
+      this.res_Data_Exist = [];
+      if (this.data_import.length <= 0) {
+        this.isImport = false;
       }
     },
 
