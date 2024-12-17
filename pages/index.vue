@@ -96,7 +96,7 @@ export default {
       console.error("User data not available");
     }
 
-    console.log(this.loggedIn);
+    console.log(this.$auth.loggedIn);
   },
 };
 </script>
