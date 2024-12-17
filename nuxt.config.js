@@ -106,12 +106,12 @@ export default {
           // refresh: { url: '/api/auth/refresh', method: 'post' },
           user: { url: "/api/users/auth/user", method: "get" },
         },
-        token: {
-          property: "access_token",
-          global: true,
-          required: true,
-          type: "Bearer",
-        },
+        // token: {
+        //   property: "access_token",
+        //   global: true,
+        //   required: true,
+        //   type: "Bearer",
+        // },
         user: {
           property: "user",
           autoFetch: true,
