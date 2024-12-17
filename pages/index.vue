@@ -95,6 +95,8 @@ export default {
     } else {
       console.error("User data not available");
     }
+
+    console.log(this.loggedIn);
   },
 };
 </script>
