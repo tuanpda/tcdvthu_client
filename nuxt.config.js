@@ -81,7 +81,7 @@ export default {
   build: {},
 
   router: {
-    middleware: ["guest"],
+    middleware: ["auth"],
 
     // Thêm route catch-all
     extendRoutes(routes, resolve) {
