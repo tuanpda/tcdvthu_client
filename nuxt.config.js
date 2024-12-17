@@ -60,7 +60,7 @@ export default {
     baseURL: "http://27.73.37.94:1552", // máy chủ phủ diễn
     // baseURL: "http://localhost:1552",
     timeout: 20000,
-    credentials: true,
+    // credentials: true,
   },
 
   // server: {
