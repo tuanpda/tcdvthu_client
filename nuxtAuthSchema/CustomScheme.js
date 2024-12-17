@@ -10,10 +10,10 @@ export default class CustomScheme extends LocalScheme {
     // Token is required but not available
     console.log(this.check());
     if (!this.check().valid) {
-      // this.$router.push("/");
-      // return;
-      this.$auth.logout(); // Hủy đăng nhập
+      this.$router.push("/");
       return;
+      // this.$auth.logout(); // Hủy đăng nhập
+      // return;
     }
 
     // User endpoint is disabled.
