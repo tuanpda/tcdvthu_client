@@ -60,15 +60,16 @@ export default {
     baseURL: "http://27.73.37.94:1552", // máy chủ phủ diễn
     // baseURL: "http://localhost:1552",
     timeout: 20000,
+    credentials: true,
   },
 
   server: {
-    port: 81,
-    // port: 2612,
-    host: "192.168.1.5", // tnhh phủ diễn
+    // port: 81,
+    port: 2612,
+    // host: "192.168.1.5", // tnhh phủ diễn
     // host: "192.168.160.7", // server nhân hòa
     // host: "14.224.129.177", // server tuanpda
-    // host: "localhost",
+    host: "localhost",
     // host: "192.168.1.97",
   },
 
@@ -101,6 +102,12 @@ export default {
           // refresh: { url: '/api/auth/refresh', method: 'post' },
           user: { url: "/api/users/auth/user", method: "get" },
         },
+        token: {
+          property: "access_token",
+          global: true,
+          required: true,
+          type: "Bearer",
+        },
         user: {
           property: "user",
           autoFetch: true,
@@ -108,11 +115,11 @@ export default {
       },
     },
 
+    watchLoggedIn: true, // Cập nhật trạng thái đăng nhập
     redirect: {
-      login: "/login", // Trang sẽ chuyển tới nếu chưa đăng nhập
-      logout: "/login", // Trang sẽ chuyển tới sau khi đăng xuất
-      callback: "/login", // Trang callback sau khi xác thực (OAuth)
-      home: "/", // Trang sẽ chuyển tới sau khi đăng nhập thành công
+      login: "/login",
+      logout: "/login",
+      home: "/",
     },
   },
 };
