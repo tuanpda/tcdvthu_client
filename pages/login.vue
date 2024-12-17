@@ -86,7 +86,7 @@ import Swal from "sweetalert2";
 export default {
   name: "LoginPage",
   layout: "none",
-  middleware: "guest",
+  auth: "guest",
   data() {
     return {
       username: "",
