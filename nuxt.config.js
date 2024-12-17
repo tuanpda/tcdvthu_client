@@ -63,19 +63,19 @@ export default {
     // credentials: true,
   },
 
-  server: {
-    port: 2612,
-    // host: "192.168.160.7", // server nhân hòa
-    // host: "14.224.129.177", // server tuanpda
-    host: "localhost",
-    // host: "192.168.1.97",
-  },
-
   // server: {
-  //   port: 81,
-  //   host: "192.168.1.5",
-  //   // tnhh phủ diễn
+  //   port: 2612,
+  //   // host: "192.168.160.7", // server nhân hòa
+  //   // host: "14.224.129.177", // server tuanpda
+  //   host: "localhost",
+  //   // host: "192.168.1.97",
   // },
+
+  server: {
+    port: 81,
+    host: "192.168.1.5",
+    // tnhh phủ diễn
+  },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {},
