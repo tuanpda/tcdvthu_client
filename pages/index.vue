@@ -41,8 +41,8 @@
                 <span class="icon">
                   <i style="" class="fas fa-money-check"></i>
                 </span>
-                Bạn đang Đăng nhập với Điểm thu: {{ this.diemthu.madaily }} -
-                {{ this.diemthu.tendaily }}
+                Bạn đang Đăng nhập với Điểm thu: {{ diemthu.madaily }} -
+                {{ diemthu.tendaily }}
               </h4>
             </template>
 
@@ -50,26 +50,26 @@
               <span class="icon">
                 <i style="" class="fas fa-male"></i>
               </span>
-              Người sử dụng: {{ this.diemthu.name }}
+              Người sử dụng: {{ diemthu.name }}
             </h5>
             <h5 class="title is-6">
               <span class="icon">
                 <i style="" class="far fa-address-card"></i>
               </span>
-              Căn cước công dân: {{ this.diemthu.cccd }}
+              Căn cước công dân: {{ diemthu.cccd }}
             </h5>
             <h5 class="title is-6">
               <span class="icon">
                 <i style="" class="fas fa-phone-square"></i>
               </span>
-              Số điện thoại: {{ this.diemthu.sodienthoai }}
+              Số điện thoại: {{ diemthu.sodienthoai }}
             </h5>
           </div>
           <div class="column">
             <figure class="image">
               <img
                 style="height: 170px; width: 135px; border-width: 1px solid"
-                :src="this.diemthu.avatar"
+                :src="diemthu.avatar"
               />
             </figure>
           </div>
@@ -90,8 +90,11 @@ export default {
   },
 
   mounted() {
-    // console.log(this.$auth.user);
-    this.diemthu = this.$auth.user;
+    if (this.$auth && this.$auth.user) {
+      this.diemthu = this.$auth.user;
+    } else {
+      console.error("User data not available");
+    }
   },
 };
 </script>
