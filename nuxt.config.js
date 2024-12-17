@@ -96,7 +96,7 @@ export default {
   auth: {
     strategies: {
       custom: {
-        // scheme: "~/nuxtAuthSchema/CustomScheme.js",
+        scheme: "~/nuxtAuthSchema/CustomScheme.js",
         endpoints: {
           login: {
             url: "/api/auth/access/login",
