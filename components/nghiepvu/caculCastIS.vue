@@ -483,9 +483,9 @@
                           <td style="text-align: center; font-weight: bold">
                             Số điện thoại
                           </td>
-                          <td style="text-align: center; font-weight: bold">
+                          <!-- <td style="text-align: center; font-weight: bold">
                             Gửi lên cổng BHXHVN
-                          </td>
+                          </td> -->
                         </tr>
                       </thead>
                       <tbody>
@@ -513,7 +513,7 @@
                           <td style="text-align: center">
                             {{ item.dienthoai }}
                           </td>
-                          <td style="text-align: center">
+                          <!-- <td style="text-align: center">
                             <button
                               @click="guiDulieuLenCongBhxhvn(item)"
                               class="button is-small is-success"
@@ -528,7 +528,7 @@
                               <span v-if="!item.isSent">Gửi</span>
                               <span v-else>Đã gửi</span>
                             </button>
-                          </td>
+                          </td> -->
                         </tr>
                       </tbody>
                     </table>

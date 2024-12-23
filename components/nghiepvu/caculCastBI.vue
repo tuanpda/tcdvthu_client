@@ -520,9 +520,9 @@
                           <td style="text-align: center; font-weight: bold">
                             Số điện thoại
                           </td>
-                          <td style="text-align: center; font-weight: bold">
+                          <!-- <td style="text-align: center; font-weight: bold">
                             Gửi lên cổng BHXHVN
-                          </td>
+                          </td> -->
                         </tr>
                       </thead>
                       <tbody>
@@ -550,7 +550,7 @@
                           <td style="text-align: center">
                             {{ item.dienthoai }}
                           </td>
-                          <td style="text-align: center">
+                          <!-- <td style="text-align: center">
                             <button
                               @click="guiDulieuLenCongBhxhvn(item)"
                               class="button is-small is-success"
@@ -565,7 +565,7 @@
                               <span v-if="!item.isSent">Gửi</span>
                               <span v-else>Đã gửi</span>
                             </button>
-                          </td>
+                          </td> -->
                         </tr>
                       </tbody>
                     </table>
@@ -1026,25 +1026,29 @@
                     <label class="labelFix">Xã phường</label>
                   </div>
                   <div>
-                    <div class="select is-fullwidth is-small">
-                      <select
-                        @change="xaphuongChange($event, addedIndex)"
-                        :disabled="isDisabled_Xaphuong"
-                        ref="xaphuongSelect"
-                      >
-                        <option selected disabled>
-                          {{ datanhaphosomodal.maxaphuong }} -
-                          {{ datanhaphosomodal.tenxaphuong }}
-                        </option>
-                        <option
-                          v-for="(dt, index) in datanhaphosomodal.info_xaphuong"
-                          :key="index"
-                          :value="dt.maxaphuong"
+                    <template>
+                      <div class="select is-fullwidth is-small">
+                        <select
+                          @change="xaphuongChange($event, addedIndex)"
+                          :disabled="isDisabled_Xaphuong"
+                          ref="xaphuongSelect"
                         >
-                          {{ dt.tenxaphuong }}
-                        </option>
-                      </select>
-                    </div>
+                          <option selected disabled>
+                            {{ datanhaphosomodal.maxaphuong }} -
+                            {{ datanhaphosomodal.tenxaphuong }}
+                          </option>
+                          <option
+                            v-for="(
+                              dt, index
+                            ) in datanhaphosomodal.info_xaphuong"
+                            :key="index"
+                            :value="dt.maxaphuong"
+                          >
+                            {{ dt.tenxaphuong }}
+                          </option>
+                        </select>
+                      </div>
+                    </template>
                   </div>
                 </div>
                 <div class="column">
@@ -1508,6 +1512,8 @@ export default {
                 "Dữ liệu chỉ mang tính chất tham khảo. Xem và sửa nếu cần thiết !",
             });
             const data = res.data[0];
+            console.log(data);
+
             try {
               this.items[index].hoten = data.HoTen;
               this.items[index].ngaysinh = data.NgaySinh;
@@ -2337,7 +2343,7 @@ export default {
       const nowInVietnam = DateTime.now().setZone("Asia/Ho_Chi_Minh");
       const formattedDate = nowInVietnam.toFormat("dd-MM-yyyy HH:mm:ss");
 
-      // console.log(data);
+      console.log(data);
       let matochucDvt = "";
       if (data.maloaihinh == "AR") {
         matochucDvt = "AR0013M";
@@ -2468,6 +2474,8 @@ export default {
               bodyRes = result.data.datares;
               // console.log(bodyRes);
               bodyRes._id = data._id;
+
+              console.log(bodyRes);
 
               const resUpdate = await this.$axios.patch(
                 `/api/kekhai/capnhatkekhai`,

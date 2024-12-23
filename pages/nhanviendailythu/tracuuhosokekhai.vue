@@ -1010,7 +1010,7 @@ export default {
               bodyRes._id = data._id;
 
               const resUpdate = await this.$axios.patch(
-                `/api/kekhai/capnhatkekhai`,
+                `/api/kekhai/updatestatushoso`,
                 bodyRes
               );
               // console.log(resUpdate);
