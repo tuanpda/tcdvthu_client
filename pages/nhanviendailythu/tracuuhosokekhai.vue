@@ -702,6 +702,10 @@ export default {
       madaily: "",
       isDiemthu: false,
       dtaDiemthu: [],
+
+      res_save_info_db: false,
+      res_inbienlai: false,
+      res_save_res_from_bhxhvn: false,
     };
   },
 
@@ -870,6 +874,9 @@ export default {
     },
 
     async guiDulieuLenCongBhxhvn(data) {
+      const nowInVietnam = DateTime.now().setZone("Asia/Ho_Chi_Minh");
+      const formattedDate = nowInVietnam.toFormat("dd-MM-yyyy HH:mm:ss");
+
       // console.log(data);
       let matochucDvt = "";
       if (data.maloaihinh == "AR") {
@@ -880,6 +887,17 @@ export default {
         matochucDvt = "IS0012M";
       }
 
+      // thông tin biên lai
+      const currentYear = new Date().getFullYear();
+      let curentInvoiceNumber = 0;
+
+      const getCurrentSobienlai = await this.$axios.get(
+        `/api/kekhai/sobienlai`
+      );
+      // console.log(getCurrentSobienlai.data.bienlai[0].sobienlai);
+      curentInvoiceNumber = getCurrentSobienlai.data.bienlai[0].sobienlai;
+      // console.log(curentInvoiceNumber);
+
       const dataPost = {
         hosoIdentity: data.hosoIdentity,
         maSoBhxh: data.masobhxh,
@@ -887,6 +905,7 @@ export default {
         soCccd: data.cccd,
         ngaySinh: data.ngaysinh,
         gioiTinh: data.gioitinh,
+        soDienThoai: data.dienthoai,
         loaiDt: data.tenloaihinh,
         soTien: data.sotien,
         soThang: data.maphuongthucdong,
@@ -898,12 +917,20 @@ export default {
         tenCqBhxh: this.$auth.user.tencqbhxh,
         keyfrombhvn: data.key,
         tuNgay: data.tungay,
-        denNgay: this.calculateEndDate(data.tungay, data.maphuongthucdong),
+        denNgay: data.denngay,
+        tuThang: data.tuthang,
+        denThang: data.denthang,
+        maDaiLy: data.madaily,
+        tenDaiLy: data.tendaily,
         soHoSo: data.sohoso,
         dotKeKhai: data.dotkekhai,
         kyKeKhai: data.kykekhai,
         ngayKeKhai: data.ngaykekhai,
         createdBy: this.$auth.user.username,
+        sobienlai: curentInvoiceNumber,
+        ngaybienlai: formattedDate,
+        maloaihinh: data.maloaihinh,
+        currentYear: currentYear,
       };
 
       // console.log(dataPost);
@@ -943,6 +970,14 @@ export default {
           // console.log(combinedData);
 
           if (response.data.data.maLoi == 0) {
+            // ghi dữ liệu biên lai
+            const ghibienlai = await this.$axios.post(
+              `/api/kekhai/ghidulieubienlai`,
+              combinedData
+            );
+
+            // console.log(ghibienlai);
+
             const result = await this.$axios.post(
               `/api/kekhai/saveresponsefrombhvntodb`,
               combinedData
@@ -974,8 +1009,8 @@ export default {
               // console.log(bodyRes);
               bodyRes._id = data._id;
 
-              const resUpdate = await this.$axios.post(
-                `/api/kekhai/updatestatushoso`,
+              const resUpdate = await this.$axios.patch(
+                `/api/kekhai/capnhatkekhai`,
                 bodyRes
               );
               // console.log(resUpdate);

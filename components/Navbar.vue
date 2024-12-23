@@ -6,7 +6,7 @@
   >
     <div class="container">
       <div class="navbar-brand">
-        <a class="navbar-item" href="/">
+        <a class="navbar-item">
           <img
             src="@/assets/logos/an-sinh-ph-din-high-resolution-logo.png"
             width="200"

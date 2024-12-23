@@ -804,7 +804,7 @@
                 </div>
               </div>
 
-              <div class="titleKk" style="margin-top: 10px">
+              <!-- <div class="titleKk" style="margin-top: 10px">
                 <hr class="line" />
                 <div class="topleft">
                   <span style="color: red; font-weight: 700">2.</span> Thông tin
@@ -848,12 +848,12 @@
                     </div>
                   </div>
                 </div>
-              </div>
+              </div> -->
 
               <div class="titleKk" style="margin-top: 10px">
                 <hr class="line" />
                 <div class="topleft">
-                  <span style="color: red; font-weight: 700">3.</span> Thủ tục
+                  <span style="color: red; font-weight: 700">2.</span> Thủ tục
                   kê khai
                 </div>
               </div>
@@ -1518,26 +1518,26 @@ export default {
               }
               this.items[index].cccd = data.Cmnd;
               this.items[index].dienthoai = data.DienThoai;
-              this.items[index].matinh = data.DiaChiTinhId;
+              this.items[index].matinh = data.HoKhauTinhId;
               // đi tìm tên tỉnh
               const res_tinh = await this.$axios.get(
-                `/api/nguoihuong/find-tentinh?matinh=${data.DiaChiTinhId}`
+                `/api/nguoihuong/find-tentinh?matinh=${data.HoKhauTinhId}`
               );
               if (res_tinh.data.length > 0) {
                 this.items[index].tentinh = res_tinh.data[0].tentinh;
               }
-              this.items[index].maquanhuyen = data.DiaChiHuyenId;
+              this.items[index].maquanhuyen = data.HoKhauHuyenId;
               // đi tìm tên quận huyện
               const res_huyen = await this.$axios.get(
-                `/api/nguoihuong/find-tenhuyen?matinh=${data.DiaChiTinhId}&maquanhuyen=${data.DiaChiHuyenId}`
+                `/api/nguoihuong/find-tenhuyen?matinh=${data.HoKhauTinhId}&maquanhuyen=${data.HoKhauHuyenId}`
               );
               if (res_huyen.data.length > 0) {
                 this.items[index].tenquanhuyen = res_huyen.data[0].tenquanhuyen;
               }
-              this.items[index].maxaphuong = data.DiaChiXaId;
+              this.items[index].maxaphuong = data.HoKhauXaId;
               // đi tìm tên xã
               const res_xa = await this.$axios.get(
-                `/api/nguoihuong/find-tenxa?matinh=${data.DiaChiTinhId}&maquanhuyen=${data.DiaChiHuyenId}&maxaphuong=${data.DiaChiXaId}`
+                `/api/nguoihuong/find-tenxa?matinh=${data.HoKhauTinhId}&maquanhuyen=${data.HoKhauHuyenId}&maxaphuong=${data.HoKhauXaId}`
               );
               if (res_xa.data.length > 0) {
                 this.items[index].tenxaphuong = res_xa.data[0].tenxaphuong;
@@ -2334,7 +2334,30 @@ export default {
     },
 
     async guiDulieuLenCongBhxhvn(data) {
+      const nowInVietnam = DateTime.now().setZone("Asia/Ho_Chi_Minh");
+      const formattedDate = nowInVietnam.toFormat("dd-MM-yyyy HH:mm:ss");
+
       // console.log(data);
+      let matochucDvt = "";
+      if (data.maloaihinh == "AR") {
+        matochucDvt = "AR0013M";
+      } else if (data.maloaihinh == "BI") {
+        matochucDvt = "BI0007M";
+      } else {
+        matochucDvt = "IS0012M";
+      }
+
+      // thông tin biên lai
+      const currentYear = new Date().getFullYear();
+      let curentInvoiceNumber = 0;
+
+      const getCurrentSobienlai = await this.$axios.get(
+        `/api/kekhai/sobienlai`
+      );
+      // console.log(getCurrentSobienlai.data.bienlai[0].sobienlai);
+      curentInvoiceNumber = getCurrentSobienlai.data.bienlai[0].sobienlai;
+      // console.log(curentInvoiceNumber);
+
       const dataPost = {
         hosoIdentity: data.hosoIdentity,
         maSoBhxh: data.masobhxh,
@@ -2342,19 +2365,35 @@ export default {
         soCccd: data.cccd,
         ngaySinh: data.ngaysinh,
         gioiTinh: data.gioitinh,
+        soDienThoai: data.dienthoai,
         loaiDt: data.tenloaihinh,
-        soTien: data.soTien,
-        soThang: data.soThang,
-        maToChucDvt: data.maToChucDvt,
+        soTien: data.sotien,
+        soThang: data.maphuongthucdong,
+        maToChucDvt: matochucDvt,
         tenToChucDvt: data.tentochuc,
-        maNhanVienThu: data.maNhanVienThu,
-        tenNhanVienThu: data.tenNhanVienThu,
-        maCqBhxh: data.maCqBhxh,
-        tenCqBhxh: data.tenCqBhxh,
+        maNhanVienThu: "NVT" + data.cccd,
+        tenNhanVienThu: this.$auth.user.name,
+        maCqBhxh: this.$auth.user.macqbhxh,
+        tenCqBhxh: this.$auth.user.tencqbhxh,
         keyfrombhvn: data.key,
-        tuNgay: data.tuNgay,
-        denNgay: data.denNgay,
+        tuNgay: data.tungay,
+        denNgay: data.denngay,
+        tuThang: data.tuthang,
+        denThang: data.denthang,
+        maDaiLy: data.madaily,
+        tenDaiLy: data.tendaily,
+        soHoSo: data.sohoso,
+        dotKeKhai: data.dotkekhai,
+        kyKeKhai: data.kykekhai,
+        ngayKeKhai: data.ngaykekhai,
+        createdBy: this.$auth.user.username,
+        sobienlai: curentInvoiceNumber,
+        ngaybienlai: formattedDate,
+        maloaihinh: data.maloaihinh,
+        currentYear: currentYear,
       };
+
+      // console.log(dataPost);
 
       const result = await Swal.fire({
         title: `Xác nhận gửi hồ sơ lên cổng BHXH VN ?`,
@@ -2380,11 +2419,6 @@ export default {
             moTaLoi: response.data.data.moTaLoi,
             maXacNhan: response.data.data.maXacNhan,
             noiDung: response.data.data.noiDung,
-            soHoSo: this.formKekhai.sohoso,
-            dotKeKhai: this.formKekhai.dotkekhai,
-            kyKeKhai: this.formKekhai.kykekhai,
-            ngayKeKhai: this.formKekhai.ngaykekhai,
-            createdBy: this.$auth.user.username,
           };
 
           // Kết hợp dataPost và resDatafromBHXHVN
@@ -2396,6 +2430,14 @@ export default {
           // console.log(combinedData);
 
           if (response.data.data.maLoi == 0) {
+            // ghi dữ liệu biên lai
+            const ghibienlai = await this.$axios.post(
+              `/api/kekhai/ghidulieubienlai`,
+              combinedData
+            );
+
+            // console.log(ghibienlai);
+
             const result = await this.$axios.post(
               `/api/kekhai/saveresponsefrombhvntodb`,
               combinedData
@@ -2420,6 +2462,18 @@ export default {
                 icon: "success",
                 title: "Đã gửi thông tin hồ sơ lên cổng thành công",
               });
+
+              // đổi trạng thái của hồ sơ trong kê khai
+              let bodyRes = {};
+              bodyRes = result.data.datares;
+              // console.log(bodyRes);
+              bodyRes._id = data._id;
+
+              const resUpdate = await this.$axios.patch(
+                `/api/kekhai/capnhatkekhai`,
+                bodyRes
+              );
+              // console.log(resUpdate);
             }
           }
         } catch (error) {
@@ -2499,6 +2553,12 @@ export default {
 
               const tungayTranform = this.convertDate(this.items[i].tungay);
               this.items[i].tungay = tungayTranform;
+              this.items[i].denngay = this.calculateEndDate(
+                this.items[i].tungay,
+                this.items[i].maphuongthucdong
+              );
+
+              this.items[i].tennguoitao = this.$auth.user.name;
               // console.log(this.items[i].tungay);
 
               // ngày biên lai
@@ -2586,7 +2646,7 @@ export default {
               });
             }
 
-            // console.log(dataKekhai);
+            console.log(dataKekhai);
 
             const result = await this.$axios.post(
               `/api/kekhai/add-kekhai-series`,

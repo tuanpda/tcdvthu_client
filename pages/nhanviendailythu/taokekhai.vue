@@ -310,6 +310,8 @@ export default {
       const res = await this.$axios.get(`/api/danhmucs/dmloaihinhtg`);
       this.loaihinhtg = res.data;
       const res_lcs = await this.$axios.get(`/api/danhmucs/dmluongcs`);
+      // console.log(res_lcs);
+
       if (res_lcs.data.length > 0) {
         this.luongcoso = res_lcs.data[0].luongcs;
       }

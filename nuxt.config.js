@@ -57,7 +57,7 @@ export default {
     // baseURL: "/",
     // baseURL: "http://192.168.160.7:2612", // máy chủ nhân hoà
     // baseURL: "http://14.224.129.177:1552", // máy chủ tuanpda
-    baseURL: "http://27.73.37.94:1552", // máy chủ phủ diễn
+    baseURL: "http://27.73.37.94:1443", // máy chủ phủ diễn
     // baseURL: "http://localhost:1552",
     timeout: 20000,
     // credentials: true,
