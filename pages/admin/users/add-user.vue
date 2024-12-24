@@ -471,7 +471,7 @@
                   >
                 </div>
                 <div style="text-align: right; margin-bottom: 5px">
-                  <button @click="clickImport" class="button is-small">
+                  <button>
                     <a
                       href="http://27.73.37.94:81/filemauimport/importusers.xlsx"
                       >Download File mẫu Import</a

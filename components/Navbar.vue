@@ -160,7 +160,7 @@
               <span class="icon is-small is-left">
                 <i class="fas fa-paperclip"></i>
               </span>
-              &ensp; Hồ sơ
+              &ensp; Báo cáo
             </a>
             <div
               @click="toggleDropdown_danhmuc"
@@ -171,7 +171,7 @@
                 <span style="color: #3850b7" class="icon is-small is-left">
                   <i class="fas fa-search"></i>
                 </span>
-                &ensp; Tìm kiếm hồ sơ kê khai
+                &ensp; Tìm kiếm & Phân loại
               </nuxt-link>
             </div>
           </div>

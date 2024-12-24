@@ -990,6 +990,26 @@
                 </div>
               </div>
               <div class="columns">
+                <div class="column is-2">
+                  <div style="margin-bottom: 5px">
+                    <label class="labelFix">Hình thức nạp tiền</label>
+                  </div>
+                  <div>
+                    <div class="select is-fullwidth is-small">
+                      <select
+                        @change="hinhthucNap($event, addedIndex)"
+                        v-model="selectedOptionHtnt"
+                        ref="hinhthucnapInput"
+                      >
+                        <option disabled selected>
+                          - Chọn hình thức nạp tiền -
+                        </option>
+                        <option value="0">Tiền mặt</option>
+                        <option value="1">Chuyển khoản</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
                 <div class="column">
                   <div style="margin-bottom: 5px">
                     <label class="labelFix">Xã phường</label>
@@ -1280,6 +1300,7 @@ export default {
       isActive_xacnhan: false,
       mask: currencyMask,
       items: [],
+      selectedOptionHtnt: "- Chọn hình thức nạp tiền -",
       phuongan: [
         {
           maphuongan: "TM",
@@ -1512,7 +1533,8 @@ export default {
     },
 
     addHosokekhai() {
-      this.addedIndex = 0; // là chỉ mục index của item hiện tại đang được nhập tại modal
+      (this.selectedOptionHtnt = "- Chọn hình thức nạp tiền -"),
+        (this.addedIndex = 0); // là chỉ mục index của item hiện tại đang được nhập tại modal
       // Mở trạng thái nhập hồ sơ
       this.isActive_nhaphoso = true;
       // Số lượng phần tử trước khi thêm
@@ -2181,6 +2203,14 @@ export default {
       }
     },
 
+    hinhthucNap(event, index) {
+      const selectedOption = event.target.value;
+      // console.log(selectedOption);
+      if (selectedOption) {
+        this.items[index].hinhthucnap = selectedOption;
+      }
+    },
+
     validateMonthYear(tuthang, index) {
       // Nếu người dùng nhập 6 ký tự mà không có dấu gạch chéo, hãy chèn vào
       if (/^\d{6}$/.test(tuthang)) {
@@ -2486,6 +2516,28 @@ export default {
           });
           if (this.$refs.tothonInput[i]) {
             this.$refs.tothonInput[i].focus();
+          }
+          return false;
+        }
+
+        if (!this.items[i].hinhthucnap) {
+          this.$toasted.show("Chọn hình thức nạp tiền", {
+            duration: 3000,
+            theme: "bubble",
+          });
+          if (this.$refs.hinhthucnapInput[i]) {
+            this.$refs.hinhthucnapInput[i].focus();
+          }
+          return false;
+        }
+
+        if (!this.items[i].hinhthucnap) {
+          this.$toasted.show("Chọn hình thức nạp tiền", {
+            duration: 3000,
+            theme: "bubble",
+          });
+          if (this.$refs.hinhthucnapInput[i]) {
+            this.$refs.hinhthucnapInput[i].focus();
           }
           return false;
         }

@@ -1112,6 +1112,26 @@
               </div>
 
               <div class="columns">
+                <div class="column is-2">
+                  <div style="margin-bottom: 5px">
+                    <label class="labelFix">Hình thức nạp tiền</label>
+                  </div>
+                  <div>
+                    <div class="select is-fullwidth is-small">
+                      <select
+                        @change="hinhthucNap($event, addedIndex)"
+                        v-model="selectedOptionHtnt"
+                        ref="hinhthucnapInput"
+                      >
+                        <option disabled selected>
+                          - Chọn hình thức nạp tiền -
+                        </option>
+                        <option value="0">Tiền mặt</option>
+                        <option value="1">Chuyển khoản</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
                 <div class="column">
                   <div style="margin-bottom: 5px">
                     <label class="labelFix">Ghi chú</label>
@@ -1375,6 +1395,7 @@ export default {
       selectedOptionpa: "- Chọn phương án -",
       selectedOptionptd: "- Chọn phương thức đóng -",
       selectedOptionnt: "- Chọn người thứ ? -",
+      selectedOptionHtnt: "- Chọn hình thức nạp tiền -",
       phuongan: [
         {
           maphuongan: "TM",
@@ -1593,7 +1614,8 @@ export default {
       this.selectedOptionpa = "- Chọn phương án -";
       this.selectedOptionptd = "- Chọn phương thức đóng -";
       this.selectedOptionnt = "- Chọn người thứ ? -";
-      this.isActive_nhaphoso = true;
+      (this.selectedOptionHtnt = "- Chọn hình thức nạp tiền -"),
+        (this.isActive_nhaphoso = true);
 
       // Số lượng phần tử trước khi thêm
       const previousLength = this.items.length;
@@ -1918,6 +1940,14 @@ export default {
       }
     },
 
+    hinhthucNap(event, index) {
+      const selectedOption = event.target.value;
+      // console.log(selectedOption);
+      if (selectedOption) {
+        this.items[index].hinhthucnap = selectedOption;
+      }
+    },
+
     // check mã số bhxh
     isValidMasoBHXH(masobhxh) {
       // Loại bỏ tất cả các ký tự không phải số
@@ -2238,6 +2268,17 @@ export default {
           });
           if (this.$refs.hopInput[i]) {
             this.$refs.hopInput[i].focus();
+          }
+          return false;
+        }
+
+        if (!this.items[i].hinhthucnap) {
+          this.$toasted.show("Chọn hình thức nạp tiền", {
+            duration: 3000,
+            theme: "bubble",
+          });
+          if (this.$refs.hinhthucnapInput[i]) {
+            this.$refs.hinhthucnapInput[i].focus();
           }
           return false;
         }

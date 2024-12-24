@@ -1093,6 +1093,26 @@
               <div class="columns">
                 <div class="column">
                   <div style="margin-bottom: 5px">
+                    <label class="labelFix">Hình thức nạp tiền</label>
+                  </div>
+                  <div>
+                    <div class="select is-fullwidth is-small">
+                      <select
+                        @change="hinhthucNap($event, addedIndex)"
+                        v-model="selectedOptionHtnt"
+                        ref="hinhthucnapInput"
+                      >
+                        <option disabled selected>
+                          - Chọn hình thức nạp tiền -
+                        </option>
+                        <option value="0">Tiền mặt</option>
+                        <option value="1">Chuyển khoản</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <div class="column">
+                  <div style="margin-bottom: 5px">
                     <label class="labelFix">Bệnh viện tỉnh</label>
                   </div>
                   <div>
@@ -1628,6 +1648,7 @@ export default {
       template_items: [],
       selectedOption: "- Chọn phương án -",
       selectedOptionptd: "- Chọn phương thức đóng -",
+      selectedOptionHtnt: "- Chọn hình thức nạp tiền -",
       phuongan: [
         {
           maphuongan: "TM",
@@ -1852,7 +1873,8 @@ export default {
       // Mở trạng thái nhập hồ sơ
       this.selectedOption = "- Chọn phương án -";
       this.selectedOptionptd = "- Chọn phương thức đóng -";
-      this.isActive_nhaphoso = true;
+      (this.selectedOptionHtnt = "- Chọn hình thức nạp tiền -"),
+        (this.isActive_nhaphoso = true);
       // Số lượng phần tử trước khi thêm
       const previousLength = this.items.length;
       // Thêm dòng mới vào mảng
@@ -2157,6 +2179,14 @@ export default {
       if (position) {
         this.items[index].mabenhvien = position[0];
         this.items[index].tenbenhvien = position[1];
+      }
+    },
+
+    hinhthucNap(event, index) {
+      const selectedOption = event.target.value;
+      // console.log(selectedOption);
+      if (selectedOption) {
+        this.items[index].hinhthucnap = selectedOption;
       }
     },
 
@@ -2472,6 +2502,17 @@ export default {
           });
           if (this.$refs.hopInput[i]) {
             this.$refs.hopInput[i].focus();
+          }
+          return false;
+        }
+
+        if (!this.items[i].hinhthucnap) {
+          this.$toasted.show("Chọn hình thức nạp tiền", {
+            duration: 3000,
+            theme: "bubble",
+          });
+          if (this.$refs.hinhthucnapInput[i]) {
+            this.$refs.hinhthucnapInput[i].focus();
           }
           return false;
         }
@@ -2880,6 +2921,8 @@ export default {
                 ...additionalData,
               });
             }
+
+            // console.log(dataKekhai);
 
             const result = await this.$axios.post(
               `/api/kekhai/add-kekhai-series`,
