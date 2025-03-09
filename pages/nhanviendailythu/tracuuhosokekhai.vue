@@ -899,6 +899,7 @@ export default {
       // console.log(curentInvoiceNumber);
 
       const dataPost = {
+        _id_hskk: data._id,
         hosoIdentity: data.hosoIdentity,
         maSoBhxh: data.masobhxh,
         hoTen: data.hoten,
@@ -931,6 +932,9 @@ export default {
         ngaybienlai: formattedDate,
         maloaihinh: data.maloaihinh,
         currentYear: currentYear,
+        tothon: data.tothon,
+        tenquanhuyen: data.tenquanhuyen,
+        tentinh: data.tentinh,
       };
 
       // console.log(dataPost);
@@ -1009,7 +1013,7 @@ export default {
               // console.log(bodyRes);
               bodyRes._id = data._id;
 
-              const resUpdate = await this.$axios.patch(
+              const resUpdate = await this.$axios.post(
                 `/api/kekhai/updatestatushoso`,
                 bodyRes
               );

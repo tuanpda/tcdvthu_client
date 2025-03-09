@@ -44,22 +44,26 @@
               <div class="column is">
                 <button
                   @click="isActive = true"
+                  :disabled="user.role != 1"
                   class="button is-small is-primary is-fullwidth"
                 >
                   <span class="icon">
                     <i class="fas fa-arrow-alt-circle-down"></i>
                   </span>
-                  <span>Import Excel</span>
+                  <span>Import</span>
                 </button>
               </div>
               <div class="column is">
-                <button class="button is-small is-warning is-fullwidth">
+                <button
+                  :disabled="user.role != 1"
+                  class="button is-small is-warning is-fullwidth"
+                >
                   <a
                     href="http://27.73.37.94:81/filemauimport/filemau_import_nguoitg.xlsx"
                     ><span class="icon">
                       <i class="fas fa-file-excel"></i>
                     </span>
-                    <span>Tải Excel mẫu</span></a
+                    <span>Tải file mẫu</span></a
                   >
                 </button>
               </div>
@@ -210,15 +214,12 @@
         <div class="modal-content modal-card box">
           <section class="modal-card-body">
             <div>
-              <span style="font-weight: 800; font-size: 15px; color: #3cb371"
+              <span style="font-weight: 800; font-size: 15px; color: red"
                 >Import Người tham gia</span
               >
             </div>
             <div style="text-align: end">
-              <button
-                @click="exitImport = false"
-                class="button is-small is-info"
-              >
+              <button @click="exitImport" class="button is-small is-info">
                 Thoát
               </button>
             </div>
@@ -235,13 +236,12 @@
                       class="file-input"
                       type="file"
                       name="resume"
-                      accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                     />
                     <span class="file-cta">
                       <span class="file-icon">
                         <i class="fas fa-upload"></i>
                       </span>
-                      <span class="file-label"> Chọn file excel </span>
+                      <span class="file-label"> Chọn file định dạng csv </span>
                     </span>
                     <span class="file-name">
                       {{ fileName }}
@@ -252,7 +252,7 @@
               <div class="column">
                 <button
                   :disabled="!isImport"
-                  @click="clickImport"
+                  @click="confirmImport"
                   class="button is-small is-success"
                 >
                   Import Dữ liệu
@@ -265,7 +265,9 @@
                   <div style="text-align: center">
                     <span
                       style="font-size: small; font-weight: bold; color: red"
-                      >{{ showcount }} / {{ showsuccess }}</span
+                      >{{ showcount }} / {{ showsuccess }} (dự kiến xong trong:
+                      {{ estimatedHours }}h : {{ estimatedMinutes }}m :
+                      {{ estimatedSeconds }}s)</span
                     >
                   </div>
                   <div>
@@ -278,41 +280,49 @@
               </div>
             </div>
 
-            <div class="table_wrapper" v-if="ketQua.length > 0">
-              <table
-                class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth"
-              >
-                <thead style="font-weight: bold">
-                  <tr style="font-size: small; background-color: #4169e1">
-                    <td style="color: azure; text-align: center; width: 3%">
-                      STT
-                    </td>
-                    <td style="color: azure; text-align: center">Mã số BHXH</td>
-                    <td style="color: azure; text-align: center">Kết quả</td>
-                    <td style="color: azure; text-align: center">Trạng thái</td>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr
-                    style="font-size: small"
-                    v-for="(item, index) in ketQua"
-                    :key="index"
-                  >
-                    <td style="text-align: center">
-                      {{ index + 1 }}
-                    </td>
-                    <td>
-                      {{ item.MaSoBhxh }}
-                    </td>
-                    <td style="text-align: center">
-                      {{ item.message }}
-                    </td>
-                    <td style="text-align: center">
-                      {{ item.status }}
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+            <div
+              v-if="
+                thongbao1 == false &&
+                progressOnTime == false &&
+                progressSuccess == false
+              "
+              class="notification is-info"
+            >
+              Chức năng bạn đang được phép sử dụng đây là chức năng import dữ
+              liệu người tham gia BHXH, BHYT. <br />
+              1: Chọn file định dạng .csv. <br />
+              2: Chờ đợi cho đến khi phần mềm đọc xong file thì sẽ có thông báo
+              lại. <br />
+              3: File import chỉ được phép tối đa là 500 ngàn bản ghi.
+            </div>
+
+            <div v-if="thongbao1 == true" class="notification is-warning">
+              1: File đã đúng định dạng .csv <br />
+              2: File có tổng cộng {{ this.jsonData.length }} bản ghi <br />
+              3: {{ alertInfoFile }}
+            </div>
+
+            <div v-if="progressOnTime == true" class="notification is-danger">
+              Tiến trình đẩy dữ liệu đang được thực hiện. Lưu ý: <br />
+              1: Không tắt trình duyệt khi đẩy dữ liệu tránh gây dán đoạn.
+              <br />
+              2: Theo dõi thời gian hoàn thành tiến trình để biết quá trình đẩy.
+              <br />
+              3: Tiến trình chạy xong hết số bản ghi là xong.
+            </div>
+
+            <div v-if="progressSuccess == true" class="notification is-success">
+              Dữ liệu đã đẩy xong <br />
+              1: Ghi thành công {{ this.recordSuccess }} bản ghi vào CSDL.
+              <br />
+              2: Có {{ this.recordFalse }} bản ghi không được ghi vào CSDL.
+              <br />
+              3: Lý do không được ghi vào có thể do lỗi trùng dữ liệu hoặc lý do
+              khác.
+              <span v-if="recordSuccess.length >= 0 || recordFalse.length >= 0">
+                Ghi dữ liệu thành công: {{ recordSuccess }} bản ghi <br />
+                Ghi dữ liệu thất bại: {{ recordFalse }} bản ghi
+              </span>
             </div>
           </section>
         </div>
@@ -349,6 +359,17 @@ export default {
       isshow: false,
       ketQua: [],
       isImport: false,
+      jsonData: [],
+      thongbao1: false,
+      alertInfoFile: "",
+      progressOnTime: false,
+      progressSuccess: false,
+      recordSuccess: 0,
+      recordFalse: 0,
+      estimatedHours: null,
+      estimatedMinutes: null,
+      estimatedSeconds: null,
+      user: {},
     };
   },
 
@@ -387,7 +408,14 @@ export default {
     });
   },
 
-  mounted() {},
+  mounted() {
+    if (this.$auth && this.$auth.user) {
+      this.user = this.$auth.user;
+      console.log(this.user.role);
+    } else {
+      console.error("User data not available");
+    }
+  },
 
   methods: {
     async filter(page) {
@@ -460,184 +488,192 @@ export default {
       }
     },
 
-    // onFileChange_import(e) {
-    //   if (!e.target.files[0]) {
-    //     return;
-    //   }
-    //   // this.perproc = 0;
-    //   this.fileName_import = e.target.files[0].name;
-    //   this.selectedFile_import = e.target.files[0];
+    async onFileChange(e) {
+      this.fileName = e.target.files[0];
+      this.selectedFile = e.target.files[0];
+      this.jsonData = [];
+      this.isLoading = true;
+      this.progressOnTime = false;
+      this.thongbao1 = false;
+      this.showcount = 0;
+      this.showsuccess = 0;
+      this.progressSuccess = false;
+      this.estimatedHours = 0;
+      this.estimatedMinutes = 0;
+      this.estimatedSeconds = 0;
 
-    //   if (
-    //     this.selectedFile_import.type ==
-    //     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-    //   ) {
-    //     // console.log(this.selectedFile_import);
-    //     //console.log(this.selectedFile.type);
-    //   } else {
-    //     this.$toasted.show("Chỉ chấp nhận file excel xlsx, 2007 + ", {
-    //       duration: 2000,
-    //       theme: "bubble",
-    //     });
-    //   }
-
-    //   const files = e.target.files;
-    //   const fileReader = new FileReader(); // construction function that can read the file content
-    //   this.isLoading = true;
-    //   fileReader.onload = (ev) => {
-    //     try {
-    //       const data = ev.target.result;
-    //       const workbook = XLSX.read(data, {
-    //         type: "binary", // binary
-    //       });
-    //       const wsname = workbook.SheetNames[0]; //take the first sheet
-    //       const ws = XLSX.utils.sheet_to_json(workbook.Sheets[wsname]); //Get the data in this table
-
-    //       let titles = Object.keys(ws[0]);
-    //       // console.log(titles);
-
-    //       const firstThreeTitles = titles.slice(0, 3);
-    //       // console.log(firstThreeTitles);
-
-    //       if (
-    //         firstThreeTitles[0] == "STT_HSNS" &&
-    //         firstThreeTitles[1] == "MaSoBhxh" &&
-    //         firstThreeTitles[2] == "HoTen"
-    //       ) {
-    //         this.data_import = ws;
-    //         // if (this.data_import.length < 0) {
-    //         //   this.isLoading = true;
-    //         // }
-    //         this.data_import = this.data_import.map((item) => ({
-    //           ...item,
-    //           process: 0,
-    //           statusImport: 0,
-    //         }));
-    //         // console.log(this.data_import.length);
-
-    //         this.isLoading = false;
-    //         this.isImport = true;
-    //       } else {
-    //         this.data_import = [];
-    //         const Toast = Swal.mixin({
-    //           toast: true,
-    //           position: "top-end",
-    //           showConfirmButton: false,
-    //           timer: 2000,
-    //           timerProgressBar: true,
-    //           didOpen: (toast) => {
-    //             toast.addEventListener("mouseenter", Swal.stopTimer);
-    //             toast.addEventListener("mouseleave", Swal.resumeTimer);
-    //           },
-    //         });
-    //         Toast.fire({
-    //           icon: "error",
-    //           title: `File không hợp lệ.`,
-    //         });
-    //         this.isLoading = false;
-    //       }
-    //     } catch (error) {
-    //       console.log(error);
-    //     }
-    //   };
-    //   // read file, trigger onload
-    //   fileReader.readAsBinaryString(files[0]);
-    // },
-
-    async onFileChange_import(e) {
-      if (!e.target.files[0]) {
-        return;
-      }
-      // this.perproc = 0;
-      this.fileName_import = e.target.files[0].name;
-      this.selectedFile_import = e.target.files[0];
-
-      // console.log(this.fileName_import);
-      // console.log(this.selectedFile_import.name);
-
-      if (
-        this.selectedFile_import.type ==
-        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-      ) {
-        // console.log(this.selectedFile_import);
-        //console.log(this.selectedFile.type);
-      } else {
-        this.$toasted.show("Chỉ chấp nhận file excel xlsx, 2007 + ", {
-          duration: 2000,
-          theme: "bubble",
-        });
-      }
-
-      let data = new FormData();
-      data.append(
-        "file",
-        this.selectedFile_import,
-        this.selectedFile_import.name
-      );
-
-      try {
-        this.isLoading = true;
-
-        // Gửi file lên server
-        const response = await this.$axios.post(
-          "/api/nguoihuong/import-file",
-          data,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          }
-        );
-
-        // if (response.data.success) {
-        //   Swal.fire({
-        //     icon: "success",
-        //     title: "Import thành công!",
-        //     text: response.data.message,
-        //   });
-        // } else {
-        //   Swal.fire({
-        //     icon: "error",
-        //     title: "Import thất bại",
-        //     text: response.data.error,
-        //   });
-        // }
-      } catch (error) {
+      if (!this.selectedFile.name.endsWith(".csv")) {
+        this.isLoading = false;
+        // Swal.fire({
+        //   title: "File không đúng định dạng",
+        //   text: "Vui lòng chọn lại file .csv!",
+        //   icon: "success",
+        // });
         Swal.fire({
           icon: "error",
-          title: "Lỗi",
-          text: "Có lỗi xảy ra khi upload file.",
+          title: "File không đúng định dạng cho phép",
+          text: "Vui lòng chọn lại file!",
         });
-        console.error(error);
-      } finally {
-        this.isLoading = false;
+        return;
+      } else {
+        const reader = new FileReader();
+        reader.onload = async (event) => {
+          const csvData = event.target.result;
+          // Chuyển CSV thành JSON
+          const rows = csvData.split("\n"); // Tách từng dòng
+          const headers = rows[0].split(","); // Tách tiêu đề
+          this.jsonData = rows.slice(1).map((row) => {
+            const values = row.split(","); // Tách từng giá trị
+            return headers.reduce((acc, header, index) => {
+              acc[header.trim()] = values[index]?.trim(); // Ánh xạ tiêu đề và giá trị
+              return acc;
+            }, {});
+          });
+
+          if (this.jsonData.length > 0) {
+            this.isLoading = false;
+            this.isImport = true;
+            this.thongbao1 = true;
+
+            // Lưu tiêu đề vào một biến để hiển thị
+            this.headers = headers.map((header) => header.trim());
+            // console.log("Fields:", this.headers);
+            if (
+              (this.headers[0] != "STT_HSNS") &
+              (this.headers[1] != "MaSoBhxh") &
+              (this.headers[2] != "HoTen")
+            ) {
+              this.alertInfoFile = `File này không đúng định dạng như file mẫu đã cho. Xin chọn lại file đúng định dạng file mẫu`;
+            } else {
+              this.alertInfoFile = `File đã đúng định dạng .csv, Hợp lệ do tổng số lượng bản ghi <= 500 ngàn.`;
+            }
+          }
+          if (this.jsonData.length > 500000) {
+            Swal.fire({
+              icon: "error",
+              title: `File có ${this.jsonData.length} bản ghi, số lượng này quá lớn `,
+              text: "File lớn sẽ làm ảnh hưởng cơ sở dữ liệu, hãy cắt bớt số dòng cần import!",
+            });
+          }
+        };
+
+        reader.readAsText(this.selectedFile); // Đọc file CSV dưới dạng text
       }
     },
 
-    async onFileChange(e) {
-      this.fileName = e.target.files[0];
-      this.url = URL.createObjectURL(this.fileName);
-      this.fileName = e.target.files[0].name;
-      this.selectedFile = e.target.files[0];
-      // console.log(this.selectedFile);
+    calculateEstimatedTime(totalRows, delayMs) {
+      const totalTimeInSeconds = (totalRows * delayMs) / 1000;
+      const minutes = Math.floor(totalTimeInSeconds / 60);
+      const seconds = Math.floor(totalTimeInSeconds % 60);
+      this.estimatedTime = { minutes, seconds };
+    },
 
-      let data = new FormData();
-      data.append("file", this.selectedFile, this.selectedFile.name);
+    async confirmImport() {
+      this.recordFalse = 0;
+      this.recordSuccess = 0;
+      this.progressSuccess = false;
+      this.thongbao1 = false;
+      // console.log("Parsed JSON Data:", jsonData);
+      // const sendData = jsonData.slice(0, 50);
+      // console.log(sendData);
+      const result = await Swal.fire({
+        title: `Xác nhận import dữ liệu người tham gia ?`,
+        showDenyButton: true,
+        confirmButtonText: "Xác nhận",
+        denyButtonText: `Hủy`,
+      });
+      if (result.isConfirmed) {
+        this.progressOnTime = true;
 
-      const response = await this.$axios.post(
-        "/api/nguoihuong/import-file",
-        data
-      );
+        const chunkSize = 1; // Số bản ghi mỗi phần
+        const chunks = []; // Mảng chứa các phần đã tách
 
-      console.log(response);
+        for (let i = 0; i < this.jsonData.length; i += chunkSize) {
+          const chunk = this.jsonData.slice(i, i + chunkSize); // Lấy từng phần
+          chunks.push(chunk); // Thêm phần vào mảng
+        }
+
+        const lengtData = chunks.length;
+        // console.log(this.showcount);
+        this.showsuccess = lengtData;
+        this.isshow = true;
+        const progressBar = document.getElementById("progress-bar");
+        // console.log(progressBar);
+        progressBar.value = this.showcount;
+        progressBar.max = this.showsuccess;
+
+        const delayTime = 100; // Thời gian chờ giữa các lần gửi (ms)
+        const processingTime = 500; // Giả định thời gian xử lý backend (ms)
+        const estimatedTimeMs = lengtData * (delayTime + processingTime); // Tổng thời gian ước tính (ms)
+        const estimatedTimeSec = Math.ceil(estimatedTimeMs / 1000); // Đổi sang giây
+
+        // Tính giờ, phút, giây
+        this.estimatedHours = Math.floor(estimatedTimeSec / 3600); // Tổng số giờ
+        const remainingSecondsAfterHours = estimatedTimeSec % 3600; // Số giây còn lại sau khi trừ giờ
+        this.estimatedMinutes = Math.floor(remainingSecondsAfterHours / 60); // Tổng số phút
+        this.estimatedSeconds = remainingSecondsAfterHours % 60; // Số giây còn lại sau khi trừ phút
+
+        // Hàm chờ
+        function delay(ms) {
+          return new Promise((resolve) => setTimeout(resolve, ms));
+        }
+
+        // console.log(chunks.length);
+
+        // Gửi dữ liệu từng phần với khoảng cách 10 giây
+        for (let i = 0; i < chunks.length; i++) {
+          // console.log(`Sending chunk ${i + 1}/${chunks.length}...`);
+          const res = await this.$axios.post(
+            "/api/nguoihuong/importNtg",
+            chunks[i]
+          );
+          // console.log(res);
+
+          if (res.data.success == 1) {
+            this.recordSuccess++;
+          } else {
+            this.recordFalse++;
+          }
+
+          // console.log(`Chunk ${i + 1} sent.`);
+          this.showcount++;
+          progressBar.value = this.showcount;
+
+          // Nếu không phải phần cuối cùng, chờ 10 giây
+          if (i < chunks.length - 1) {
+            await delay(delayTime); // Chờ 1 giây
+          }
+        }
+
+        // console.log("All chunks have been sent.");
+        // console.log(this.recordSuccess);
+        // console.log(this.recordFalse);
+
+        this.progressSuccess = true;
+        this.progressOnTime = false;
+        this.isImport = false;
+        this.selectedFile = "";
+        this.fileName = "";
+      }
     },
 
     exitImport() {
-      this.data_import = [];
-      this.fileName_import = "";
-      this.selectedFile_import = null;
+      this.jsonData = [];
+      this.selectedFile = "";
+      this.fileName = "";
       this.isActive = false;
-      this.ketQua = [];
+      this.thongbao1 = false;
+      this.alertInfoFile = "";
+      this.progressOnTime = false;
+      this.progressSuccess = false;
+      this.recordSuccess = 0;
+      this.recordFalse = 0;
+      this.estimatedHours = 0;
+      this.estimatedMinutes = 0;
+      this.estimatedSeconds = 0;
+      this.showcount = 0;
+      this.showsuccess = 0;
+      this.isshow = false;
     },
 
     async clickImport() {
@@ -741,6 +777,6 @@ export default {
 
 .modal-card {
   width: 850px;
-  height: 550px;
+  height: 400px;
 }
 </style>

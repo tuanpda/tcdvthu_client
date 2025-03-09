@@ -738,12 +738,17 @@
                         />
                       </template>
                       <template v-else>
-                        <input
+                        <!-- <input
                           v-model="datanhaphosomodal.ngaysinh"
                           class="input is-small"
                           type="date"
                           ref="ngaysinhInput"
-                        />
+                        /> -->
+                        <date-picker
+                          v-model="datanhaphosomodal.ngaysinh"
+                          valueType="format"
+                          format="DD/MM/YYYY"
+                        ></date-picker>
                       </template>
                     </div>
                   </div>
@@ -923,12 +928,16 @@
                     <label class="labelFix">Từ ngày</label>
                   </div>
                   <div>
-                    <input
+                    <!-- <input
                       v-model="datanhaphosomodal.tungay"
                       class="input is-small"
                       type="date"
                       ref="tungayInput"
-                    />
+                    /> -->
+                    <date-picker
+                      v-model="datanhaphosomodal.tungay"
+                      valueType="format"
+                    ></date-picker>
                   </div>
                 </div>
               </div>
@@ -1085,30 +1094,6 @@
                     </div>
                   </div>
                 </div>
-                <div class="column">
-                  <div style="margin-bottom: 5px">
-                    <label class="labelFix">Bệnh viện</label>
-                  </div>
-                  <div>
-                    <input
-                      autoComplete="on"
-                      list="hopSuggestions"
-                      class="custom-input"
-                      @change="hopChange($event, addedIndex)"
-                      ref="hopInput"
-                      style="min-width: 220px; height: 30px"
-                      :value="datanhaphosomodal.tenbenhvien"
-                    />
-                    <datalist id="hopSuggestions">
-                      <option
-                        v-for="(item, index) in datanhaphosomodal.info_benhvien"
-                        :key="index"
-                      >
-                        {{ item.mabenhvien }} - {{ item.tenbenhvien }}
-                      </option>
-                    </datalist>
-                  </div>
-                </div>
               </div>
 
               <div class="columns">
@@ -1132,6 +1117,41 @@
                     </div>
                   </div>
                 </div>
+                <div class="column">
+                  <div style="margin-bottom: 5px">
+                    <label class="labelFix">Bệnh viện</label>
+                  </div>
+                  <!-- <div>
+                    <input
+                      autoComplete="on"
+                      list="hopSuggestions"
+                      class="custom-input"
+                      @change="hopChange($event, addedIndex)"
+                      ref="hopInput"
+                      style="min-width: 220px; height: 30px"
+                      :value="datanhaphosomodal.tenbenhvien"
+                    />
+                    <datalist id="hopSuggestions">
+                      <option
+                        v-for="(item, index) in datanhaphosomodal.info_benhvien"
+                        :key="index"
+                      >
+                        {{ item.mabenhvien }} - {{ item.tenbenhvien }}
+                      </option>
+                    </datalist>
+                  </div> -->
+                  <div>
+                    <v-select
+                      :options="datanhaphosomodal.info_benhvien"
+                      v-model="benhvienInfo"
+                      label="tenbenhvien"
+                      placeholder="Tìm kiếm..."
+                      append-to-body
+                    ></v-select>
+                  </div>
+                </div>
+              </div>
+              <div class="columns">
                 <div class="column">
                   <div style="margin-bottom: 5px">
                     <label class="labelFix">Ghi chú</label>
@@ -1374,6 +1394,11 @@ const currencyMask = createNumberMask({
   allowNegative: false,
 });
 import Swal from "sweetalert2";
+import DatePicker from "vue2-datepicker";
+import "vue2-datepicker/index.css";
+import vSelect from "vue-select";
+import "vue-select/dist/vue-select.css";
+
 export default {
   name: "caculCastBI",
   middleware: "auth",
@@ -1384,6 +1409,8 @@ export default {
     maloaihinh: String,
     loaihinh: String,
   },
+
+  components: { DatePicker, vSelect },
 
   data() {
     return {
@@ -1429,6 +1456,7 @@ export default {
       addedIndex: 0,
       datanhaphosomodal: {},
       isRoleSent: false,
+      benhvienInfo: null,
     };
   },
 
@@ -2261,16 +2289,16 @@ export default {
           return false;
         }
 
-        if (!this.items[i].mabenhvien || !this.items[i].tenbenhvien) {
-          this.$toasted.show("Chọn bệnh viện", {
-            duration: 3000,
-            theme: "bubble",
-          });
-          if (this.$refs.hopInput[i]) {
-            this.$refs.hopInput[i].focus();
-          }
-          return false;
-        }
+        // if (!this.items[i].mabenhvien || !this.items[i].tenbenhvien) {
+        //   this.$toasted.show("Chọn bệnh viện", {
+        //     duration: 3000,
+        //     theme: "bubble",
+        //   });
+        //   if (this.$refs.hopInput[i]) {
+        //     this.$refs.hopInput[i].focus();
+        //   }
+        //   return false;
+        // }
 
         if (!this.items[i].hinhthucnap) {
           this.$toasted.show("Chọn hình thức nạp tiền", {
@@ -2583,22 +2611,24 @@ export default {
                 ""
               );
 
-              this.items[
-                i
-              ].mabenhvien = `${this.items[i].matinh}${this.items[i].mabenhvien}`;
-              this.items[i].tenbenhvien = this.items[i].tenbenhvien.trim();
+              // this.items[
+              //   i
+              // ].mabenhvien = `${this.items[i].matinh}${this.items[i].mabenhvien}`;
+              // this.items[i].tenbenhvien = this.items[i].tenbenhvien.trim();
+              this.items[i].mabenhvien = this.benhvienInfo.mabenhvien;
+              this.items[i].tenbenhvien = this.benhvienInfo.tenbenhvien;
 
               // Nếu ngày sinh từ db người hưởng sẽ có dạng text không cần chuyển đổi
               // Nếu từ input dạng yyyy-mm-dd thì phải đổi thành text
-              const dateFormat = this.identifyDateFormat(
-                this.items[i].ngaysinh
-              );
-              if (dateFormat == "YYYY-MM-DD") {
-                const ngaysinhTranform = this.convertDate(
-                  this.items[i].ngaysinh
-                );
-                this.items[i].ngaysinh = ngaysinhTranform;
-              }
+              // const dateFormat = this.identifyDateFormat(
+              //   this.items[i].ngaysinh
+              // );
+              // if (dateFormat == "YYYY-MM-DD") {
+              //   const ngaysinhTranform = this.convertDate(
+              //     this.items[i].ngaysinh
+              //   );
+              //   this.items[i].ngaysinh = ngaysinhTranform;
+              // }
 
               const tungayTranform = this.convertDate(this.items[i].tungay);
               this.items[i].tungay = tungayTranform;

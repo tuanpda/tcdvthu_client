@@ -754,12 +754,17 @@
                         />
                       </template>
                       <template v-else>
-                        <input
+                        <!-- <input
                           v-model="datanhaphosomodal.ngaysinh"
                           class="input is-small"
                           type="date"
                           ref="ngaysinhInput"
-                        />
+                        /> -->
+                        <date-picker
+                          v-model="datanhaphosomodal.ngaysinh"
+                          valueType="format"
+                          format="DD/MM/YYYY"
+                        ></date-picker>
                       </template>
                     </div>
                   </div>
@@ -953,12 +958,16 @@
                     <label class="labelFix">Từ ngày</label>
                   </div>
                   <div>
-                    <input
+                    <!-- <input
                       v-model="datanhaphosomodal.tungay"
                       class="input is-small"
                       type="date"
                       ref="tungayInput"
-                    />
+                    /> -->
+                    <date-picker
+                      v-model="datanhaphosomodal.tungay"
+                      valueType="format"
+                    ></date-picker>
                   </div>
                 </div>
                 <div class="column">
@@ -1136,7 +1145,7 @@
                   <div style="margin-bottom: 5px">
                     <label class="labelFix">Bệnh viện</label>
                   </div>
-                  <div>
+                  <!-- <div>
                     <input
                       autoComplete="on"
                       list="hopSuggestions"
@@ -1154,8 +1163,21 @@
                         {{ item.mabenhvien }} - {{ item.tenbenhvien }}
                       </option>
                     </datalist>
+                  </div> -->
+                  <div>
+                    <v-select
+                      :options="datanhaphosomodal.info_benhvien"
+                      v-model="benhvienInfo"
+                      label="tenbenhvien"
+                      placeholder="Tìm kiếm..."
+                      append-to-body
+                      direction="top"
+                      :styles="customStyles"
+                    ></v-select>
                   </div>
                 </div>
+              </div>
+              <div class="columns">
                 <div class="column">
                   <div style="margin-bottom: 5px">
                     <label class="labelFix">Ghi chú</label>
@@ -1625,6 +1647,10 @@ const currencyMask = createNumberMask({
 });
 import Swal from "sweetalert2";
 import XLSX from "xlsx";
+import DatePicker from "vue2-datepicker";
+import "vue2-datepicker/index.css";
+import vSelect from "vue-select";
+import "vue-select/dist/vue-select.css";
 
 export default {
   name: "calCastAR",
@@ -1636,7 +1662,7 @@ export default {
     maloaihinh: String,
     loaihinh: String,
   },
-
+  components: { DatePicker, vSelect },
   data() {
     return {
       isActive: false,
@@ -1687,6 +1713,8 @@ export default {
       fileName: "",
       selectedFile: null,
       isRoleSent: false,
+
+      benhvienInfo: null,
     };
   },
 
@@ -1764,6 +1792,20 @@ export default {
         }, 0);
       }
       return 0; // Trường hợp không có dữ liệu
+    },
+
+    customStyles() {
+      return {
+        dropdown: (base) => ({
+          ...base,
+          maxHeight: "50px", // Giảm chiều cao tối đa của danh sách
+          overflowY: "auto", // Thêm thanh cuộn
+        }),
+        dropdownMenu: (base) => ({
+          ...base,
+          direction: "top", // Hướng xổ lên
+        }),
+      };
     },
   },
 
@@ -1906,6 +1948,7 @@ export default {
         this.datanhaphosomodal = {};
         this.isActive_nhaphoso = false;
         // console.log(this.items);
+        // console.log(this.benhvienInfo.mabenhvien);
       }
     },
 
@@ -2495,16 +2538,16 @@ export default {
           return false;
         }
 
-        if (!this.items[i].mabenhvien || !this.items[i].tenbenhvien) {
-          this.$toasted.show("Chọn bệnh viện", {
-            duration: 3000,
-            theme: "bubble",
-          });
-          if (this.$refs.hopInput[i]) {
-            this.$refs.hopInput[i].focus();
-          }
-          return false;
-        }
+        // if (!this.items[i].mabenhvien || !this.items[i].tenbenhvien) {
+        //   this.$toasted.show("Chọn bệnh viện", {
+        //     duration: 3000,
+        //     theme: "bubble",
+        //   });
+        //   if (this.$refs.hopInput[i]) {
+        //     this.$refs.hopInput[i].focus();
+        //   }
+        //   return false;
+        // }
 
         if (!this.items[i].hinhthucnap) {
           this.$toasted.show("Chọn hình thức nạp tiền", {
@@ -2813,29 +2856,37 @@ export default {
                 /,/g,
                 ""
               );
-              this.items[
-                i
-              ].mabenhvien = `${this.items[i].matinh}${this.items[i].mabenhvien}`;
-              this.items[i].tenbenhvien = this.items[i].tenbenhvien.trim();
+              // this.items[
+              //   i
+              // ].mabenhvien = `${this.items[i].matinh}${this.items[i].mabenhvien}`;
+              // this.items[i].tenbenhvien = this.items[i].tenbenhvien.trim();
+
+              this.items[i].mabenhvien = this.benhvienInfo.mabenhvien;
+              this.items[i].tenbenhvien = this.benhvienInfo.tenbenhvien;
+              // console.log(this.benhvienInfo.tenbenhvien);
+              // console.log(this.benhvienInfo.mabenhvien);
 
               // Nếu ngày sinh từ db người hưởng sẽ có dạng text không cần chuyển đổi
               // Nếu từ input dạng yyyy-mm-dd thì phải đổi thành text
-              const dateFormat = this.identifyDateFormat(
-                this.items[i].ngaysinh
-              );
-              if (dateFormat == "YYYY-MM-DD") {
-                const ngaysinhTranform = this.convertDate(
-                  this.items[i].ngaysinh
-                );
-                this.items[i].ngaysinh = ngaysinhTranform;
-              }
+              // thay bằng datetime piker nên tạm bỏ cái này.
+              // const dateFormat = this.identifyDateFormat(
+              //   this.items[i].ngaysinh
+              // );
+              // if (dateFormat == "YYYY-MM-DD") {
+              //   const ngaysinhTranform = this.convertDate(
+              //     this.items[i].ngaysinh
+              //   );
+              //   this.items[i].ngaysinh = ngaysinhTranform;
+              // }
 
               const tungayTranform = this.convertDate(this.items[i].tungay);
               this.items[i].tungay = tungayTranform;
+
               this.items[i].denngay = this.calculateEndDate(
                 this.items[i].tungay,
                 this.items[i].maphuongthucdong
               );
+
               this.items[i].tennguoitao = this.$auth.user.name;
               // ngày biên lai
               // const ngaybienlaiTranform = this.convertDate(
@@ -3016,4 +3067,22 @@ export default {
 @import "@/assets/customCss/common.css";
 
 @import "@/assets/customCss/footerTable.css";
+
+/* Tùy chỉnh chiều cao của danh sách */
+.vs__dropdown-menu {
+  max-height: 50px; /* Giảm chiều cao của danh sách */
+  overflow-y: auto; /* Thêm thanh cuộn */
+}
+
+/* Tùy chỉnh chiều cao item trong danh sách */
+.vs__dropdown-option {
+  line-height: 1.2; /* Giảm chiều cao của mỗi mục */
+  padding: 4px 8px; /* Tùy chỉnh padding */
+}
+
+/* Tùy chỉnh hướng xổ lên */
+.vs__dropdown-container {
+  position: absolute !important;
+  transform: translateY(-100%) !important;
+}
 </style>

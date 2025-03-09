@@ -103,6 +103,17 @@
               class="input is-small"
             />
           </div>
+          <div class="column is-2">
+            <label class="label">Nhóm tham gia</label>
+            <div class="select is-small is-fullwidth">
+              <select @change="handleChange">
+                <option selected disabled>- Chọn loại hình -</option>
+                <option value="BI">Bảo hiểm y tế</option>
+                <option value="AR">Bảo hiểm y tế - HGĐ</option>
+                <option value="IS">Bảo hiểm xã hội tự nguyện</option>
+              </select>
+            </div>
+          </div>
         </div>
         <hr class="navbar-divider" />
         <footer class="has-text-right">
@@ -746,6 +757,7 @@ export default {
       matochuc_mst: "",
       masobhxh: "",
       hoten: "",
+      maloaihinh: "",
 
       data_kekhai_details: [],
       isRoleSent: false,
@@ -924,6 +936,13 @@ export default {
       return `${endDay}/${endMonth}/${endYear}`;
     },
 
+    async handleChange(event) {
+      const selectedValue = event.target.value; // Lấy giá trị của option được chọn
+      // console.log("Selected value:", selectedValue);
+      this.maloaihinh = selectedValue;
+      // console.log(this.loaihinh);
+    },
+
     async guiDulieuLenCongBhxhvn(data) {
       // console.log(data);
       let matochucDvt = "";
@@ -1060,7 +1079,7 @@ export default {
         // );
         try {
           const res = await this.$axios.get(
-            `/api/kekhai/kykekhai-search-hoso?kykekhai=${this.kykekhai}&dotkekhai=${this.dotkekhai}&ngaykekhai=${this.ngaykekhaitu}&ngaykekhaiden=${this.ngaykekhaiden}&sohoso=${this.sohoso}&masobhxh=${this.masobhxh}&hoten=${this.hoten}&tendaily=${this.diemthu}&page=${page}`
+            `/api/kekhai/kykekhai-search-hoso?kykekhai=${this.kykekhai}&dotkekhai=${this.dotkekhai}&ngaykekhai=${this.ngaykekhaitu}&ngaykekhaiden=${this.ngaykekhaiden}&sohoso=${this.sohoso}&masobhxh=${this.masobhxh}&hoten=${this.hoten}&tendaily=${this.diemthu}&maloaihinh=${this.maloaihinh}&page=${page}`
           );
           // console.log(res);
           if (res.data.results.length > 0) {
@@ -1106,7 +1125,7 @@ export default {
       } else {
         try {
           const res = await this.$axios.get(
-            `/api/kekhai/kykekhai-search-hoso-diemthu?kykekhai=${this.kykekhai}&dotkekhai=${this.dotkekhai}&ngaykekhai=${this.ngaykekhaitu}&ngaykekhaiden=${this.ngaykekhaiden}&sohoso=${this.sohoso}&masobhxh=${this.masobhxh}&hoten=${this.hoten}&madaily=${this.madaily}&page=${page}`
+            `/api/kekhai/kykekhai-search-hoso-diemthu?kykekhai=${this.kykekhai}&dotkekhai=${this.dotkekhai}&ngaykekhai=${this.ngaykekhaitu}&ngaykekhaiden=${this.ngaykekhaiden}&sohoso=${this.sohoso}&masobhxh=${this.masobhxh}&hoten=${this.hoten}&madaily=${this.madaily}&maloaihinh=${this.maloaihinh}&page=${page}`
           );
           if (res.data.results.length > 0) {
             this.data_kekhai = res.data.results;
@@ -1198,7 +1217,13 @@ export default {
       }
     },
 
-    async inBienLaiDientu(data) {
+    async inBienLaiDientu(item) {
+      const res = await this.$axios(
+        `/api/kekhai/bienlaidientuf?_id_hskk=${item._id}&hosoIdentity=${item.hosoIdentity}`
+      );
+      // console.log(res.data[0]);
+      let data = res.data[0];
+
       const doc = new jsPDF({
         orientation: "l",
         format: "a5",
@@ -1295,10 +1320,30 @@ export default {
 
       doc.setFontSize(9);
       doc.setTextColor("#00008b");
-      doc.text(`Số Biên lai: `, 150, 50, {
+      doc.text(`Ngày: `, 155, 50, {
         fontWeight: "bold",
       });
-      doc.text(`XXXXXX`, 165, 50, {
+      doc.text(`${data.ngaybienlai}`, 165, 50, {
+        fontWeight: "bold",
+      });
+
+      const dateTimeString = data.ngaybienlai;
+      // Tách chuỗi ngày tháng theo định dạng
+      const parts = dateTimeString.split(" ")[0].split("-"); // Lấy phần ngày và tách theo dấu "-"
+      // Lấy giá trị năm
+      const year = parts[2];
+
+      doc.text(`Ký hiệu: `, 155, 55, {
+        fontWeight: "bold",
+      });
+      doc.text(`${data.loaihinh}-${data.madaily}-${year}`, 165, 55, {
+        fontWeight: "bold",
+      });
+
+      doc.text(`Số: `, 155, 60, {
+        fontWeight: "bold",
+      });
+      doc.text(`${data.sobienlai}`, 165, 60, {
         fontWeight: "bold",
       });
 

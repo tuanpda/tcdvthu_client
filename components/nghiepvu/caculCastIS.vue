@@ -700,12 +700,17 @@
                         />
                       </template>
                       <template v-else>
-                        <input
+                        <!-- <input
                           v-model="datanhaphosomodal.ngaysinh"
                           class="input is-small"
                           type="date"
                           ref="ngaysinhInput"
-                        />
+                        /> -->
+                        <date-picker
+                          v-model="datanhaphosomodal.ngaysinh"
+                          valueType="format"
+                          format="DD/MM/YYYY"
+                        ></date-picker>
                       </template>
                     </div>
                   </div>
@@ -1282,6 +1287,11 @@ const currencyMask = createNumberMask({
   allowNegative: false,
 });
 import Swal from "sweetalert2";
+import DatePicker from "vue2-datepicker";
+import "vue2-datepicker/index.css";
+import vSelect from "vue-select";
+import "vue-select/dist/vue-select.css";
+
 export default {
   name: "calCastAR",
   middleware: "auth",
@@ -1292,7 +1302,7 @@ export default {
     maloaihinh: String,
     loaihinh: String,
   },
-
+  components: { DatePicker, vSelect },
   data() {
     return {
       isActive: false,
@@ -1338,6 +1348,7 @@ export default {
       addedIndex: 0,
       datanhaphosomodal: {},
       isRoleSent: false,
+      benhvienInfo: null,
     };
   },
 
@@ -2530,17 +2541,6 @@ export default {
           }
           return false;
         }
-
-        if (!this.items[i].hinhthucnap) {
-          this.$toasted.show("Chọn hình thức nạp tiền", {
-            duration: 3000,
-            theme: "bubble",
-          });
-          if (this.$refs.hinhthucnapInput[i]) {
-            this.$refs.hinhthucnapInput[i].focus();
-          }
-          return false;
-        }
       }
       // Nếu tất cả thông tin đều hợp lệ, trả về true để cho phép quá trình lưu dữ liệu
       return true;
@@ -2812,22 +2812,17 @@ export default {
                 ""
               );
 
-              this.items[
-                i
-              ].mabenhvien = `${this.items[i].matinh}${this.items[i].mabenhvien}`;
-              this.items[i].tenbenhvien = this.items[i].tenbenhvien.trim();
-
               // Nếu ngày sinh từ db người hưởng sẽ có dạng text không cần chuyển đổi
               // Nếu từ input dạng yyyy-mm-dd thì phải đổi thành text
-              const dateFormat = this.identifyDateFormat(
-                this.items[i].ngaysinh
-              );
-              if (dateFormat == "YYYY-MM-DD") {
-                const ngaysinhTranform = this.convertDate(
-                  this.items[i].ngaysinh
-                );
-                this.items[i].ngaysinh = ngaysinhTranform;
-              }
+              // const dateFormat = this.identifyDateFormat(
+              //   this.items[i].ngaysinh
+              // );
+              // if (dateFormat == "YYYY-MM-DD") {
+              //   const ngaysinhTranform = this.convertDate(
+              //     this.items[i].ngaysinh
+              //   );
+              //   this.items[i].ngaysinh = ngaysinhTranform;
+              // }
 
               this.items[i].denthang = this.tinhDenThang(
                 this.items[i].tuthang,
