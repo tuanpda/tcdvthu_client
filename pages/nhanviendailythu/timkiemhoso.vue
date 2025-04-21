@@ -1068,9 +1068,9 @@ export default {
       // console.log(this.data_kekhai);
       // console.log(this.$auth.user);
       // Tách chuỗi theo dấu gạch ngang
-      const parts = this.tochuc.split("-");
-      const mst = parts[parts.length - 1]; // 2902141757
-      this.matochuc_mst = mst;
+      // const parts = this.tochuc.split("-");
+      // const mst = parts[parts.length - 1]; // 2902141757
+      // this.matochuc_mst = mst;
       // Xây dựng đường dẫn API dựa trên mã số thuế
 
       if (this.$auth.user.nvcongty === true) {
