@@ -126,4 +126,29 @@ export default {
       home: "/",
     },
   },
+
+  // auth: {
+  //   strategies: {
+  //     custom: {
+  //       scheme: "~/nuxtAuthSchema/CustomScheme.js",
+  //       endpoints: {
+  //         login: { url: "/api/auth/access/login", method: "post" },
+  //         user: { url: "/api/users/auth/user", method: "get" },
+  //       },
+  //       token: {
+  //         property: false, // không lấy token từ response nữa
+  //         type: "",
+  //       },
+  //       user: {
+  //         property: false,
+  //         autoFetch: true,
+  //       },
+  //     },
+  //   },
+  //   redirect: {
+  //     login: "/login",
+  //     logout: "/",
+  //     home: "/",
+  //   },
+  // },
 };
