@@ -72,7 +72,7 @@ export default {
   // },
 
   server: {
-    port: 3000,
+    port: 4042,
     host: "192.168.1.5",
     // tnhh phủ diễn
   },
