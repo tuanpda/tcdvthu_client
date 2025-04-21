@@ -57,25 +57,25 @@ export default {
     // baseURL: "/",
     // baseURL: "http://192.168.160.7:2612", // máy chủ nhân hoà
     // baseURL: "http://14.224.129.177:1552", // máy chủ tuanpda
-    // baseURL: "http://27.73.37.94:1552", // máy chủ phủ diễn
-    baseURL: "http://localhost:1552",
+    baseURL: "http://27.73.37.94:1552", // máy chủ phủ diễn
+    // baseURL: "http://localhost:1552",
     timeout: 20000,
     // credentials: true,
   },
 
-  server: {
-    port: 4042,
-    // host: "192.168.160.7", // server nhân hòa
-    // host: "14.224.129.177", // server tuanpda
-    host: "localhost",
-    // host: "192.168.1.97",
-  },
-
   // server: {
-  //   port: 81,
-  //   host: "192.168.1.5",
-  //   // tnhh phủ diễn
+  //   port: 4042,
+  //   // host: "192.168.160.7", // server nhân hòa
+  //   // host: "14.224.129.177", // server tuanpda
+  //   host: "localhost",
+  //   // host: "192.168.1.97",
   // },
+
+  server: {
+    port: 81,
+    host: "192.168.1.5",
+    // tnhh phủ diễn
+  },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {},
