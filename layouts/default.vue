@@ -14,6 +14,18 @@ export default {
     Navbar,
     Footer,
   },
+
+  async mounted() {
+    if (!this.$store.state.modules.users.user.user) {
+      try {
+        const res = await this.$axios.$get("/api/users/auth/user");
+        await this.$store.dispatch("modules/users/fetchUsersLogin", res.user);
+      } catch (e) {
+        console.error("❌ Lỗi khi lấy user từ client:", e);
+        this.$router.push("/login");
+      }
+    }
+  },
 };
 </script>
 
