@@ -1,17 +1,46 @@
 import cookieparser from "cookieparser";
 
-export default function ({ req, redirect }) {
-  // if (process.server && req && req.headers.cookie) {
-  //   const parsed = cookieparser.parse(req.headers.cookie);
-  //   const token = parsed.token;
-  //   if (!token) {
-  //     console.log("❌ Không có token, chuyển về login");
-  //     return redirect("/login");
-  //   } else {
-  //     console.log("✅ Có token, cho phép truy cập");
-  //   }
-  // }
+export default async function ({ store, redirect, req }) {
+  if (process.server && req && req.headers.cookie) {
+    const parsed = cookieparser.parse(req.headers.cookie);
+    const token = parsed.token;
+
+    // console.log(token);
+
+    if (!token) {
+      // console.log("❌ Không có token, chuyển về login");
+      return redirect("/login");
+    } else {
+      // console.log("✅ Có token, cho phép truy cập");
+      return redirect("/");
+    }
+  }
 }
+
+// export default function ({ req, redirect }) {
+//   // console.log(req.headers.cookie);
+//   // if (process.server && req && req.headers.cookie) {
+//   //   const parsed = cookieparser.parse(req.headers.cookie);
+//   //   const token = parsed.token;
+//   //   if (!token) {
+//   //     console.log("❌ Không có token, chuyển về login");
+//   //     return redirect("/login");
+//   //   } else {
+//   //     console.log("✅ Có token, cho phép truy cập");
+//   //   }
+//   // }
+//   if (req.headers.cookie) {
+//     const parsed = cookieparser.parse(req.headers.cookie);
+//     const token = parsed.token;
+//     console.log(token);
+//     if (!token) {
+//       console.log("❌ Không có token, chuyển về login");
+//       return redirect("/login");
+//     } else {
+//       console.log("✅ Có token, cho phép truy cập");
+//     }
+//   }
+// }
 
 // export default async function ({ store, redirect, route, $axios, req }) {
 //   // console.log(store.state.modules.users.user.user);
