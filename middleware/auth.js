@@ -19,9 +19,9 @@ export default async function ({ store, redirect, route, $axios, req }) {
     try {
       console.log("check");
 
-      // const user = await $axios.$get("/api/users/auth/user", {
-      //   withCredentials: true,
-      // });
+      const user = await $axios.$get("/api/users/auth/user", {
+        withCredentials: true,
+      });
       console.log("pass qua gọi");
 
       // console.log("✅ Lấy user thành công:", user);
