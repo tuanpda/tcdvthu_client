@@ -58,12 +58,12 @@ export default {
     // baseURL: "/",
     // baseURL: "http://192.168.160.7:2612", // máy chủ nhân hoà
     // baseURL: "http://14.224.129.177:1552", // máy chủ tuanpda
-    // baseURL: "http://27.73.37.94:1552", // máy chủ phủ diễn
-    baseURL: "http://localhost:1552",
+    baseURL: "http://27.73.37.94:1552", // máy chủ phủ diễn
+    // baseURL: "http://localhost:1552",
     credentials: true,
   },
 
-  // server: {
+  // server: {s
   //   port: 4042,
   //   // host: "192.168.160.7", // server nhân hòa
   //   // host: "14.224.129.177", // server tuanpda
