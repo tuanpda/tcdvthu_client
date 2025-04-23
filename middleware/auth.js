@@ -1,17 +1,16 @@
 import cookieparser from "cookieparser";
 
 export default function ({ req, redirect }) {
-  if (process.server && req && req.headers.cookie) {
-    const parsed = cookieparser.parse(req.headers.cookie);
-    const token = parsed.token;
-
-    if (!token) {
-      console.log("❌ Không có token, chuyển về login");
-      return redirect("/login");
-    } else {
-      console.log("✅ Có token, cho phép truy cập");
-    }
-  }
+  // if (process.server && req && req.headers.cookie) {
+  //   const parsed = cookieparser.parse(req.headers.cookie);
+  //   const token = parsed.token;
+  //   if (!token) {
+  //     console.log("❌ Không có token, chuyển về login");
+  //     return redirect("/login");
+  //   } else {
+  //     console.log("✅ Có token, cho phép truy cập");
+  //   }
+  // }
 }
 
 // export default async function ({ store, redirect, route, $axios, req }) {
