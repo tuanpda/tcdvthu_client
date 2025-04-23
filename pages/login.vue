@@ -122,6 +122,7 @@ export default {
         );
         // console.log(comitLogin);
         if (comitLogin.success == true) {
+          localStorage.setItem("user", JSON.stringify(itme.user));
           this.$router.push("/");
         }
       } catch (error) {
