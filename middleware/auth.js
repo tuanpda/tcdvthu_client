@@ -7,23 +7,25 @@ export default async function ({ store, redirect, route, $axios, req }) {
   if (process.server && req && req.headers.cookie) {
     const parsed = cookieparser.parse(req.headers.cookie);
     const token = parsed.token;
-
-    console.log(token);
+    console.log("🍪 Token từ cookie:", token);
 
     if (!token) {
+      console.log("❌ Không có token, redirect login");
       return redirect("/login");
-    } else {
-      try {
-        const user = await $axios.$get("/api/users/auth/user"); // Lấy user nếu chưa có
-        // store.dispatch("setUser", user);
-        await store.dispatch("modules/users/fetchUsersLogin", user);
-      } catch (e) {
-        // Nếu không lấy được thì chuyển về login (trừ khi đã ở login)
-        if (route.path !== "/login") {
-          return redirect("/login");
-        }
+    }
+
+    try {
+      const user = await $axios.$get("/api/users/auth/user");
+      console.log("✅ Lấy user thành công:", user);
+      await store.dispatch("modules/users/fetchUsersLogin", user);
+    } catch (e) {
+      console.error("❌ Lỗi khi lấy user:", e);
+      if (route.path !== "/login") {
+        return redirect("/login");
       }
     }
+  } else {
+    console.log("🚫 Không có cookie hoặc không phải process.server");
   }
 
   // if (!store.state.modules.users.user.user) {
