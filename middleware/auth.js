@@ -10,9 +10,9 @@ export default async function ({ store, redirect, route, $axios, req }) {
 
     console.log(token);
 
-    // if (!token) {
-    //   return redirect("/login");
-    // }
+    if (!token) {
+      return redirect("/login");
+    }
   }
 
   // if (!store.state.modules.users.user.user) {
