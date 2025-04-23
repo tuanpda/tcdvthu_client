@@ -12,6 +12,17 @@ export default async function ({ store, redirect, route, $axios, req }) {
 
     if (!token) {
       return redirect("/login");
+    } else {
+      try {
+        const user = await $axios.$get("/api/users/auth/user"); // Lấy user nếu chưa có
+        // store.dispatch("setUser", user);
+        await store.dispatch("modules/users/fetchUsersLogin", user);
+      } catch (e) {
+        // Nếu không lấy được thì chuyển về login (trừ khi đã ở login)
+        if (route.path !== "/login") {
+          return redirect("/login");
+        }
+      }
     }
   }
 
