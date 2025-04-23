@@ -97,13 +97,33 @@ export default {
   methods: {
     async signIn() {
       try {
-        await this.$auth.loginWith("custom", {
-          data: {
-            username: this.username,
-            password: this.password,
-          },
+        // await this.$auth.loginWith("custom", {
+        //   data: {
+        //     username: this.username,
+        //     password: this.password,
+        //   },
+        // });
+
+        // this.$router.push("/");
+        const res = await this.$axios.$post("/api/auth/access/login", {
+          username: this.username,
+          password: this.password,
         });
-        this.$router.push("/");
+        // console.log(res);
+
+        // lấy thông tin này đem vào để gọi me
+        const itme = await this.$axios.$get("/api/users/auth/user");
+        // console.log(itme.user);
+
+        // Gọi commit vào module auth
+        const comitLogin = await this.$store.dispatch(
+          "modules/users/fetchUsersLogin",
+          itme.user
+        );
+        // console.log(comitLogin);
+        if (comitLogin.success == true) {
+          this.$router.push("/");
+        }
       } catch (error) {
         // Xử lý lỗi khi đăng nhập không thành công
         const errorResponse = error.response;

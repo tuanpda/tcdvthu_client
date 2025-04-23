@@ -338,7 +338,6 @@ import * as XLSX from "xlsx";
 const { DateTime } = require("luxon");
 export default {
   name: "baohiemxahoi",
-  middleware: "auth",
   mixins: [mixinDmBhxh],
   data() {
     return {

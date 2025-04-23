@@ -728,7 +728,6 @@ import num2words from "vn-num2words";
 
 export default {
   name: "DanhsachKekhaiPage",
-  middleware: "auth", // middleware for authentication
   components: {
     ExportExcel_Viettel,
     ExportExcel_Vnpt,
@@ -752,8 +751,6 @@ export default {
       ngaykekhaiden: "",
       ngaykekhaitu: "",
       sohoso: "",
-      dailyview: this.$auth.user.madaily,
-      tochuc: this.$auth.user.matochuc,
       matochuc_mst: "",
       masobhxh: "",
       hoten: "",
@@ -773,19 +770,41 @@ export default {
     };
   },
 
+  // mounted() {
+  //   this.getDateTime();
+  //   this.getDmDiemthu();
+  //   this.isRoleSent = this.$auth.user.res_sent;
+  //   // console.log(this.$auth.user.res_sent);
+  //   if (this.$auth.user.nvcongty == 0) {
+  //     this.madaily = this.$auth.user.madaily;
+  //     this.diemthu = this.$auth.user.tendaily;
+  //     this.isDiemthu = true;
+  //   }
+  // },
+
   mounted() {
-    this.getDateTime();
-    this.getDmDiemthu();
-    this.isRoleSent = this.$auth.user.res_sent;
-    // console.log(this.$auth.user.res_sent);
-    if (this.$auth.user.nvcongty == 0) {
-      this.madaily = this.$auth.user.madaily;
-      this.diemthu = this.$auth.user.tendaily;
+    const user = this.user;
+
+    this.dailyview = user.madaily;
+    this.tochuc = user.matochuc;
+    this.diemthu = user.tendaily;
+    this.isRoleSent = user.res_sent;
+
+    if (user.nvcongty == 0) {
+      this.madaily = user.madaily;
+      this.diemthu = user.tendaily;
       this.isDiemthu = true;
     }
+
+    this.getDateTime();
+    this.getDmDiemthu();
   },
 
   computed: {
+    user() {
+      return this.$store.state.modules.users.user.user || {};
+    },
+
     totalSoTien() {
       if (this.data_xuatmau && this.data_xuatmau.length > 0) {
         return this.data_xuatmau.reduce((acc, item) => {
@@ -967,9 +986,9 @@ export default {
         maToChucDvt: matochucDvt,
         tenToChucDvt: data.tentochuc,
         maNhanVienThu: "NVT" + data.cccd,
-        tenNhanVienThu: this.$auth.user.name,
-        maCqBhxh: this.$auth.user.macqbhxh,
-        tenCqBhxh: this.$auth.user.tencqbhxh,
+        tenNhanVienThu: this.user.name,
+        maCqBhxh: this.user.macqbhxh,
+        tenCqBhxh: this.user.tencqbhxh,
         keyfrombhvn: data.key,
         tuNgay: data.tungay,
         denNgay: this.calculateEndDate(data.tungay, data.maphuongthucdong),
@@ -977,7 +996,7 @@ export default {
         dotKeKhai: data.dotkekhai,
         kyKeKhai: data.kykekhai,
         ngayKeKhai: data.ngaykekhai,
-        createdBy: this.$auth.user.username,
+        createdBy: this.user.username,
       };
 
       // console.log(dataPost);
@@ -1073,7 +1092,7 @@ export default {
       // this.matochuc_mst = mst;
       // Xây dựng đường dẫn API dựa trên mã số thuế
 
-      if (this.$auth.user.nvcongty === true) {
+      if (this.user.nvcongty === true) {
         // const res = await this.$axios.get(
         //   `/api/kekhai/kykekhai-search-series-pagi-nvcty?kykekhai=${this.kykekhai}&page=${page}`
         // );
@@ -1470,7 +1489,7 @@ export default {
       doc.setFontSize(11);
       doc.setTextColor("#04368c");
       doc.text(
-        `Nhân viên thu: ${this.$auth.user.name}`,
+        `Nhân viên thu: ${this.user.name}`,
         toadoXInfo + 107,
         toadoYInfo + 70,
         {

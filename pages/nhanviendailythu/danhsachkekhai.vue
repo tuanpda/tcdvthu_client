@@ -111,7 +111,6 @@ import DataTableBI from "@/components/table/DataTableBI";
 import DataTableIS from "@/components/table/DataTableIS";
 export default {
   name: "DanhsachKekhaiPage",
-  middleware: "auth", // middleware for authentication
   components: {
     DataTableAr,
     DataTableBI,

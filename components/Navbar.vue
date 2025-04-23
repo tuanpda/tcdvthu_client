@@ -178,7 +178,7 @@
         </div>
 
         <div class="navbar-end">
-          <div v-if="loggedIn" class="navbar-item has-dropdown is-hoverable">
+          <div v-if="user" class="navbar-item has-dropdown is-hoverable">
             <a class="navbar-link" @click="toggleDropdown_user"
               ><img
                 :src="user.avatar"
@@ -207,7 +207,7 @@
                 &ensp; Trợ giúp
               </nuxt-link>
               <hr class="navbar-divider" />
-              <template v-if="loggedIn && user.role === 1">
+              <template v-if="user && user.role === 1">
                 <nuxt-link to="/admin/" class="navbar-item">
                   <span class="icon is-small is-left" style="color: #ca1f26">
                     <i class="fab fa-buysellads"></i>
@@ -231,14 +231,14 @@
           <div class="modal-background"></div>
           <div class="modal-content modal-card-predata">
             <section class="modal-card-body box">
-              <div v-if="loggedIn">
+              <div v-if="user">
                 <div class="columns">
                   <div class="column">
                     <div class="field">
                       <label class="label">Tên tài khoản</label>
                       <div class="control">
                         <input
-                          v-model="localUser.username"
+                          v-model="user.username"
                           class="input is-small"
                           type="text"
                           disabled
@@ -251,7 +251,7 @@
                       <label class="label">Họ tên</label>
                       <div class="control">
                         <input
-                          v-model="localUser.name"
+                          v-model="user.name"
                           class="input is-small"
                           type="text"
                           disabled
@@ -266,7 +266,7 @@
                       <label class="label">Email</label>
                       <div class="control">
                         <input
-                          v-model="localUser.email"
+                          v-model="user.email"
                           class="input is-small"
                           type="text"
                         />
@@ -310,7 +310,7 @@
                       <div class="control" style="text-align: center">
                         <div id="preview" class="box">
                           <figure class="image is-128x128">
-                            <img class="is-rounded" :src="localUser.avatar" />
+                            <img class="is-rounded" :src="user.avatar" />
                           </figure>
                         </div>
                       </div>
@@ -355,7 +355,7 @@ export default {
       activeMenu: "", // Thêm thuộc tính activeMenu để lưu trạng thái menu đang được sử dụng
 
       isActive: false,
-      localUser: {},
+
       changePassword: {
         oldPassword: "",
         newPassword: "",
@@ -365,16 +365,9 @@ export default {
   },
 
   computed: {
-    loggedIn() {
-      return this.$auth.loggedIn;
-    },
     user() {
-      return this.$auth.user;
+      return this.$store.state.modules.users.user.user;
     },
-  },
-
-  mounted() {
-    this.localUser = { ...this.user };
   },
 
   methods: {
@@ -391,12 +384,21 @@ export default {
     },
 
     async logout() {
-      await this.$auth.logout(); // Đảm bảo rằng đăng xuất đã hoàn thành trước khi chuyển hướng
-      this.$router.push("/login"); // Chuyển hướng đến trang login sau khi đăng xuất
+      try {
+        await this.$axios.$post("/api/auth/logout");
+
+        // ✅ Cập nhật store: xóa user trong module 'users'
+        this.$store.commit("modules/users/setUser", {});
+
+        // ✅ Điều hướng về trang login
+        this.$router.push("/login");
+      } catch (error) {
+        console.error("Logout error:", error);
+      }
     },
 
     async updateUser() {
-      // console.log(this.localUser);
+      // console.log(this.user);
       if (this.changePassword.oldPassword !== "") {
         if (this.changePassword.newPassword === "") {
           const Toast = Swal.mixin({
@@ -436,8 +438,8 @@ export default {
             });
           } else {
             const dataUpdate = {
-              _id: this.localUser._id,
-              email: this.localUser.email,
+              _id: this.user._id,
+              email: this.user.email,
               password: this.changePassword.oldPassword,
               newPassword: this.changePassword.newPassword,
             };
@@ -488,8 +490,8 @@ export default {
         }
       } else {
         const dataUpdate = {
-          _id: this.localUser._id,
-          email: this.localUser.email,
+          _id: this.user._id,
+          email: this.user.email,
         };
         try {
           const res = await this.$axios.post(

@@ -275,7 +275,7 @@ import { mixinDmBhxh } from "@/mixins/mixinDmBhxh";
 export default {
   name: "baohiemxahoi",
   layout: "admin",
-  middleware: "auth", // middleware for authentication
+
   middleware: "super-admin", // middleware for authentication with the admin
   mixins: [mixinDmBhxh],
   data() {

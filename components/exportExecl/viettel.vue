@@ -16,7 +16,6 @@ const mhbhyt = require("../../data/muchuongbhyt");
 import ExcelJS from "exceljs";
 const { DateTime } = require("luxon");
 export default {
-  middleware: "auth", // middleware for authentication
   components: {},
   props: {
     // Prop để nhận dữ liệu từ bên ngoài

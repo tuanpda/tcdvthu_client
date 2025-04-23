@@ -34,8 +34,12 @@
                             Tên quận huyện
                           </td>
                           <td style="color: azure; text-align: center">Cấp</td>
-                          <td style="color: azure; text-align: center">Mã tỉnh</td>
-                          <td style="color: azure; text-align: center">Tên tỉnh</td>
+                          <td style="color: azure; text-align: center">
+                            Mã tỉnh
+                          </td>
+                          <td style="color: azure; text-align: center">
+                            Tên tỉnh
+                          </td>
                         </tr>
                       </thead>
                       <tbody>
@@ -102,7 +106,6 @@
 import { mixinDmBhxh } from "../../mixins/mixinDmBhxh";
 export default {
   name: "baohiemxahoi",
-  middleware: "auth",
   mixins: [mixinDmBhxh],
   data() {
     return {
@@ -136,5 +139,4 @@ export default {
   left: 0;
   height: 450px;
 }
-
 </style>

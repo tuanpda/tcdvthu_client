@@ -17,7 +17,6 @@ const titleVnpt = require("../../data/titleVnpt");
 import ExcelJS from "exceljs";
 const { DateTime } = require("luxon");
 export default {
-  middleware: "auth", // middleware for authentication
   components: {},
   props: {
     // Prop để nhận dữ liệu từ bên ngoài
@@ -320,11 +319,11 @@ export default {
       // Tạo tiêu đề cho dòng thứ 2
       const headerTitles = titleVnpt.map((item) => item.diengiai); // Lấy giá trị "diengiai"
       const row2 = worksheet.addRow(headerTitles);
-      row2.height = 40
+      row2.height = 40;
       // Tạo tiêu đề cho dòng thứ 3
       const headerTitlesTitle = titleVnpt.map((item) => item.tentruong); // Lấy giá trị "tentruong"
       const row3 = worksheet.addRow(headerTitlesTitle);
-      row3.height = 1
+      row3.height = 1;
 
       const rowNumber = 2; // Số hàng
       // Tô màu nền cho hàng 2 từ cột `A` đến `BD`
@@ -358,9 +357,8 @@ export default {
       // Đặt chiều cao về mặc định cho các dòng từ 4 trở đi
       for (let i = 4; i <= 9999; i++) {
         const row = worksheet.getRow(i);
-        row.height = 'undefined'; // Đặt chiều cao về mặc định
+        row.height = "undefined"; // Đặt chiều cao về mặc định
       }
-
 
       // format định dạng text cho các cột từ A-BD và tô viền đen
       columnNamesABD.forEach((columnName) => {

@@ -26,9 +26,9 @@
             <hr class="navbar-diliver" />
           </div>
         </div>
-        <div class="columns">
+        <div class="columns" v-if="user">
           <div class="column is-8">
-            <template v-if="diemthu.nvcongty == 1">
+            <template v-if="user.nvcongty == 1">
               <h4 class="title is-5">
                 <span class="icon">
                   <i style="" class="fas fa-money-check"></i>
@@ -41,8 +41,8 @@
                 <span class="icon">
                   <i style="" class="fas fa-money-check"></i>
                 </span>
-                Bạn đang Đăng nhập với Điểm thu: {{ diemthu.madaily }} -
-                {{ diemthu.tendaily }}
+                Bạn đang Đăng nhập với Điểm thu: {{ user.madaily }} -
+                {{ user.tendaily }}
               </h4>
             </template>
 
@@ -50,26 +50,26 @@
               <span class="icon">
                 <i style="" class="fas fa-male"></i>
               </span>
-              Người sử dụng: {{ diemthu.name }}
+              Người sử dụng: {{ user.name }}
             </h5>
             <h5 class="title is-6">
               <span class="icon">
                 <i style="" class="far fa-address-card"></i>
               </span>
-              Căn cước công dân: {{ diemthu.cccd }}
+              Căn cước công dân: {{ user.cccd }}
             </h5>
             <h5 class="title is-6">
               <span class="icon">
                 <i style="" class="fas fa-phone-square"></i>
               </span>
-              Số điện thoại: {{ diemthu.sodienthoai }}
+              Số điện thoại: {{ user.sodienthoai }}
             </h5>
           </div>
           <div class="column">
             <figure class="image">
               <img
                 style="height: 170px; width: 135px; border-width: 1px solid"
-                :src="diemthu.avatar"
+                :src="user.avatar"
               />
             </figure>
           </div>
@@ -82,21 +82,14 @@
 <script>
 export default {
   name: "IndexPage",
-  middleware: "auth",
   data() {
-    return {
-      diemthu: {},
-    };
+    return {};
   },
 
-  mounted() {
-    if (this.$auth && this.$auth.user) {
-      this.diemthu = this.$auth.user;
-    } else {
-      console.error("User data not available");
-    }
-
-    // console.log(this.$auth.loggedIn);
+  computed: {
+    user() {
+      return this.$store.state.modules.users.user.user;
+    },
   },
 };
 </script>

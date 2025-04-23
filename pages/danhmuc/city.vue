@@ -94,7 +94,6 @@
 import { mixinDmBhxh } from "../../mixins/mixinDmBhxh";
 export default {
   name: "baohiemxahoi",
-  middleware: "auth",
   mixins: [mixinDmBhxh],
   data() {
     return {
@@ -128,5 +127,4 @@ export default {
   left: 0;
   height: 450px;
 }
-
 </style>

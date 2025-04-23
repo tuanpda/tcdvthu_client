@@ -274,7 +274,6 @@
 import { mixinDmBhxh } from "../../mixins/mixinDmBhxh";
 export default {
   name: "baohiemxahoi",
-  middleware: "auth",
   mixins: [mixinDmBhxh],
   data() {
     return {

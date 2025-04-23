@@ -1354,7 +1354,7 @@ export default {
 
   mounted() {
     // this.tinhDenThang("10/2024", "12");
-    this.isRoleSent = this.$auth.user.res_sent;
+    this.isRoleSent = this.user.res_sent;
   },
 
   async created() {
@@ -1398,11 +1398,11 @@ export default {
       }
     });
 
-    if (this.$auth.loggedIn) {
+    if (this.user) {
       // Kiểm tra xem người dùng đã đăng nhập chưa
-      // console.log("Thông tin người dùng:", this.$auth.user);
-      this.matinh = this.$auth.user.matinh;
-      this.tentinh = this.$auth.user.tentinh;
+      // console.log("Thông tin người dùng:", this.user);
+      this.matinh = this.user.matinh;
+      this.tentinh = this.user.tentinh;
 
       const res_quanhuyen = await this.$axios.get(
         `/api/danhmucs/dmquanhuyenwithmatinh?matinh=${this.matinh}`
@@ -1420,6 +1420,10 @@ export default {
   },
 
   computed: {
+    user() {
+      return this.$store.state.modules.users.user.user || {};
+    },
+
     isDisabled_Xaphuong() {
       return this.checkXaphuongOpen == false;
     },
@@ -1620,10 +1624,10 @@ export default {
     addRow() {
       try {
         this.items.push({
-          matochuc: this.$auth.user.matochuc,
-          tentochuc: this.$auth.user.tentochuc,
-          madaily: this.$auth.user.madaily,
-          tendaily: this.$auth.user.tendaily,
+          matochuc: this.user.matochuc,
+          tentochuc: this.user.tentochuc,
+          madaily: this.user.madaily,
+          tendaily: this.user.tendaily,
           // loại hình nhận từ props kekhai
           maloaihinh: this.maloaihinh,
           tenloaihinh: this.loaihinh,
@@ -2600,7 +2604,7 @@ export default {
 
     async xacnhanThoat() {
       const result = await Swal.fire({
-        title: `Xác nhận thoát. Hãy gửi dữ lên cổng trước khi thoát nhé ?`,
+        title: `Xác nhận thoát?`,
         showDenyButton: true,
         confirmButtonText: "Xác nhận",
         denyButtonText: `Hủy thoát`,
@@ -2649,9 +2653,9 @@ export default {
         maToChucDvt: matochucDvt,
         tenToChucDvt: data.tentochuc,
         maNhanVienThu: "NVT" + data.cccd,
-        tenNhanVienThu: this.$auth.user.name,
-        maCqBhxh: this.$auth.user.macqbhxh,
-        tenCqBhxh: this.$auth.user.tencqbhxh,
+        tenNhanVienThu: this.user.name,
+        maCqBhxh: this.user.macqbhxh,
+        tenCqBhxh: this.user.tencqbhxh,
         keyfrombhvn: data.key,
         tuNgay: data.tungay,
         denNgay: data.denngay,
@@ -2663,7 +2667,7 @@ export default {
         dotKeKhai: data.dotkekhai,
         kyKeKhai: data.kykekhai,
         ngayKeKhai: data.ngaykekhai,
-        createdBy: this.$auth.user.username,
+        createdBy: this.user.username,
         sobienlai: curentInvoiceNumber,
         ngaybienlai: formattedDate,
         maloaihinh: data.maloaihinh,
@@ -2761,7 +2765,7 @@ export default {
     },
 
     async onSave() {
-      const matochuc = this.$auth.user.matochuc;
+      const matochuc = this.user.matochuc;
       const parts = matochuc.split("-");
       const mst = parts[parts.length - 1];
       // Xây dựng đường dẫn API dựa trên mã số thuế
@@ -2829,9 +2833,9 @@ export default {
                 this.items[i].maphuongthucdong
               );
 
-              // console.log(this.$auth.user.name);
+              // console.log(this.user.name);
 
-              this.items[i].tennguoitao = this.$auth.user.name;
+              this.items[i].tennguoitao = this.user.name;
 
               // ngày biên lai
               // const ngaybienlaiTranform = this.convertDate(
@@ -2841,7 +2845,7 @@ export default {
 
               // info add db
               this.items[i].createdAt = formattedDate;
-              this.items[i].createdBy = this.$auth.user.username;
+              this.items[i].createdBy = this.user.username;
               this.items[i].updatedAt = "";
               this.items[i].updatedBy = "";
 
@@ -2863,17 +2867,17 @@ export default {
               let maToChucDvt = "IS0012M";
               let soTien = this.items[i].sotien;
               let soThang = this.items[i].maphuongthucdong;
-              let maNhanVienThu = "NVT" + this.$auth.user.cccd;
-              let tenNhanVienThu = this.$auth.user.name;
-              let maCqBhxh = this.$auth.user.macqbhxh;
-              let tenCqBhxh = this.$auth.user.tencqbhxh;
+              let maNhanVienThu = "NVT" + this.user.cccd;
+              let tenNhanVienThu = this.user.name;
+              let maCqBhxh = this.user.macqbhxh;
+              let tenCqBhxh = this.user.tencqbhxh;
               let key = "0123"; // do bhxh vn cung cấp
               let tuNgay = this.items[i].tuthang;
               let denNgay = this.tinhDenThang(tuNgay, soThang);
 
               // thông tin bộ hồ sơ nạp
-              this.items[i].nvt_masobhxh = this.$auth.user.masobhxh;
-              this.items[i].nvt_cccd = this.$auth.user.cccd;
+              this.items[i].nvt_masobhxh = this.user.masobhxh;
+              this.items[i].nvt_cccd = this.user.cccd;
               this.items[i].kykekhai = kyKeKhaiFrm;
               this.items[i].ngaykekhai = formattedDate;
 
@@ -2882,7 +2886,7 @@ export default {
                 uniqueString +
                 this.items[i].masobhxh +
                 this.items[i].cccd +
-                this.$auth.user.username;
+                this.user.username;
               // Loại bỏ dữ liệu không cần thiết bằng destructuring
               const {
                 info_benhvien,

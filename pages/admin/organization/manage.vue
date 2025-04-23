@@ -290,7 +290,6 @@ import Swal from "sweetalert2";
 export default {
   name: "ManageOrgAdminPage",
   layout: "admin",
-  middleware: "auth", // middleware for authentication
   middleware: "super-admin", // middleware for authentication with the admin
   components: {},
 
@@ -623,7 +622,10 @@ export default {
         if (result.isConfirmed) {
           // todo something
           try {
-            const res = await this.$axios.post(`/api/tochucdvt/delete/org`, data);
+            const res = await this.$axios.post(
+              `/api/tochucdvt/delete/org`,
+              data
+            );
             console.log(res);
             if (res.data.success == true) {
               Swal.fire({

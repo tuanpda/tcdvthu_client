@@ -15,7 +15,7 @@
       </div>
 
       <div style="margin-top: 20px">
-        <div v-if="loggedIn">
+        <div v-if="user">
           <div>
             <div class="titleKk">
               <hr class="line" />
@@ -274,7 +274,6 @@ const currencyMask = createNumberMask({
 });
 export default {
   name: "KekhaiPage",
-  middleware: "auth",
   components: {
     ArTable,
     BiTable,
@@ -288,16 +287,12 @@ export default {
       maloaihinh: "",
       loaihinh: "",
       luongcoso: 0,
-      user_info: {},
     };
   },
 
   computed: {
-    loggedIn() {
-      return this.$auth.loggedIn;
-    },
     user() {
-      return this.$auth.user;
+      return this.$store.state.modules.users.user.user || {};
     },
   },
 

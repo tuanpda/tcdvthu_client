@@ -433,7 +433,6 @@ import Swal from "sweetalert2";
 export default {
   name: "AddUserAdminPage",
   layout: "admin",
-  middleware: "auth", // middleware for authentication
   middleware: "super-admin", // middleware for authentication with the admin
   components: {},
 

@@ -94,32 +94,36 @@
                         :disabled="currentPage === 1"
                         @click="goToPage(1)"
                         class="pagination-previous button is-info is-light is-small"
-                        >Đầu tiên</button
                       >
+                        Đầu tiên
+                      </button>
 
                       <!-- Nút Previous -->
                       <button
                         :disabled="currentPage === 1"
                         @click="goToPreviousPage"
                         class="pagination-previous button is-info is-light is-small"
-                        >Trang trước</button
                       >
+                        Trang trước
+                      </button>
 
                       <!-- Nút Next -->
                       <button
                         :disabled="currentPage === totalPages"
                         @click="goToNextPage"
                         class="pagination-next button is-danger is-light is-small"
-                        >Trang tiếp</button
                       >
+                        Trang tiếp
+                      </button>
 
                       <!-- Nút trang cuối cùng -->
                       <button
                         :disabled="currentPage === totalPages"
                         @click="goToPage(totalPages)"
                         class="pagination-next button is-danger is-light is-small"
-                        >Cuối cùng</button
                       >
+                        Cuối cùng
+                      </button>
 
                       <ul class="pagination-list">
                         <!-- Hiển thị các nút phân trang -->
@@ -128,11 +132,12 @@
                             :class="[
                               'pagination-link',
                               { 'is-current': page === currentPage },
-                              'is-small'
+                              'is-small',
                             ]"
                             @click="goToPage(page)"
-                            >{{ page }}</button
                           >
+                            {{ page }}
+                          </button>
                         </li>
                       </ul>
                     </nav>
@@ -174,7 +179,6 @@ import { mixinDmBhxh } from "@/mixins/mixinDmBhxh";
 export default {
   name: "baohiemxahoi",
   layout: "admin",
-  middleware: "auth", // middleware for authentication
   middleware: "super-admin", // middleware for authentication with the admin
   mixins: [mixinDmBhxh],
   data() {

@@ -1,5 +1,6 @@
 export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
+  mode: "universal",
   head: {
     title: "Hệ thống hỗ trợ TCDV Thu",
     htmlAttrs: {
@@ -13,10 +14,10 @@ export default {
     ],
     link: [
       { rel: "icon", type: "image/x-icon", href: "/logo-asxh.png" },
-      // {
-      //   rel: "stylesheet",
-      //   href: "/fontawesome-free-6.5.1-web/css/all.css",
-      // },
+      {
+        rel: "stylesheet",
+        href: "/fontawesome-free-6.5.1-web/css/all.css",
+      },
       {
         rel: "stylesheet",
         href: "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css",
@@ -48,7 +49,7 @@ export default {
   modules: [
     // https://go.nuxtjs.dev/axios
     "@nuxtjs/axios",
-    "@nuxtjs/auth-next",
+    // "@nuxtjs/auth-next",
   ],
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
@@ -57,25 +58,24 @@ export default {
     // baseURL: "/",
     // baseURL: "http://192.168.160.7:2612", // máy chủ nhân hoà
     // baseURL: "http://14.224.129.177:1552", // máy chủ tuanpda
-    baseURL: "http://27.73.37.94:1552", // máy chủ phủ diễn
-    // baseURL: "http://localhost:1552",
-    timeout: 20000,
-    // credentials: true,
+    // baseURL: "http://27.73.37.94:1552", // máy chủ phủ diễn
+    baseURL: "http://localhost:1552",
+    credentials: true,
+  },
+
+  server: {
+    port: 4042,
+    // host: "192.168.160.7", // server nhân hòa
+    // host: "14.224.129.177", // server tuanpda
+    host: "localhost",
+    // host: "192.168.1.97",
   },
 
   // server: {
-  //   port: 4042,
-  //   // host: "192.168.160.7", // server nhân hòa
-  //   // host: "14.224.129.177", // server tuanpda
-  //   host: "localhost",
-  //   // host: "192.168.1.97",
+  //   port: 3000,
+  //   host: "192.168.1.5",
+  //   // tnhh phủ diễn
   // },
-
-  server: {
-    port: 3000,
-    host: "192.168.1.5",
-    // tnhh phủ diễn
-  },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {},
@@ -93,61 +93,36 @@ export default {
     },
   },
 
-  auth: {
-    strategies: {
-      custom: {
-        scheme: "~/nuxtAuthSchema/CustomScheme.js",
-        endpoints: {
-          login: {
-            url: "/api/auth/access/login",
-            method: "post",
-            propertyName: false,
-          },
-          // refresh: { url: '/api/auth/refresh', method: 'post' },
-          user: { url: "/api/users/auth/user", method: "get" },
-        },
-        // token: {
-        //   property: "access_token",
-        //   global: true,
-        //   required: true,
-        //   type: "Bearer",
-        // },
-        user: {
-          property: "user",
-          autoFetch: true,
-        },
-      },
-    },
-
-    watchLoggedIn: true, // Cập nhật trạng thái đăng nhập
-    redirect: {
-      login: "/login",
-      logout: "/login",
-      home: "/",
-    },
-  },
-
   // auth: {
   //   strategies: {
   //     custom: {
   //       scheme: "~/nuxtAuthSchema/CustomScheme.js",
   //       endpoints: {
-  //         login: { url: "/api/auth/access/login", method: "post" },
+  //         login: {
+  //           url: "/api/auth/access/login",
+  //           method: "post",
+  //           propertyName: false,
+  //         },
+  //         // refresh: { url: '/api/auth/refresh', method: 'post' },
   //         user: { url: "/api/users/auth/user", method: "get" },
   //       },
-  //       token: {
-  //         property: false, // không lấy token từ response nữa
-  //         type: "",
-  //       },
+  //       // token: {
+  //       //   property: "access_token",
+  //       //   global: true,
+  //       //   required: true,
+  //       //   type: "Bearer",
+  //       // },
   //       user: {
-  //         property: false,
+  //         property: "user",
   //         autoFetch: true,
   //       },
   //     },
   //   },
+
+  //   watchLoggedIn: true, // Cập nhật trạng thái đăng nhập
   //   redirect: {
   //     login: "/login",
-  //     logout: "/",
+  //     logout: "/login",
   //     home: "/",
   //   },
   // },

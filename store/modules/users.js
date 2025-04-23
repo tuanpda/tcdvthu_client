@@ -35,14 +35,25 @@ export const actions = {
     }
   },
 
+  async fetchUsersLogin({ commit }) {
+    try {
+      const response = await this.$axios.get("/api/users/auth/user");
+      commit("setUser", response.data);
+
+      return {
+        success: true,
+        message: "Created success !",
+      };
+    } catch (error) {
+      console.error(error);
+    }
+  },
+
   // Add new data
   async createUser({ commit }, data) {
     try {
       // console.log(data);
-      const response = await this.$axios.post(
-        "/api/users/account",
-        data
-      );
+      const response = await this.$axios.post("/api/users/account", data);
       // console.log(response);
       if (response.status == 200) {
         const reload = await this.$axios.get("/api/users/");
@@ -66,10 +77,7 @@ export const actions = {
   // Update data
   async updateUser({ commit }, data) {
     try {
-      const response = await this.$axios.post(
-        `/api/users/user/fix`,
-        data
-      );
+      const response = await this.$axios.post(`/api/users/user/fix`, data);
       if (response.data.success == true) {
         const reload = await this.$axios.get("/api/users/");
         commit("setUsers", reload.data);

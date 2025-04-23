@@ -178,7 +178,7 @@
         </div>
 
         <div class="navbar-end">
-          <div v-if="loggedIn" class="navbar-item has-dropdown is-hoverable">
+          <div v-if="user" class="navbar-item has-dropdown is-hoverable">
             <a class="navbar-link" @click="toggleDropdown_user"
               ><img
                 :src="user.avatar"
@@ -231,7 +231,7 @@
           <div class="modal-background"></div>
           <div class="modal-content modal-card-predata">
             <section class="modal-card-body box">
-              <div v-if="loggedIn">
+              <div v-if="user">
                 <div class="columns">
                   <div class="column">
                     <div class="field">
@@ -339,24 +339,20 @@ export default {
       activeMenu: "", // Thêm thuộc tính activeMenu để lưu trạng thái menu đang được sử dụng
 
       isActive: false,
-      form_change_pass:{
+      form_change_pass: {
         old_pass: "",
         new_pass: "",
         re_new_pass: "",
-      }
+      },
     };
   },
 
   computed: {
-    loggedIn() {
-      return this.$auth.loggedIn;
-    },
+    // Truy xuất dữ liệu từ module users
     user() {
-      return this.$auth.user;
+      return this.$store.state.modules.users.user.user; // Truy cập state của module users
     },
   },
-
-  mounted() {},
 
   methods: {
     toggleMenu() {
