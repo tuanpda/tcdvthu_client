@@ -1,8 +1,8 @@
 import cookieparser from "cookieparser";
 
 export default async function ({ store, redirect, route, $axios, req }) {
-  console.log(store.state.modules.users.user.user);
-  console.log(req.headers.cookie);
+  // console.log(store.state.modules.users.user.user);
+  // console.log(req.headers.cookie);
 
   if (process.server && req && req.headers.cookie) {
     const parsed = cookieparser.parse(req.headers.cookie);
@@ -16,6 +16,8 @@ export default async function ({ store, redirect, route, $axios, req }) {
 
     try {
       const user = await $axios.$get("/api/users/auth/user");
+      console.log(user);
+
       console.log("✅ Lấy user thành công:", user);
       await store.dispatch("modules/users/fetchUsersLogin", user);
     } catch (e) {
