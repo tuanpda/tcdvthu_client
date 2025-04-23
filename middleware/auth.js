@@ -2,7 +2,7 @@ import cookieparser from "cookieparser";
 
 export default async function ({ store, redirect, route, $axios, req }) {
   console.log(store.state.modules.users.user.user);
-  console.log(req.headers);
+  console.log(req.headers.cookie);
 
   // if (!store.state.modules.users.user.user) {
   //   try {
