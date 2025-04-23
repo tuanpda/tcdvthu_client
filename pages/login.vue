@@ -109,18 +109,18 @@ export default {
           username: this.username,
           password: this.password,
         });
-        // console.log(res);
+        console.log(res);
 
         // lấy thông tin này đem vào để gọi me
         const itme = await this.$axios.$get("/api/users/auth/user");
-        // console.log(itme.user);
+        console.log(itme.user);
 
         // Gọi commit vào module auth
         const comitLogin = await this.$store.dispatch(
           "modules/users/fetchUsersLogin",
           itme.user
         );
-        // console.log(comitLogin);
+        console.log(comitLogin);
         if (comitLogin.success == true) {
           this.$router.push("/");
         }
