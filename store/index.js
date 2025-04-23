@@ -1,7 +1,5 @@
 import Vue from "vue";
 import Vuex from "vuex";
-import cookieparser from "cookieparser"; // thêm cái này để parse cookie
-
 import {
   state as state1,
   mutations as mutations1,
@@ -16,43 +14,28 @@ import {
 
 Vue.use(Vuex);
 
-const store = () =>
-  new Vuex.Store({
-    state: {
-      // state gốc nếu cần
+const store = new Vuex.Store({
+  state: {
+    // ...
+  },
+  mutations: {
+    // ...
+  },
+  actions: {
+    // ...
+  },
+  modules: {
+    users: {
+      // namespaced: true, // Enable namespace for authentic store
+      state: state1,
+      mutations: mutations1,
+      actions: actions1,
     },
-    mutations: {
-      // mutation gốc nếu cần
+    danhmucs: {
+      // namespaced: true, // Enable namespace for authentic store
+      state: state2,
+      mutations: mutations2,
+      actions: actions2,
     },
-    actions: {
-      async nuxtServerInit({ dispatch, commit }, { req }) {
-        console.log("nuxtServerInit chạy trên server...");
-
-        // if (req.headers.cookie) {
-        //   const parsed = cookieparser.parse(req.headers.cookie);
-        //   const token = parsed.token;
-
-        //   if (token) {
-        //     // Gọi action từ users module để fetch user info nếu cần
-        //     await dispatch("users/fetchUserFromToken", token);
-        //   }
-        // }
-      },
-    },
-    modules: {
-      users: {
-        namespaced: true,
-        state: state1,
-        mutations: mutations1,
-        actions: actions1,
-      },
-      danhmucs: {
-        namespaced: true,
-        state: state2,
-        mutations: mutations2,
-        actions: actions2,
-      },
-    },
-  });
-
-export default store;
+  },
+});
