@@ -14,7 +14,11 @@ export default async function ({ store, redirect, route, $axios, req }) {
       return redirect("/login");
     }
 
+    console.log("vào");
+
     try {
+      console.log("check");
+
       const user = await $axios.$get("/api/users/auth/user");
       console.log(user);
 
