@@ -21,21 +21,7 @@ const store = new Vuex.Store({
   mutations: {
     // ...
   },
-  actions: {
-    async nuxtServerInit({ dispatch, commit }, { req }) {
-      console.log("nuxtServerInit chạy trên server...");
-
-      // if (req.headers.cookie) {
-      //   const parsed = cookieparser.parse(req.headers.cookie);
-      //   const token = parsed.token;
-
-      //   if (token) {
-      //     // Gọi action từ users module để fetch user info nếu cần
-      //     await dispatch("users/fetchUserFromToken", token);
-      //   }
-      // }
-    },
-  },
+  actions: {},
   modules: {
     users: {
       // namespaced: true, // Enable namespace for authentic store
