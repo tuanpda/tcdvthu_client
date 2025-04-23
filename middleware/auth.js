@@ -10,10 +10,10 @@ export default async function ({ store, redirect, route, $axios, req }) {
   //   console.log("❌ Không có token, redirect login");
   //   return redirect("/login");
   // }
-  // console.log("vào");
-  // const res = await $axios.$get("/api/users/auth/user");
-  // console.log(res);
-  // console.log("ra");
+  console.log("vào");
+  const res = await $axios.$get("/api/users/auth/user");
+  console.log(res);
+  console.log("ra");
   // try {
   //   console.log("check");
   //   const user = await $axios.$get("/api/users/auth/user", {
