@@ -19,14 +19,11 @@ export default async function ({ store, redirect, route, $axios, req }) {
     try {
       console.log("check");
 
-      const user = await $axios.$get(
-        "http://27.73.37.94:1552/api/users/auth/user",
-        {
-          headers: {
-            cookie: req.headers.cookie,
-          },
-        }
-      );
+      const user = await $axios.$get("/api/users/auth/user", {
+        headers: {
+          cookie: req.headers.cookie,
+        },
+      });
       console.log(user);
 
       console.log("pass qua gọi");
