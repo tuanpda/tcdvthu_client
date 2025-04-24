@@ -724,6 +724,7 @@ export default {
     }
 
     this.isRoleSent = user.res_sent;
+    console.log(this.isRoleSent);
 
     if (user.nvcongty == 0) {
       this.madaily = user.madaily;
@@ -1155,7 +1156,7 @@ export default {
           const res = await this.$axios.get(
             `/api/kekhai/kykekhai-search-series-pagi-tonghop?kykekhai=${this.kykekhai}&dotkekhai=${this.dotkekhai}&ngaykekhai=${this.ngaykekhaitu}&ngaykekhaiden=${this.ngaykekhaiden}&sohoso=${this.sohoso}&page=${page}`
           );
-          console.log(res.data.results.length);
+          // console.log(res.data.results.length);
           if (res.data.results.length > 0) {
             this.data_kekhai = res.data.results;
             this.totalPages = res.data.info.pages;

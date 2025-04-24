@@ -28,12 +28,20 @@
         </div>
         <div class="columns" v-if="user">
           <div class="column is-8">
-            <template v-if="user.nvcongty == 1">
+            <template v-if="user.nvcongty == 1 && user.role != 2">
               <h4 class="title is-5">
                 <span class="icon">
                   <i style="" class="fas fa-money-check"></i>
                 </span>
                 Bạn đang Đăng nhập với Vai trò Nhân viên Công ty
+              </h4>
+            </template>
+            <template v-else-if="user.nvcongty == 1 && user.role == 2">
+              <h4 class="title is-5">
+                <span class="icon">
+                  <i style="" class="fas fa-money-check"></i>
+                </span>
+                Bạn đang Đăng nhập với tài khoản Tổng hợp
               </h4>
             </template>
             <template v-else>
