@@ -724,7 +724,7 @@ export default {
     }
 
     this.isRoleSent = user.res_sent;
-    console.log(this.isRoleSent);
+    // console.log(this.isRoleSent);
 
     if (user.nvcongty == 0) {
       this.madaily = user.madaily;
