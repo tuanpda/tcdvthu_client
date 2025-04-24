@@ -433,7 +433,6 @@ import Swal from "sweetalert2";
 export default {
   name: "AddUserAdminPage",
   layout: "admin",
-  middleware: "super-admin", // middleware for authentication with the admin
   components: {},
 
   data() {
@@ -472,7 +471,7 @@ export default {
         role: 4, // nomal user
         avatar: "http://localhost:3000/avatar/default-image.png",
         active: 0,
-        createdBy: this.$auth.user.username,
+        // createdBy: this.$auth.user.username,
         createdAt: null,
         updatedBy: "",
         updatedAt: "",
@@ -488,6 +487,9 @@ export default {
 
   mounted() {
     this.fetchDataUsers();
+
+    const user = this.user;
+    this.form.createdBy = user.username;
   },
 
   watch: {
@@ -497,6 +499,10 @@ export default {
   },
 
   computed: {
+    user() {
+      return this.$store.state.modules.users.user.user; // Truy cập state của module users
+    },
+
     // load data from the store
     // ...mapState("modules/users", ["users"]),
     ...mapState("modules/danhmucs", ["dm_Tinhs"]),

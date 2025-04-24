@@ -290,7 +290,6 @@ import Swal from "sweetalert2";
 export default {
   name: "ManageOrgAdminPage",
   layout: "admin",
-  middleware: "super-admin", // middleware for authentication with the admin
   components: {},
 
   data() {
@@ -319,7 +318,7 @@ export default {
         madonvibaohiem: "",
         tendonvibaohiem: "VP BẢO HIỂM XÃ HỘI TỈNH HÀ TĨNH",
         active: 0,
-        createdBy: this.$auth.user.username,
+        // createdBy: this.$auth.user.username,
         createdAt: null,
       },
       // sort and pagi
@@ -332,6 +331,8 @@ export default {
 
   mounted() {
     this.fetchDataOrg();
+    const user = this.user;
+    this.form.createdBy = user.username;
   },
 
   watch: {
@@ -341,6 +342,10 @@ export default {
   },
 
   computed: {
+    user() {
+      return this.$store.state.modules.users.user.user; // Truy cập state của module users
+    },
+
     // load data from the store
     // ...mapState("modules/users", ["users"]),
     ...mapState("modules/danhmucs", ["dm_Tinhs"]),

@@ -6,17 +6,6 @@
 <script>
 export default {
   name: "none",
-
-  mounted() {
-    // Kiểm tra token từ cookie
-    // const token = document.cookie.match(/token=([^;]+)/)?.[1];
-    console.log(document.cookie);
-
-    // if (token) {
-    //   // Nếu có token, chuyển đến trang chính (hoặc trang dashboard)
-    //   this.$router.push("/");
-    // }
-  },
 };
 </script>
 
