@@ -44,7 +44,7 @@
               <div class="column is">
                 <button
                   @click="isActive = true"
-                  :disabled="user.role != 1"
+                  :disabled="user.role !== 1"
                   class="button is-small is-primary is-fullwidth"
                 >
                   <span class="icon">
@@ -59,7 +59,7 @@
                   class="button is-small is-warning is-fullwidth"
                 >
                   <a
-                    href="http://27.73.37.94:81/filemauimport/filemau_import_nguoitg.xlsx"
+                    href="http://27.73.37.94:4042/filemauimport/filemau_import_nguoitg.xlsx"
                     ><span class="icon">
                       <i class="fas fa-file-excel"></i>
                     </span>
@@ -368,11 +368,14 @@ export default {
       estimatedHours: null,
       estimatedMinutes: null,
       estimatedSeconds: null,
-      user: {},
     };
   },
 
   computed: {
+    user() {
+      return this.$store.state.modules.users.user.user || {};
+    },
+
     visiblePages() {
       // Trả về một mảng các số trang mà bạn muốn hiển thị
       const pages = [];
@@ -407,14 +410,7 @@ export default {
     });
   },
 
-  mounted() {
-    if (this.$auth && this.$auth.user) {
-      this.user = this.$auth.user;
-      console.log(this.user.role);
-    } else {
-      console.error("User data not available");
-    }
-  },
+  mounted() {},
 
   methods: {
     async filter(page) {
@@ -683,7 +679,7 @@ export default {
       this.data_import = this.data_import.map((item) => ({
         ...item,
         ngayip: formattedDate,
-        nguoiip: this.$auth.user.username,
+        nguoiip: this.user.username,
       }));
 
       // Mảng lưu kết quả xử lý
