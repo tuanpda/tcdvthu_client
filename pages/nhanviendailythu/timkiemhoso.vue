@@ -787,7 +787,13 @@ export default {
 
     this.dailyview = user.madaily;
     this.tochuc = user.matochuc;
-    this.diemthu = user.tendaily;
+    if (user.role == 2) {
+      this.diemthu = "Tài khoản tổng hợp";
+      // console.log(this.diemthu);
+      // console.log(user.role);
+    } else {
+      this.diemthu = user.tendaily;
+    }
     this.isRoleSent = user.res_sent;
 
     if (user.nvcongty == 0) {
@@ -1092,7 +1098,7 @@ export default {
       // this.matochuc_mst = mst;
       // Xây dựng đường dẫn API dựa trên mã số thuế
 
-      if (this.user.nvcongty === true) {
+      if (this.user.nvcongty === true && this.user.role !== 2) {
         // const res = await this.$axios.get(
         //   `/api/kekhai/kykekhai-search-series-pagi-nvcty?kykekhai=${this.kykekhai}&page=${page}`
         // );
@@ -1140,6 +1146,36 @@ export default {
             icon: "error",
             title: `Có lỗi xảy ra`,
           });
+        }
+      } else if (this.user.nvcongty === true && this.user.role == 2) {
+        try {
+          const res = await this.$axios.get(
+            `/api/kekhai/kykekhai-search-series-pagi-tonghop?kykekhai=${this.kykekhai}&dotkekhai=${this.dotkekhai}&ngaykekhai=${this.ngaykekhaitu}&ngaykekhaiden=${this.ngaykekhaiden}&sohoso=${this.sohoso}&page=${page}`
+          );
+          console.log(res.data.results.length);
+          if (res.data.results.length > 0) {
+            this.data_kekhai = res.data.results;
+            this.totalPages = res.data.info.pages;
+            this.currentPage = page;
+          } else {
+            const Toast = Swal.mixin({
+              toast: true,
+              position: "top-end",
+              showConfirmButton: false,
+              timer: 2000,
+              timerProgressBar: true,
+              didOpen: (toast) => {
+                toast.addEventListener("mouseenter", Swal.stopTimer);
+                toast.addEventListener("mouseleave", Swal.resumeTimer);
+              },
+            });
+            Toast.fire({
+              icon: "error",
+              title: `Không tìm thấy hồ sơ`,
+            });
+          }
+        } catch (error) {
+          console.log(error);
         }
       } else {
         try {

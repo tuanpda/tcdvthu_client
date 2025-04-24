@@ -748,18 +748,18 @@ export default {
 
     goToPreviousPage() {
       if (this.currentPage > 1) {
-        this.getData(this.currentPage - 1);
+        this.filter(this.currentPage - 1);
       }
     },
 
     goToNextPage() {
       if (this.currentPage < this.totalPages) {
-        this.getData(this.currentPage + 1);
+        this.filter(this.currentPage + 1);
       }
     },
 
     goToPage(page) {
-      this.getData(page); // Di chuyển đến trang được chỉ định
+      this.filter(page); // Di chuyển đến trang được chỉ định
     },
   },
 };

@@ -12,7 +12,7 @@
             />
           </div>
           <div class="footer-row" style="font-size: small; font-weight: 700">
-            <span>© 2024</span>
+            <span>© 2025</span>
             <span>Term</span>
             <span>Privacy</span>
           </div>
@@ -22,13 +22,13 @@
             class="footer-row"
             style="font-size: small; font-weight: 700; text-align: center"
           >
-            <span 
-              >Thiết kế & Phát triển bởi Công ty Sơn Thư Company</span
-            >
+            <span>Designed & Developed by Son Thu Software Company</span>
             <br />
             <span
-              >Copyright @2024 | Designed With by
-              <span style="font-weight: 900; color: #f96854">司.馬.懿</span></span
+              >Copyright @2025 | Designed with by
+              <span style="font-weight: 900; color: #f96854"
+                >司.馬.懿</span
+              ></span
             >
           </div>
         </div>
@@ -49,10 +49,10 @@
               ></i>
             </div>
             <div class="footer-row" style="font-size: small; font-weight: 700">
-              <span>About</span>
-              <span>FAQ</span>
-              <span>Contact</span>
-              <span>Blog</span>
+              <span>Chắp cánh</span>
+              <span>sứ mệnh</span>
+              <span>An sinh</span>
+              <span>Xã hội</span>
             </div>
           </div>
         </div>
