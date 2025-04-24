@@ -860,7 +860,7 @@ export default {
       }
       data.append("active", this.user_data.active);
       data.append("updatedAt", this.user_data.updatedAt);
-      data.append("updatedBy", this.$auth.user.username);
+      data.append("updatedBy", this.user.username);
       data.append("ghichu", this.user_data.ghichu);
 
       try {
@@ -898,7 +898,7 @@ export default {
     },
 
     async onDelete(data) {
-      if (this.$auth.user.role === 1) {
+      if (this.user.role === 1) {
         const result = await Swal.fire({
           title: `Xác nhận xóa tài khoản này? Sẽ không thể lấy lại!`,
           showDenyButton: true,
