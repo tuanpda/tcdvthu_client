@@ -48,27 +48,28 @@
               <td style="text-align: center">Tỉnh / Thành phố</td>
               <td style="text-align: center">Quận / Huyện</td>
               <td style="text-align: center">Xã phường</td>
-              <td style="text-align: center">Tổ thôn</td>
-              <td style="text-align: center">Bệnh viện tỉnh</td>
+              <!-- <td style="text-align: center">Tổ thôn</td>
+              <td style="text-align: center">Bệnh viện tỉnh</td> -->
               <td style="text-align: center">Bệnh viện</td>
+              <td style="text-align: center">Hình thức nạp</td>
               <td style="text-align: center">Ghi chú</td>
-              <td style="text-align: center">Số biên lai</td>
-              <td style="text-align: center">Ngày biên lai</td>
+              <!-- <td style="text-align: center">Số biên lai</td>
+              <td style="text-align: center">Ngày biên lai</td> -->
             </tr>
           </thead>
           <tbody>
             <tr v-for="(item, index) in items" :key="index">
               <td style="text-align: center; vertical-align: middle">
-                <a @click="copyRow()">
+                <!-- <a @click="copyRow()">
                   <span class="icon is-small">
                     <i
                       style="color: hsl(153deg, 53%, 53%)"
                       class="fas fa-check-circle"
                     ></i>
                   </span>
-                </a>
+                </a> -->
                 &nbsp;
-                <a @click="deleteRow(item)">
+                <a @click="deleteRow(index)">
                   <span class="icon is-small">
                     <i style="color: red" class="far fa-trash-alt"></i>
                   </span>
@@ -139,7 +140,6 @@
               </td>
               <td style="text-align: center">
                 <input
-                  @blur="checkAlertSodienthoai(item.dienthoai)"
                   v-model="item.dienthoai"
                   class="input is-small"
                   type="number"
@@ -149,16 +149,17 @@
               <td style="text-align: center">
                 <div class="select is-fullwidth is-small">
                   <select
+                    v-model="item.maphuongan"
                     @change="phuonganChange($event, index)"
                     ref="phuonganSelect"
                   >
                     <option selected disabled>- Chọn phương án -</option>
                     <option
-                      v-for="(item, index) in item.info_phuongan"
+                      v-for="(pa, index) in item.info_phuongan"
                       :key="index"
-                      :value="item.maphuongan"
+                      :value="pa.maphuongan"
                     >
-                      {{ item.tenphuongan }}
+                      {{ pa.tenphuongan }}
                     </option>
                   </select>
                 </div>
@@ -166,16 +167,17 @@
               <td style="text-align: center">
                 <div class="select is-fullwidth is-small">
                   <select
+                    v-model="item.manguoithu"
                     @change="nguoithuChange($event, index)"
                     ref="nguoithuSelect"
                   >
-                    <option selected disabled>- Chọn người thứ ? -</option>
+                    <option disabled value="">- Chọn người thứ ? -</option>
                     <option
-                      v-for="(item, index) in item.info_nguoithu"
-                      :key="index"
-                      :value="item.manguoithu"
+                      v-for="(nt, idx) in item.info_nguoithu"
+                      :key="idx"
+                      :value="nt.manguoithu"
                     >
-                      {{ item.nguoithu }}
+                      {{ nt.nguoithu }}
                     </option>
                   </select>
                 </div>
@@ -202,16 +204,17 @@
               <td style="text-align: center">
                 <div class="select is-fullwidth is-small">
                   <select
+                    v-model="item.maphuongthucdong"
                     @change="phuongthucdChange($event, index)"
                     ref="phuongthucdongSelect"
                   >
                     <option selected disabled>- Chọn phương thức đóng -</option>
                     <option
-                      v-for="(item, index) in item.phuongthucdong"
+                      v-for="(ptd, index) in item.phuongthucdong"
                       :key="index"
-                      :value="item.maphuongthuc"
+                      :value="ptd.maphuongthuc"
                     >
-                      {{ item.tenphuongthuc }}
+                      {{ ptd.tenphuongthuc }}
                     </option>
                   </select>
                 </div>
@@ -286,16 +289,16 @@
                 </div>
               </td>
               <!-- tổ thôn -->
-              <td style="text-align: center">
+              <!-- <td style="text-align: center">
                 <input
                   v-model="item.tothon"
                   class="input is-small"
                   type="text"
                   ref="tothonInput"
                 />
-              </td>
+              </td> -->
               <!-- tỉnh bệnh viện -->
-              <td style="text-align: center">
+              <!-- <td style="text-align: center">
                 <div class="select is-fullwidth is-small">
                   <select
                     @change="benhvienChange($event, index)"
@@ -310,9 +313,26 @@
                     </option>
                   </select>
                 </div>
-              </td>
+              </td> -->
               <!-- bệnh viện -->
               <td style="text-align: center">
+                <div class="select is-fullwidth is-small">
+                  <select
+                    v-model="item.mabenhvien"
+                    @change="hopChangeReset($event, index)"
+                  >
+                    <option
+                      v-for="(nt, idx) in item.info_benhvien"
+                      :key="idx"
+                      :value="nt.mabenhvien"
+                    >
+                      {{ nt.tenbenhvien }}
+                    </option>
+                  </select>
+                </div>
+              </td>
+
+              <!-- <td style="text-align: center">
                 <input
                   autoComplete="on"
                   list="hopSuggestions"
@@ -320,7 +340,7 @@
                   @change="hopChange($event, index)"
                   ref="hopInput"
                   style="min-width: 200px; height: 30px"
-                  :value="item.tenbenhvien"
+                  v-model="item.tenbenhvien"
                 />
                 <datalist id="hopSuggestions">
                   <option
@@ -330,6 +350,21 @@
                     {{ item.mabenhvien }} - {{ item.tenbenhvien }}
                   </option>
                 </datalist>
+              </td> -->
+              <td>
+                <div class="select is-fullwidth is-small">
+                  <select
+                    v-model="item.hinhthucnap"
+                    @change="hinhthucNap($event, index)"
+                    ref="hinhthucnapInput"
+                  >
+                    <option disabled value="">
+                      - Chọn hình thức nạp tiền -
+                    </option>
+                    <option value="0">Tiền mặt</option>
+                    <option value="1">Chuyển khoản</option>
+                  </select>
+                </div>
               </td>
               <!-- ghi chú -->
               <td style="text-align: center">
@@ -340,7 +375,7 @@
                 />
               </td>
               <!-- biên lai -->
-              <td style="text-align: center">
+              <!-- <td style="text-align: center">
                 <input
                   @blur="checkSobienlai(item.sobienlai)"
                   v-model="item.sobienlai"
@@ -359,7 +394,7 @@
                   type="date"
                   ref="ngaybienlaiInput"
                 />
-              </td>
+              </td> -->
             </tr>
           </tbody>
         </table>
@@ -377,7 +412,7 @@
           <span class="icon is-small">
             <i class="fas fa-envelope-open-text"></i>
           </span>
-          <span>Gửi Kê khai</span>
+          <span>Lưu hồ sơ</span>
         </button>
 
         <!-- Tổng số tiền, nằm bên phải -->
@@ -984,6 +1019,52 @@
                     />
                   </div>
                 </div>
+
+                <div class="column">
+                  <div style="margin-bottom: 5px">
+                    <label class="labelFix">Hình thức nạp tiền</label>
+                  </div>
+                  <div>
+                    <div class="select is-fullwidth is-small">
+                      <select
+                        @change="hinhthucNap($event, addedIndex)"
+                        v-model="selectedOptionHtnt"
+                        ref="hinhthucnapInput"
+                      >
+                        <option disabled selected>
+                          - Chọn hình thức nạp tiền -
+                        </option>
+                        <option value="0">Tiền mặt</option>
+                        <option value="1">Chuyển khoản</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- <div class="column">
+                  <div style="margin-bottom: 5px">
+                    <label class="labelFix">Bệnh viện tỉnh</label>
+                  </div>
+                  <div>
+                    <div class="select is-fullwidth is-small">
+                      <select
+                        @change="benhvienChange($event, addedIndex)"
+                        v-model="datanhaphosomodal.matinh"
+                      >
+                        <option
+                          v-for="(dt, index) in dmtinhthanhpho"
+                          :key="index"
+                          :value="dt.matinh"
+                        >
+                          {{ dt.tentinh }}
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+                </div> -->
+              </div>
+
+              <div class="columns">
                 <div class="column">
                   <div style="margin-bottom: 5px">
                     <label class="labelFix">Tỉnh</label>
@@ -1028,8 +1109,7 @@
                     </select>
                   </div>
                 </div>
-              </div>
-              <div class="columns">
+
                 <div class="column">
                   <div style="margin-bottom: 5px">
                     <label class="labelFix">Xã phường</label>
@@ -1073,50 +1153,9 @@
                     />
                   </div>
                 </div>
-                <div class="column">
-                  <div style="margin-bottom: 5px">
-                    <label class="labelFix">Bệnh viện tỉnh</label>
-                  </div>
-                  <div>
-                    <div class="select is-fullwidth is-small">
-                      <select
-                        @change="benhvienChange($event, addedIndex)"
-                        v-model="datanhaphosomodal.matinh"
-                      >
-                        <option
-                          v-for="(dt, index) in dmtinhthanhpho"
-                          :key="index"
-                          :value="dt.matinh"
-                        >
-                          {{ dt.tentinh }}
-                        </option>
-                      </select>
-                    </div>
-                  </div>
-                </div>
               </div>
 
               <div class="columns">
-                <div class="column is-2">
-                  <div style="margin-bottom: 5px">
-                    <label class="labelFix">Hình thức nạp tiền</label>
-                  </div>
-                  <div>
-                    <div class="select is-fullwidth is-small">
-                      <select
-                        @change="hinhthucNap($event, addedIndex)"
-                        v-model="selectedOptionHtnt"
-                        ref="hinhthucnapInput"
-                      >
-                        <option disabled selected>
-                          - Chọn hình thức nạp tiền -
-                        </option>
-                        <option value="0">Tiền mặt</option>
-                        <option value="1">Chuyển khoản</option>
-                      </select>
-                    </div>
-                  </div>
-                </div>
                 <div class="column">
                   <div style="margin-bottom: 5px">
                     <label class="labelFix">Bệnh viện</label>
@@ -1140,14 +1179,32 @@
                       </option>
                     </datalist>
                   </div> -->
-                  <div>
+                  <!-- <div>
                     <v-select
                       :options="datanhaphosomodal.info_benhvien"
                       v-model="benhvienInfo"
                       label="tenbenhvien"
-                      placeholder="Tìm kiếm..."
+                      placeholder="..."
                       append-to-body
+                      class="custom-vselect"
                     ></v-select>
+                  </div> -->
+                  <div class="select is-fullwidth is-small">
+                    <select
+                      v-model="selectedOptionBenhvien"
+                      @change="hopChange($event, addedIndex)"
+                    >
+                      <option selected disabled>
+                        - Chọn cơ sở khám chữa bệnh -
+                      </option>
+                      <option
+                        v-for="(item, index) in datanhaphosomodal.info_benhvien"
+                        :key="index"
+                        :value="item.mabenhvien"
+                      >
+                        {{ item.mabenhvien }} - {{ item.tenbenhvien }}
+                      </option>
+                    </select>
                   </div>
                 </div>
               </div>
@@ -1165,7 +1222,7 @@
                   </div>
                 </div>
               </div>
-              <hr class="navbar-divider" />
+              <!-- <hr class="navbar-divider" /> -->
               <div class="columns">
                 <div class="column" style="margin-top: 10px">
                   <div
@@ -1241,12 +1298,12 @@
                       <td style="text-align: center">Tỉnh / Thành phố</td>
                       <td style="text-align: center">Quận / Huyện</td>
                       <td style="text-align: center">Xã phường</td>
-                      <td style="text-align: center">Tổ thôn</td>
-                      <td style="text-align: center">Bệnh viện tỉnh</td>
+                      <!-- <td style="text-align: center">Tổ thôn</td>
+                      <td style="text-align: center">Bệnh viện tỉnh</td> -->
                       <td style="text-align: center">Bệnh viện</td>
                       <td style="text-align: center">Ghi chú</td>
-                      <td style="text-align: center">Số biên lai</td>
-                      <td style="text-align: center">Ngày biên lai</td>
+                      <!-- <td style="text-align: center">Số biên lai</td>
+                      <td style="text-align: center">Ngày biên lai</td> -->
                     </tr>
                   </thead>
                   <tbody>
@@ -1314,13 +1371,13 @@
                         {{ item.tenxaphuong }}
                       </td>
                       <!-- tổ thôn -->
-                      <td>
+                      <!-- <td>
                         {{ item.tothon }}
-                      </td>
+                      </td> -->
                       <!-- tỉnh bệnh viện -->
-                      <td style="text-align: center">
+                      <!-- <td style="text-align: center">
                         {{ item.benhvientinh }}
-                      </td>
+                      </td> -->
                       <!-- bệnh viện -->
                       <td>
                         {{ item.tenbenhvien }}
@@ -1330,12 +1387,12 @@
                         {{ item.ghichu }}
                       </td>
                       <!-- biên lai -->
-                      <td style="text-align: center">
+                      <!-- <td style="text-align: center">
                         {{ item.sobienlai }}
                       </td>
                       <td style="text-align: center">
                         {{ formatISODateToDMY(item.ngaybienlai) }}
-                      </td>
+                      </td> -->
                     </tr>
                   </tbody>
                 </table>
@@ -1422,6 +1479,7 @@ export default {
       selectedOptionptd: "- Chọn phương thức đóng -",
       selectedOptionnt: "- Chọn người thứ ? -",
       selectedOptionHtnt: "- Chọn hình thức nạp tiền -",
+      selectedOptionBenhvien: "- Chọn cơ sở khám chữa bệnh -",
       phuongan: [
         {
           maphuongan: "TM",
@@ -1499,7 +1557,7 @@ export default {
       );
       this.dmquanhuyen = res_quanhuyen.data;
       const res_benhvien = await this.$axios.get(
-        `/api/danhmucs/dmbenhvienwithtinh?matinh=${this.matinh}`
+        `/api/danhmucs/dmbenhvienwithtinh-dienchau?matinh=${this.matinh}`
       );
       this.dmbenhvien = res_benhvien.data;
     } else {
@@ -1539,6 +1597,23 @@ export default {
   methods: {
     async findNguoihuong(masobhxh, index) {
       if (masobhxh !== "") {
+        const isDuplicate = this.items.some(
+          (item, idx) =>
+            idx !== index &&
+            (item.masobhxh === masobhxh || item.cccd === this.items[index].cccd)
+        );
+
+        if (isDuplicate) {
+          Swal.fire({
+            text: `Mã số ${masobhxh} vừa được đăng ký trong loại hình này xong, vui lòng kiểm tra lại!`,
+            icon: "error",
+          });
+
+          // Xoá mã số BHXH vừa nhập
+          this.items[index].masobhxh = "";
+          return;
+        }
+
         try {
           const res = await this.$axios.get(
             `/api/nguoihuong/find-nguoihuong?MaSoBhxh=${masobhxh}`
@@ -1564,7 +1639,7 @@ export default {
                 "Dữ liệu chỉ mang tính chất tham khảo. Xem và sửa nếu cần thiết !",
             });
             const data = res.data[0];
-            console.log(data);
+            // console.log(data);
 
             try {
               this.items[index].hoten = data.HoTen;
@@ -1640,8 +1715,12 @@ export default {
     },
 
     addHosokekhai() {
+      // đoạn này check luôn xem có mã số bhxh và ccd trong items chưa
+      // console.log(this.items);
+
       this.addedIndex = 0; // là chỉ mục index của item hiện tại đang được nhập tại modal
       // Mở trạng thái nhập hồ sơ
+      this.selectedOptionBenhvien = "- Chọn cơ sở khám chữa bệnh -";
       this.selectedOptionpa = "- Chọn phương án -";
       this.selectedOptionptd = "- Chọn phương thức đóng -";
       this.selectedOptionnt = "- Chọn người thứ ? -";
@@ -1675,10 +1754,90 @@ export default {
         denyButtonText: `Không`,
       });
       if (result.isConfirmed) {
-        this.items[this.addedIndex] = this.datanhaphosomodal;
-        this.datanhaphosomodal = {};
-        this.isActive_nhaphoso = false;
-        // console.log(this.items);
+        if (result.isConfirmed) {
+          // check toàn bộ ô để valid form
+          const fieldNames = {
+            masobhxh: "Mã số BHXH",
+            hoten: "Họ tên",
+            ngaysinh: "Ngày sinh",
+            cccd: "Căn cước công dân",
+            maphuongan: "Phương án",
+            nguoithu: "Người thứ mấy",
+            tungay: "Từ ngày",
+            tenphuongthucdong: "Phương thức đóng",
+            hinhthucnap: "Hình thức nạp",
+            tentinh: "Tỉnh",
+            mabenhvien: "Bệnh viện",
+          };
+
+          const fieldsToValidate = [
+            "masobhxh",
+            "hoten",
+            "ngaysinh",
+            "cccd",
+            "maphuongan",
+            "nguoithu",
+            "tungay",
+            "tenphuongthucdong",
+            "hinhthucnap",
+            "tentinh",
+            "mabenhvien",
+          ];
+
+          for (const key of fieldsToValidate) {
+            if (
+              !this.datanhaphosomodal[key] ||
+              this.datanhaphosomodal[key] === ""
+            ) {
+              const fieldName = fieldNames[key] || key;
+              const Toast = Swal.mixin({
+                toast: true,
+                position: "top-end",
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                  toast.addEventListener("mouseenter", Swal.stopTimer);
+                  toast.addEventListener("mouseleave", Swal.resumeTimer);
+                },
+              });
+              Toast.fire({
+                icon: "error",
+                title: `Vui lòng nhập ${fieldName}!`,
+              });
+              return;
+            }
+          }
+
+          // // check riêng benhvienInfo
+          // if (
+          //   !this.benhvienInfo ||
+          //   Object.keys(this.benhvienInfo).length === 0
+          // ) {
+          //   const Toast = Swal.mixin({
+          //     toast: true,
+          //     position: "top-end",
+          //     showConfirmButton: false,
+          //     timer: 3000,
+          //     timerProgressBar: true,
+          //     didOpen: (toast) => {
+          //       toast.addEventListener("mouseenter", Swal.stopTimer);
+          //       toast.addEventListener("mouseleave", Swal.resumeTimer);
+          //     },
+          //   });
+          //   Toast.fire({
+          //     icon: "error",
+          //     title: `Vui lòng cung cấp thông tin ${fieldNames.benhvienInfo}`,
+          //   });
+          //   return;
+          // }
+
+          this.items[this.addedIndex] = this.datanhaphosomodal;
+          this.datanhaphosomodal = {};
+          this.isActive_nhaphoso = false;
+          // console.log(this.items);
+          // console.log(this.benhvienInfo.mabenhvien);
+        }
       }
     },
 
@@ -1854,22 +2013,28 @@ export default {
     async nguoithuChange(e, index) {
       const manguoithu = e.target.value;
       const nguoithu = e.target.options[e.target.selectedIndex].text;
-      this.items[index].nguoithu = manguoithu;
+      // console.log(this.items[index]);
+
+      // this.items[index].nguoithu = manguoithu;
       // console.log(nguoithu);
+
+      this.items[index].manguoithu = manguoithu; // lưu mã người thứ
+      this.items[index].nguoithu = nguoithu; // lưu tên người thứ (nếu cần hiển thị riêng)
 
       const cast =
         this.luongcoso * 0.045 * parseInt(this.items[index].maphuongthucdong);
-      if (this.items[index].nguoithu === "1") {
+      if (this.items[index].manguoithu === "1") {
         this.items[index].sotien = cast;
-      } else if (this.items[index].nguoithu === "2") {
+      } else if (this.items[index].manguoithu === "2") {
         this.items[index].sotien = cast * 0.7;
-      } else if (this.items[index].nguoithu === "3") {
+      } else if (this.items[index].manguoithu === "3") {
         this.items[index].sotien = cast * 0.6;
-      } else if (this.items[index].nguoithu === "4") {
+      } else if (this.items[index].manguoithu === "4") {
         this.items[index].sotien = cast * 0.5;
       } else {
         this.items[index].sotien = cast * 0.4;
       }
+      // console.log(this.items[index].sotien);
     },
 
     // phương thức đóng
@@ -1896,6 +2061,8 @@ export default {
       } else {
         this.items[index].sotien = cast * 0.4;
       }
+
+      // console.log(this.items[index]);
     },
 
     // tỉnh thành phố
@@ -1962,13 +2129,28 @@ export default {
     },
 
     // thông tin bệnh viện
-    async hopChange(event, index) {
-      const selectedOption = event.target.value;
-      let position = selectedOption.split("-");
-      if (position) {
-        this.items[index].mabenhvien = position[0].trim();
-        this.items[index].tenbenhvien = position[1].trim();
-      }
+    async hopChange(e, index) {
+      const mabenhvien = e.target.value;
+      const text = e.target.options[e.target.selectedIndex].text;
+
+      // Tách ra
+      const parts = text.split(" - ");
+      const tenbenhvien = parts[1] ? parts[1].trim() : "";
+
+      this.items[index].mabenhvien = mabenhvien;
+      this.items[index].tenbenhvien = tenbenhvien;
+      // console.log(this.items[index]);
+    },
+
+    async hopChangeReset(e, index) {
+      const mabenhvien = e.target.value;
+      const text = e.target.options[e.target.selectedIndex].text;
+      // console.log(mabenhvien);
+      // console.log(text);
+
+      this.items[index].mabenhvien = mabenhvien;
+      this.items[index].tenbenhvien = text;
+      // console.log(this.items[index]);
     },
 
     hinhthucNap(event, index) {
@@ -1988,10 +2170,10 @@ export default {
     },
 
     // check phone number
-    isValidPhoneNumber(phoneNumber) {
-      const cleanedPhoneNumber = phoneNumber.replace(/\D/g, "");
-      return cleanedPhoneNumber.length === 10;
-    },
+    // isValidPhoneNumber(phoneNumber) {
+    //   const cleanedPhoneNumber = phoneNumber.replace(/\D/g, "");
+    //   return cleanedPhoneNumber.length === 10;
+    // },
 
     // check số cccd
     isValidCCCD(cccd) {
@@ -2091,28 +2273,28 @@ export default {
       }
     },
 
-    checkAlertSodienthoai(dienthoai) {
-      if (dienthoai !== "") {
-        const cleanedPhone = dienthoai.replace(/\D/g, "");
-        if (cleanedPhone.length !== 10) {
-          const Toast = Swal.mixin({
-            toast: true,
-            position: "top-end",
-            showConfirmButton: false,
-            timer: 3000,
-            timerProgressBar: true,
-            didOpen: (toast) => {
-              toast.addEventListener("mouseenter", Swal.stopTimer);
-              toast.addEventListener("mouseleave", Swal.resumeTimer);
-            },
-          });
-          Toast.fire({
-            icon: "error",
-            title: "Số điện thoại phải có đúng 10 chữ số !",
-          });
-        }
-      }
-    },
+    // checkAlertSodienthoai(dienthoai) {
+    //   if (dienthoai !== "") {
+    //     const cleanedPhone = dienthoai.replace(/\D/g, "");
+    //     if (cleanedPhone.length !== 10) {
+    //       const Toast = Swal.mixin({
+    //         toast: true,
+    //         position: "top-end",
+    //         showConfirmButton: false,
+    //         timer: 3000,
+    //         timerProgressBar: true,
+    //         didOpen: (toast) => {
+    //           toast.addEventListener("mouseenter", Swal.stopTimer);
+    //           toast.addEventListener("mouseleave", Swal.resumeTimer);
+    //         },
+    //       });
+    //       Toast.fire({
+    //         icon: "error",
+    //         title: "Số điện thoại phải có đúng 10 chữ số !",
+    //       });
+    //     }
+    //   }
+    // },
 
     async checkFormData() {
       for (let i = 0; i < this.items.length; i++) {
@@ -2193,27 +2375,27 @@ export default {
           return false;
         }
 
-        if (!this.items[i].dienthoai) {
-          this.$toasted.show("Thiếu điện thoại", {
-            duration: 3000,
-            theme: "bubble",
-          });
-          if (this.$refs.dienthoaiInput[i]) {
-            this.$refs.dienthoaiInput[i].focus();
-          }
-          return false;
-        }
+        // if (!this.items[i].dienthoai) {
+        //   this.$toasted.show("Thiếu điện thoại", {
+        //     duration: 3000,
+        //     theme: "bubble",
+        //   });
+        //   if (this.$refs.dienthoaiInput[i]) {
+        //     this.$refs.dienthoaiInput[i].focus();
+        //   }
+        //   return false;
+        // }
 
-        if (!this.isValidPhoneNumber(this.items[i].dienthoai)) {
-          this.$toasted.show("Số điện thoại không hợp lệ", {
-            duration: 3000,
-            theme: "bubble",
-          });
-          if (this.$refs.dienthoaiInput[i]) {
-            this.$refs.dienthoaiInput[i].focus();
-          }
-          return false;
-        }
+        // if (!this.isValidPhoneNumber(this.items[i].dienthoai)) {
+        //   this.$toasted.show("Số điện thoại không hợp lệ", {
+        //     duration: 3000,
+        //     theme: "bubble",
+        //   });
+        //   if (this.$refs.dienthoaiInput[i]) {
+        //     this.$refs.dienthoaiInput[i].focus();
+        //   }
+        //   return false;
+        // }
 
         if (!this.items[i].maphuongan || !this.items[i].tenphuongan) {
           this.$toasted.show("Chọn một phương án", {
@@ -2281,16 +2463,16 @@ export default {
           return false;
         }
 
-        if (!this.items[i].tothon) {
-          this.$toasted.show("Thiếu tổ thôn", {
-            duration: 3000,
-            theme: "bubble",
-          });
-          if (this.$refs.tothonInput[i]) {
-            this.$refs.tothonInput[i].focus();
-          }
-          return false;
-        }
+        // if (!this.items[i].tothon) {
+        //   this.$toasted.show("Thiếu tổ thôn", {
+        //     duration: 3000,
+        //     theme: "bubble",
+        //   });
+        //   if (this.$refs.tothonInput[i]) {
+        //     this.$refs.tothonInput[i].focus();
+        //   }
+        //   return false;
+        // }
 
         // if (!this.items[i].mabenhvien || !this.items[i].tenbenhvien) {
         //   this.$toasted.show("Chọn bệnh viện", {
@@ -2618,8 +2800,8 @@ export default {
               //   i
               // ].mabenhvien = `${this.items[i].matinh}${this.items[i].mabenhvien}`;
               // this.items[i].tenbenhvien = this.items[i].tenbenhvien.trim();
-              this.items[i].mabenhvien = this.benhvienInfo.mabenhvien;
-              this.items[i].tenbenhvien = this.benhvienInfo.tenbenhvien;
+              // this.items[i].mabenhvien = this.benhvienInfo.mabenhvien;
+              // this.items[i].tenbenhvien = this.benhvienInfo.tenbenhvien;
 
               // Nếu ngày sinh từ db người hưởng sẽ có dạng text không cần chuyển đổi
               // Nếu từ input dạng yyyy-mm-dd thì phải đổi thành text
@@ -2728,7 +2910,7 @@ export default {
               });
             }
 
-            console.log(dataKekhai);
+            // console.log(dataKekhai);
 
             const result = await this.$axios.post(
               `/api/kekhai/add-kekhai-series`,
@@ -2780,4 +2962,21 @@ export default {
 @import "@/assets/customCss/common.css";
 
 @import "@/assets/customCss/footerTable.css";
+
+/* Nhỏ gọn, đẹp */
+.custom-vselect {
+  font-size: 12px; /* chữ nhỏ */
+  min-height: 30px; /* chiều cao select nhỏ */
+}
+
+/* chỉnh thêm trong dropdown */
+.custom-vselect .vs__dropdown-toggle {
+  padding: 4px 8px;
+}
+
+/* chỉnh từng item trong dropdown */
+.custom-vselect .vs__dropdown-menu li {
+  font-size: 12px;
+  padding: 4px 8px;
+}
 </style>

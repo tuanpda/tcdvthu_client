@@ -16,7 +16,7 @@
 
       <div class="box">
         <div class="columns">
-          <div class="column">
+          <!-- <div class="column">
             <label class="label">Điểm thu</label>
             <div class="autocomplete">
               <input
@@ -36,7 +36,32 @@
                 </div>
               </div>
             </div>
+          </div> -->
+          <div class="column">
+            <label class="label">Nhóm tham gia</label>
+            <div class="select is-small is-fullwidth">
+              <select @change="handleChange">
+                <option selected disabled>- Chọn loại hình -</option>
+                <option value="">Không chọn</option>
+                <option value="BI">Bảo hiểm y tế</option>
+                <option value="AR">Bảo hiểm y tế - HGĐ</option>
+                <option value="IS">Bảo hiểm xã hội tự nguyện</option>
+              </select>
+            </div>
           </div>
+          <div class="column">
+            <label class="label">Ngày kê khai (từ)</label
+            ><input v-model="ngaykekhaitu" type="date" class="input is-small" />
+          </div>
+          <div class="column">
+            <label class="label">Ngày kê khai (đến)</label
+            ><input
+              v-model="ngaykekhaiden"
+              type="date"
+              class="input is-small"
+            />
+          </div>
+
           <div class="column">
             <label class="label">Kỳ Kê khai</label>
             <input
@@ -47,6 +72,8 @@
               class="input is-small"
             />
           </div>
+        </div>
+        <div class="columns">
           <div class="column">
             <label class="label">Đợt Kê khai</label>
             <div class="input-group">
@@ -60,8 +87,6 @@
               />
             </div>
           </div>
-        </div>
-        <div class="columns">
           <div class="column">
             <label class="label">Số hồ sơ</label
             ><input
@@ -91,19 +116,7 @@
           </div>
         </div>
         <div class="columns">
-          <div class="column is-2">
-            <label class="label">Ngày kê khai (từ)</label
-            ><input v-model="ngaykekhaitu" type="date" class="input is-small" />
-          </div>
-          <div class="column is-2">
-            <label class="label">Ngày kê khai (đến)</label
-            ><input
-              v-model="ngaykekhaiden"
-              type="date"
-              class="input is-small"
-            />
-          </div>
-          <div class="column is-2">
+          <!-- <div class="column is-2">
             <label class="label">Nhóm tham gia</label>
             <div class="select is-small is-fullwidth">
               <select @change="handleChange">
@@ -113,7 +126,7 @@
                 <option value="IS">Bảo hiểm xã hội tự nguyện</option>
               </select>
             </div>
-          </div>
+          </div> -->
         </div>
         <hr class="navbar-divider" />
         <footer class="has-text-right">
@@ -734,6 +747,8 @@ export default {
   },
 
   data() {
+    const today = new Date().toISOString().split("T")[0]; // YYYY-MM-DD
+
     return {
       data_kekhai: [],
       data_xuatmau: [],
@@ -748,8 +763,8 @@ export default {
       // new code
       kykekhai: "",
       dotkekhai: "",
-      ngaykekhaiden: "",
-      ngaykekhaitu: "",
+      ngaykekhaiden: today,
+      ngaykekhaitu: today,
       sohoso: "",
       matochuc_mst: "",
       masobhxh: "",
@@ -1098,7 +1113,7 @@ export default {
       // this.matochuc_mst = mst;
       // Xây dựng đường dẫn API dựa trên mã số thuế
 
-      if (this.user.nvcongty === true && this.user.role !== 2) {
+      if (this.user.role == 2) {
         // const res = await this.$axios.get(
         //   `/api/kekhai/kykekhai-search-series-pagi-nvcty?kykekhai=${this.kykekhai}&page=${page}`
         // );
@@ -1146,36 +1161,6 @@ export default {
             icon: "error",
             title: `Có lỗi xảy ra`,
           });
-        }
-      } else if (this.user.nvcongty === true && this.user.role == 2) {
-        try {
-          const res = await this.$axios.get(
-            `/api/kekhai/kykekhai-search-series-pagi-tonghop?kykekhai=${this.kykekhai}&dotkekhai=${this.dotkekhai}&ngaykekhai=${this.ngaykekhaitu}&ngaykekhaiden=${this.ngaykekhaiden}&sohoso=${this.sohoso}&page=${page}`
-          );
-          console.log(res.data.results.length);
-          if (res.data.results.length > 0) {
-            this.data_kekhai = res.data.results;
-            this.totalPages = res.data.info.pages;
-            this.currentPage = page;
-          } else {
-            const Toast = Swal.mixin({
-              toast: true,
-              position: "top-end",
-              showConfirmButton: false,
-              timer: 2000,
-              timerProgressBar: true,
-              didOpen: (toast) => {
-                toast.addEventListener("mouseenter", Swal.stopTimer);
-                toast.addEventListener("mouseleave", Swal.resumeTimer);
-              },
-            });
-            Toast.fire({
-              icon: "error",
-              title: `Không tìm thấy hồ sơ`,
-            });
-          }
-        } catch (error) {
-          console.log(error);
         }
       } else {
         try {
@@ -1273,6 +1258,8 @@ export default {
     },
 
     async inBienLaiDientu(item) {
+      // console.log(item);
+
       const res = await this.$axios(
         `/api/kekhai/bienlaidientuf?_id_hskk=${item._id}&hosoIdentity=${item.hosoIdentity}`
       );

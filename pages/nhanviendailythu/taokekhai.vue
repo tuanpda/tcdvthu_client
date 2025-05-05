@@ -247,13 +247,31 @@
 
         <!-- Sử dụng v-bind để truyền props vào component con -->
         <div v-if="maloaihinh == 'AR'">
-          <ArTable :maloaihinh="maloaihinh" :loaihinh="loaihinh" />
+          <!-- <ArTable :maloaihinh="maloaihinh" :loaihinh="loaihinh" /> -->
+          <ArTable
+            ref="ArTable"
+            v-if="maloaihinh === 'AR'"
+            :maloaihinh="maloaihinh"
+            :loaihinh="loaihinh"
+          />
         </div>
         <div v-if="maloaihinh == 'BI'">
-          <BiTable :maloaihinh="maloaihinh" :loaihinh="loaihinh" />
+          <!-- <BiTable :maloaihinh="maloaihinh" :loaihinh="loaihinh" /> -->
+          <BiTable
+            ref="BiTable"
+            v-if="maloaihinh === 'BI'"
+            :maloaihinh="maloaihinh"
+            :loaihinh="loaihinh"
+          />
         </div>
         <div v-if="maloaihinh == 'IS'">
-          <ISTable :maloaihinh="maloaihinh" :loaihinh="loaihinh" />
+          <!-- <ISTable :maloaihinh="maloaihinh" :loaihinh="loaihinh" /> -->
+          <ISTable
+            ref="ISTable"
+            v-if="maloaihinh === 'IS'"
+            :maloaihinh="maloaihinh"
+            :loaihinh="loaihinh"
+          />
         </div>
       </div>
     </div>
@@ -312,16 +330,50 @@ export default {
       }
     },
 
-    async loaihinhChange(e, index) {
-      const loaihinhtg = e.target.value;
+    // async loaihinhChange(e, index) {
+    //   const loaihinhtg = e.target.value;
+    //   const tenloaihinhtg = e.target.options[e.target.selectedIndex].text;
+    //   let position = tenloaihinhtg.split("-");
+    //   this.maloaihinh = loaihinhtg;
+    //   if (loaihinhtg) {
+    //     this.loaihinh = position[1].trim();
+    //   }
+    //   // console.log(this.maloaihinh);
+    //   // console.log(this.loaihinh);
+    // },
+
+    async loaihinhChange(e) {
+      const newLoaihinh = e.target.value;
       const tenloaihinhtg = e.target.options[e.target.selectedIndex].text;
-      let position = tenloaihinhtg.split("-");
-      this.maloaihinh = loaihinhtg;
-      if (loaihinhtg) {
-        this.loaihinh = position[1].trim();
+      const label = tenloaihinhtg.split("-")[1].trim();
+
+      let currentItems = [];
+
+      // Kiểm tra component con đang hiện tại và lấy items
+      if (this.maloaihinh === "AR" && this.$refs.ArTable) {
+        currentItems = this.$refs.ArTable.items || [];
+      } else if (this.maloaihinh === "BI" && this.$refs.BiTable) {
+        currentItems = this.$refs.BiTable.items || [];
+      } else if (this.maloaihinh === "IS" && this.$refs.ISTable) {
+        currentItems = this.$refs.ISTable.items || [];
       }
-      // console.log(this.maloaihinh);
-      // console.log(this.loaihinh);
+
+      if (currentItems.length > 0) {
+        const result = await Swal.fire({
+          title: `Bạn đang có hồ sơ phát sinh. Chuyển loại hình sẽ mất dữ liệu. Bạn có chắc chắn muốn tiếp tục?`,
+          showDenyButton: true,
+          confirmButtonText: "Xác nhận",
+          denyButtonText: `Không`,
+        });
+        if (!result.isConfirmed) {
+          e.target.value = this.maloaihinh; // Khôi phục lại chọn cũ
+          return;
+        }
+      }
+
+      // Nếu không có hồ sơ hoặc người dùng đồng ý
+      this.maloaihinh = newLoaihinh;
+      this.loaihinh = label;
     },
   },
 };

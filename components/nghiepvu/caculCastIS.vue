@@ -40,33 +40,40 @@
               <td style="text-align: center">CCCD</td>
               <td style="text-align: center">Điện thoại</td>
               <td style="text-align: center">Phương án</td>
-              <td style="text-align: center">Mức lương đóng</td>
+              <td style="text-align: center">Mức tiền đóng</td>
               <td style="text-align: center">Từ tháng</td>
               <td style="text-align: center">Đối tượng đóng</td>
               <td style="text-align: center">Số tháng</td>
+              <td
+                v-if="checkDong1lanchocacnamvesauVaConthieu == true"
+                style="text-align: center"
+              >
+                Số tháng đóng bù
+              </td>
               <td style="text-align: center">Số tiền phải đóng</td>
               <td style="text-align: center">Tỉnh / Thành phố</td>
               <td style="text-align: center">Quận / Huyện</td>
               <td style="text-align: center">Xã phường</td>
-              <td style="text-align: center">Tổ thôn</td>
+              <!-- <td style="text-align: center">Tổ thôn</td> -->
+              <td style="text-align: center">Hình thức nạp</td>
               <td style="text-align: center">Ghi chú</td>
-              <td style="text-align: center">Số biên lai</td>
-              <td style="text-align: center">Ngày biên lai</td>
+              <!-- <td style="text-align: center">Số biên lai</td>
+              <td style="text-align: center">Ngày biên lai</td> -->
             </tr>
           </thead>
           <tbody>
             <tr v-for="(item, index) in items" :key="index">
               <td style="text-align: center; vertical-align: middle">
-                <a @click="copyRow()">
+                <!-- <a @click="copyRow()">
                   <span class="icon is-small">
                     <i
                       style="color: hsl(153deg, 53%, 53%)"
                       class="fas fa-check-circle"
                     ></i>
                   </span>
-                </a>
+                </a> -->
                 &nbsp;
-                <a @click="deleteRow(item)">
+                <a @click="deleteRow(index)">
                   <span class="icon is-small">
                     <i style="color: red" class="far fa-trash-alt"></i>
                   </span>
@@ -137,7 +144,6 @@
               </td>
               <td style="text-align: center">
                 <input
-                  @blur="checkAlertSodienthoai(item.dienthoai)"
                   v-model="item.dienthoai"
                   class="input is-small"
                   type="number"
@@ -147,16 +153,17 @@
               <td style="text-align: center">
                 <div class="select is-fullwidth is-small">
                   <select
+                    v-model="item.maphuongan"
                     @change="phuonganChange($event, index)"
                     ref="phuonganSelect"
                   >
                     <option selected disabled>- Chọn phương án -</option>
                     <option
-                      v-for="(item, index) in item.info_phuongan"
+                      v-for="(pa, index) in item.info_phuongan"
                       :key="index"
-                      :value="item.maphuongan"
+                      :value="pa.maphuongan"
                     >
-                      {{ item.tenphuongan }}
+                      {{ pa.tenphuongan }}
                     </option>
                   </select>
                 </div>
@@ -171,6 +178,7 @@
                   @blur="limitTiendong(item.muctiendong, index)"
                 />
               </td>
+
               <td style="text-align: center">
                 <input
                   v-model="item.tuthang"
@@ -180,49 +188,195 @@
                   class="input is-small"
                 />
               </td>
-              <td style="text-align: center">
-                <div class="select is-fullwidth is-small">
-                  <select
-                    @change="doituongChange($event, index)"
-                    ref="doituongSelect"
-                  >
-                    <option selected disabled>- Chọn đối tượng đóng -</option>
-                    <option
-                      v-for="(item, index) in item.doituong"
-                      :key="index"
-                      :value="item.madoituong"
+
+              <template v-if="item.maphuongan == 'DB'">
+                <td style="text-align: center">
+                  <div class="select is-fullwidth is-small">
+                    <select
+                      v-model="item.madoituong"
+                      @change="doituongChangeDongbu($event, index)"
+                      ref="doituongSelect"
                     >
-                      {{ item.tendoituong }}
-                    </option>
-                  </select>
-                </div>
-              </td>
-              <td style="text-align: center">
-                <div class="select is-fullwidth is-small">
-                  <select
-                    @change="phuongthucdChange($event, index)"
-                    ref="phuongthucdongSelect"
-                  >
-                    <option selected disabled>- Chọn phương thức đóng -</option>
-                    <option
-                      v-for="(item, index) in item.phuongthucdong"
-                      :key="index"
-                      :value="item.maphuongthuc"
+                      <option selected disabled>- Chọn đối tượng đóng -</option>
+                      <option
+                        v-for="(dt, index) in item.doituong"
+                        :key="index"
+                        :value="dt.madoituong"
+                      >
+                        {{ dt.tendoituong }}
+                      </option>
+                    </select>
+                  </div>
+                </td>
+              </template>
+              <template v-else>
+                <td
+                  v-if="checkDong1lanchocacnamvesauVaConthieu == false"
+                  style="text-align: center"
+                >
+                  <div class="select is-fullwidth is-small">
+                    <select
+                      v-model="item.madoituong"
+                      @change="doituongChange($event, index)"
+                      ref="doituongSelect"
                     >
-                      {{ item.tenphuongthuc }}
-                    </option>
-                  </select>
-                </div>
-              </td>
-              <td style="text-align: center">
-                <input
-                  v-mask="mask"
-                  v-model="item.sotien"
-                  class="input is-small"
-                  style="font-weight: 800; color: red"
-                  disabled
-                />
-              </td>
+                      <option selected disabled>- Chọn đối tượng đóng -</option>
+                      <option
+                        v-for="(dt, index) in item.doituong"
+                        :key="index"
+                        :value="dt.madoituong"
+                      >
+                        {{ dt.tendoituong }}
+                      </option>
+                    </select>
+                  </div>
+                </td>
+                <td v-else style="text-align: center">
+                  <div class="select is-fullwidth is-small">
+                    <select
+                      v-model="item.madoituong"
+                      @change="doituongChange($event, index)"
+                      ref="doituongSelect"
+                    >
+                      <option selected disabled>- Chọn đối tượng đóng -</option>
+                      <option
+                        v-for="(dt, index) in item.doituong"
+                        :key="index"
+                        :value="dt.madoituong"
+                      >
+                        {{ dt.tendoituong }}
+                      </option>
+                    </select>
+                  </div>
+                </td>
+              </template>
+
+              <!-- nếu đóng bù -->
+              <template v-if="item.maphuongan == 'DB'">
+                <td style="text-align: center">
+                  <div class="select is-fullwidth is-small">
+                    <select
+                      @change="phuongthucdChangeDongbu($event, addedIndex)"
+                      ref="phuongthucdongSelect"
+                    >
+                      <option selected disabled>
+                        - Chọn phương thức đóng -
+                      </option>
+                      <option
+                        v-for="(item, index) in phuongthucdongDongbu"
+                        :key="index"
+                        :value="item.maphuongthuc"
+                      >
+                        {{ item.tenphuongthuc }}
+                      </option>
+                    </select>
+                  </div>
+                </td>
+
+                <!-- nếu như đóng 1 lần còn thiếu và về sau thì thêm 1 ô nhập số tháng -->
+                <template v-if="checkDong1lanchocacnamvesauVaConthieu == true">
+                  <td>
+                    <input
+                      v-if="NCT == true"
+                      v-model="item.sothang"
+                      class="input is-small"
+                      style="font-weight: 800; color: red"
+                      type="number"
+                      min="0"
+                      max="120"
+                      @blur="maxNCTItem(item, index)"
+                    />
+                    <input
+                      v-else="NVS == true"
+                      v-model="item.sothang"
+                      class="input is-small"
+                      style="font-weight: 800; color: red"
+                      type="number"
+                      min="0"
+                      max="80"
+                      @blur="maxNVSItem(item, index)"
+                    />
+                  </td>
+                </template>
+
+                <td style="text-align: center">
+                  <input
+                    v-model="item.sotien"
+                    v-mask="mask"
+                    class="input is-small"
+                    style="font-weight: 800; color: red"
+                  />
+                </td>
+              </template>
+              <template v-else>
+                <td style="text-align: center">
+                  <div class="select is-fullwidth is-small">
+                    <select
+                      v-model="item.maphuongthucdong"
+                      @change="phuongthucdChange($event, index)"
+                      ref="phuongthucdongSelect"
+                    >
+                      <option selected disabled>
+                        - Chọn phương thức đóng -
+                      </option>
+                      <option
+                        v-for="(ptd, index) in item.phuongthucdong"
+                        :key="index"
+                        :value="ptd.maphuongthuc"
+                      >
+                        {{ ptd.tenphuongthuc }}
+                      </option>
+                    </select>
+                  </div>
+                </td>
+
+                <!-- nếu như đóng 1 lần còn thiếu và về sau thì thêm 1 ô nhập số tháng -->
+                <template v-if="checkDong1lanchocacnamvesauVaConthieu == true">
+                  <td>
+                    <input
+                      v-if="NCT == true"
+                      v-model="item.sothang"
+                      class="input is-small"
+                      style="font-weight: 800; color: red"
+                      type="number"
+                      min="0"
+                      max="120"
+                      @blur="maxNCTItem(item, index)"
+                    />
+                    <input
+                      v-else="NVS == true"
+                      v-model="item.sothang"
+                      class="input is-small"
+                      style="font-weight: 800; color: red"
+                      type="number"
+                      min="0"
+                      max="80"
+                      @blur="maxNVSItem(item, index)"
+                    />
+                  </td>
+
+                  <td>
+                    <input
+                      v-mask="mask"
+                      v-model="item.sotien"
+                      class="input is-small"
+                      style="font-weight: 800; color: red"
+                    />
+                  </td>
+                </template>
+                <template v-else>
+                  <td style="text-align: center">
+                    <input
+                      v-mask="mask"
+                      v-model="item.sotien"
+                      class="input is-small"
+                      style="font-weight: 800; color: red"
+                      disabled
+                    />
+                  </td>
+                </template>
+              </template>
+
               <!-- tỉnh-->
               <td style="text-align: center">
                 <div class="select is-fullwidth is-small">
@@ -284,13 +438,29 @@
                 </div>
               </td>
               <!-- tổ thôn -->
-              <td style="text-align: center">
+              <!-- <td style="text-align: center">
                 <input
                   v-model="item.tothon"
                   class="input is-small"
                   type="text"
                   ref="tothonInput"
                 />
+              </td> -->
+
+              <td>
+                <div class="select is-fullwidth is-small">
+                  <select
+                    v-model="item.hinhthucnap"
+                    @change="hinhthucNap($event, index)"
+                    ref="hinhthucnapInput"
+                  >
+                    <option disabled value="">
+                      - Chọn hình thức nạp tiền -
+                    </option>
+                    <option value="0">Tiền mặt</option>
+                    <option value="1">Chuyển khoản</option>
+                  </select>
+                </div>
               </td>
 
               <!-- ghi chú -->
@@ -303,7 +473,7 @@
               </td>
 
               <!-- biên lai -->
-              <td style="text-align: center">
+              <!-- <td style="text-align: center">
                 <input
                   @blur="checkSobienlai(item.sobienlai)"
                   v-model="item.sobienlai"
@@ -322,7 +492,7 @@
                   type="date"
                   ref="ngaybienlaiInput"
                 />
-              </td>
+              </td> -->
             </tr>
           </tbody>
         </table>
@@ -340,7 +510,7 @@
           <span class="icon is-small">
             <i class="fas fa-envelope-open-text"></i>
           </span>
-          <span>Gửi Kê khai</span>
+          <span>Lưu hồ sơ</span>
         </button>
 
         <!-- Tổng số tiền, nằm bên phải -->
@@ -758,9 +928,6 @@
                     </div>
                     <div style="flex-grow: 1">
                       <input
-                        @blur="
-                          checkAlertSodienthoai(datanhaphosomodal.dienthoai)
-                        "
                         v-model="datanhaphosomodal.dienthoai"
                         class="input is-small"
                         type="number"
@@ -833,6 +1000,7 @@
                     <select
                       @change="phuonganChange($event, addedIndex)"
                       ref="phuonganSelect"
+                      v-model="selectedOptionpa"
                     >
                       <option selected disabled>- Chọn phương án -</option>
                       <option
@@ -847,7 +1015,7 @@
                 </div>
                 <div class="column">
                   <div style="margin-bottom: 5px">
-                    <label class="labelFix">Mức tiền đóng</label>
+                    <label class="labelFix">Mức thu nhập hàng tháng</label>
                   </div>
                   <div>
                     <input
@@ -882,26 +1050,279 @@
                     </td>
                   </div>
                 </div>
+
+                <template v-if="datanhaphosomodal.maphuongan == 'DB'">
+                  <div class="column">
+                    <div style="margin-bottom: 5px">
+                      <label class="labelFix">Đối tượng đóng</label>
+                    </div>
+                    <div>
+                      <div class="select is-fullwidth is-small">
+                        <select
+                          @change="doituongChangeDongbu($event, addedIndex)"
+                          ref="doituongSelect"
+                          v-model="selectedOptionDoituongdong"
+                        >
+                          <option selected disabled>
+                            - Chọn đối tượng đóng -
+                          </option>
+                          <option
+                            v-for="(item, index) in datanhaphosomodal.doituong"
+                            :key="index"
+                            :value="item.madoituong"
+                          >
+                            {{ item.tendoituong }}
+                          </option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                </template>
+                <template v-else>
+                  <div
+                    class="column"
+                    v-if="checkDong1lanchocacnamvesauVaConthieu == false"
+                  >
+                    <div style="margin-bottom: 5px">
+                      <label class="labelFix">Đối tượng đóng</label>
+                    </div>
+                    <div>
+                      <div class="select is-fullwidth is-small">
+                        <select
+                          @change="doituongChange($event, addedIndex)"
+                          ref="doituongSelect"
+                          v-model="selectedOptionDoituongdong"
+                        >
+                          <option selected disabled>
+                            - Chọn đối tượng đóng -
+                          </option>
+                          <option
+                            v-for="(item, index) in datanhaphosomodal.doituong"
+                            :key="index"
+                            :value="item.madoituong"
+                          >
+                            {{ item.tendoituong }}
+                          </option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="column" v-else>
+                    <div style="margin-bottom: 5px">
+                      <label class="labelFix">Đối tượng đóng</label>
+                    </div>
+                    <div>
+                      <div class="select is-fullwidth is-small">
+                        <select
+                          @change="doituongChangeDongbu($event, addedIndex)"
+                          ref="doituongSelect"
+                          v-model="selectedOptionDoituongdong"
+                        >
+                          <option selected disabled>
+                            - Chọn đối tượng đóng -
+                          </option>
+                          <option
+                            v-for="(item, index) in datanhaphosomodal.doituong"
+                            :key="index"
+                            :value="item.madoituong"
+                          >
+                            {{ item.tendoituong }}
+                          </option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                </template>
+              </div>
+
+              <div class="columns">
+                <!-- đoạn này nếu chọn đóng bù thì phải code input khác -->
+                <template v-if="datanhaphosomodal.maphuongan == 'DB'">
+                  <div class="column">
+                    <div style="margin-bottom: 5px">
+                      <label class="labelFix">Số tháng</label>
+                    </div>
+                    <div>
+                      <div class="select is-fullwidth is-small">
+                        <select
+                          @change="phuongthucdChangeDongbu($event, addedIndex)"
+                          ref="phuongthucdongSelect"
+                        >
+                          <option selected disabled>
+                            - Chọn phương thức đóng -
+                          </option>
+                          <option
+                            v-for="(item, index) in phuongthucdongDongbu"
+                            :key="index"
+                            :value="item.maphuongthuc"
+                          >
+                            {{ item.tenphuongthuc }}
+                          </option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- nếu như đóng 1 lần còn thiếu và về sau thì thêm 1 ô nhập số tháng -->
+                  <template
+                    v-if="checkDong1lanchocacnamvesauVaConthieu == true"
+                  >
+                    <div class="column">
+                      <div style="margin-bottom: 5px">
+                        <label class="labelFix">Số tháng</label>
+                      </div>
+                      <div>
+                        <input
+                          v-if="NCT == true"
+                          v-model="datanhaphosomodal.sothang"
+                          class="input is-small"
+                          style="font-weight: 800; color: red"
+                          type="number"
+                          min="0"
+                          max="120"
+                          @blur="maxNCT"
+                          placeholder="NCT"
+                        />
+                        <input
+                          v-else="NVS == true"
+                          v-model="datanhaphosomodal.sothang"
+                          class="input is-small"
+                          style="font-weight: 800; color: red"
+                          type="number"
+                          min="0"
+                          max="80"
+                          @blur="maxNVS"
+                          placeholder="NVS"
+                        />
+                      </div>
+                    </div>
+                  </template>
+
+                  <div class="column">
+                    <div style="margin-bottom: 5px">
+                      <label class="labelFix">Số tiền phải đóng</label>
+                    </div>
+                    <div>
+                      <input
+                        v-mask="mask"
+                        v-model="datanhaphosomodal.sotien"
+                        class="input is-small"
+                        style="font-weight: 800; color: red"
+                      />
+                    </div>
+                  </div>
+                </template>
+
+                <template v-else>
+                  <div class="column">
+                    <div style="margin-bottom: 5px">
+                      <label class="labelFix">Số tháng</label>
+                    </div>
+                    <div>
+                      <div class="select is-fullwidth is-small">
+                        <select
+                          @change="phuongthucdChange($event, addedIndex)"
+                          ref="phuongthucdongSelect"
+                          v-model="selectedOptionptd"
+                        >
+                          <option selected disabled>
+                            - Chọn phương thức đóng -
+                          </option>
+                          <option
+                            v-for="(
+                              item, index
+                            ) in datanhaphosomodal.phuongthucdong"
+                            :key="index"
+                            :value="item.maphuongthuc"
+                          >
+                            {{ item.tenphuongthuc }}
+                          </option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- nếu như đóng 1 lần còn thiếu và về sau thì thêm 1 ô nhập số tháng -->
+                  <template
+                    v-if="checkDong1lanchocacnamvesauVaConthieu == true"
+                  >
+                    <div class="column">
+                      <div style="margin-bottom: 5px">
+                        <label class="labelFix">Số tháng đóng bù</label>
+                      </div>
+                      <div>
+                        <input
+                          v-if="NCT == true"
+                          v-model="datanhaphosomodal.sothang"
+                          class="input is-small"
+                          style="font-weight: 800; color: red"
+                          type="number"
+                          min="0"
+                          max="120"
+                          @blur="maxNCT"
+                        />
+                        <input
+                          v-else="NVS == true"
+                          v-model="datanhaphosomodal.sothang"
+                          class="input is-small"
+                          style="font-weight: 800; color: red"
+                          type="number"
+                          min="0"
+                          max="80"
+                          @blur="maxNVS"
+                        />
+                      </div>
+                    </div>
+
+                    <div class="column">
+                      <div style="margin-bottom: 5px">
+                        <label class="labelFix">Số tiền phải đóng</label>
+                      </div>
+                      <div>
+                        <input
+                          v-mask="mask"
+                          v-model="datanhaphosomodal.sotien"
+                          class="input is-small"
+                          style="font-weight: 800; color: red"
+                        />
+                      </div>
+                    </div>
+                  </template>
+
+                  <template v-else>
+                    <div class="column">
+                      <div style="margin-bottom: 5px">
+                        <label class="labelFix">Số tiền phải đóng</label>
+                      </div>
+                      <div>
+                        <input
+                          v-mask="mask"
+                          v-model="datanhaphosomodal.sotien"
+                          class="input is-small"
+                          style="font-weight: 800; color: red"
+                          disabled
+                        />
+                      </div>
+                    </div>
+                  </template>
+                </template>
+
                 <div class="column">
                   <div style="margin-bottom: 5px">
-                    <label class="labelFix">Đối tượng đóng</label>
+                    <label class="labelFix">Hình thức nạp tiền</label>
                   </div>
                   <div>
                     <div class="select is-fullwidth is-small">
                       <select
-                        @change="doituongChange($event, addedIndex)"
-                        ref="doituongSelect"
+                        @change="hinhthucNap($event, addedIndex)"
+                        v-model="selectedOptionHtnt"
+                        ref="hinhthucnapInput"
                       >
-                        <option selected disabled>
-                          - Chọn đối tượng đóng -
+                        <option disabled selected>
+                          - Chọn hình thức nạp tiền -
                         </option>
-                        <option
-                          v-for="(item, index) in datanhaphosomodal.doituong"
-                          :key="index"
-                          :value="item.madoituong"
-                        >
-                          {{ item.tendoituong }}
-                        </option>
+                        <option value="0">Tiền mặt</option>
+                        <option value="1">Chuyển khoản</option>
                       </select>
                     </div>
                   </div>
@@ -909,46 +1330,6 @@
               </div>
 
               <div class="columns">
-                <div class="column">
-                  <div style="margin-bottom: 5px">
-                    <label class="labelFix">Số tháng</label>
-                  </div>
-                  <div>
-                    <div class="select is-fullwidth is-small">
-                      <select
-                        @change="phuongthucdChange($event, addedIndex)"
-                        ref="phuongthucdongSelect"
-                      >
-                        <option selected disabled>
-                          - Chọn phương thức đóng -
-                        </option>
-                        <option
-                          v-for="(
-                            item, index
-                          ) in datanhaphosomodal.phuongthucdong"
-                          :key="index"
-                          :value="item.maphuongthuc"
-                        >
-                          {{ item.tenphuongthuc }}
-                        </option>
-                      </select>
-                    </div>
-                  </div>
-                </div>
-                <div class="column">
-                  <div style="margin-bottom: 5px">
-                    <label class="labelFix">Số tiền phải đóng</label>
-                  </div>
-                  <div>
-                    <input
-                      v-mask="mask"
-                      v-model="datanhaphosomodal.sotien"
-                      class="input is-small"
-                      style="font-weight: 800; color: red"
-                      disabled
-                    />
-                  </div>
-                </div>
                 <div class="column">
                   <div style="margin-bottom: 5px">
                     <label class="labelFix">Tỉnh</label>
@@ -993,28 +1374,6 @@
                     </select>
                   </div>
                 </div>
-              </div>
-              <div class="columns">
-                <div class="column is-2">
-                  <div style="margin-bottom: 5px">
-                    <label class="labelFix">Hình thức nạp tiền</label>
-                  </div>
-                  <div>
-                    <div class="select is-fullwidth is-small">
-                      <select
-                        @change="hinhthucNap($event, addedIndex)"
-                        v-model="selectedOptionHtnt"
-                        ref="hinhthucnapInput"
-                      >
-                        <option disabled selected>
-                          - Chọn hình thức nạp tiền -
-                        </option>
-                        <option value="0">Tiền mặt</option>
-                        <option value="1">Chuyển khoản</option>
-                      </select>
-                    </div>
-                  </div>
-                </div>
                 <div class="column">
                   <div style="margin-bottom: 5px">
                     <label class="labelFix">Xã phường</label>
@@ -1054,6 +1413,9 @@
                     />
                   </div>
                 </div>
+              </div>
+
+              <div class="columns">
                 <div class="column">
                   <div style="margin-bottom: 5px">
                     <label class="labelFix">Ghi chú</label>
@@ -1068,7 +1430,7 @@
                 </div>
               </div>
 
-              <hr class="navbar-divider" />
+              <!-- <hr class="navbar-divider" /> -->
               <div class="columns">
                 <div class="column" style="margin-top: 10px">
                   <div
@@ -1311,6 +1673,10 @@ export default {
       mask: currencyMask,
       items: [],
       selectedOptionHtnt: "- Chọn hình thức nạp tiền -",
+      selectedOptionpa: "- Chọn phương án -",
+      selectedOptionptd: "- Chọn phương thức đóng -",
+      selectedOptionDoituongdong: "- Chọn đối tượng đóng -",
+      selectedOptionptdDongbu: "- Chọn phương thức đóng -",
       phuongan: [
         {
           maphuongan: "TM",
@@ -1319,6 +1685,32 @@ export default {
         {
           maphuongan: "ON",
           tenphuongan: "Đóng tiếp",
+        },
+        {
+          maphuongan: "DB",
+          tenphuongan: "Đóng bù",
+        },
+      ],
+      phuongthucdongDongbu: [
+        { maphuongthuc: "1", tenphuongthuc: "1 tháng" },
+        { maphuongthuc: "2", tenphuongthuc: "2 tháng" },
+        { maphuongthuc: "3", tenphuongthuc: "3 tháng" },
+        { maphuongthuc: "4", tenphuongthuc: "4 tháng" },
+        { maphuongthuc: "5", tenphuongthuc: "5 tháng" },
+        { maphuongthuc: "6", tenphuongthuc: "6 tháng" },
+        { maphuongthuc: "7", tenphuongthuc: "7 tháng" },
+        { maphuongthuc: "8", tenphuongthuc: "8 tháng" },
+        { maphuongthuc: "9", tenphuongthuc: "9 tháng" },
+        { maphuongthuc: "10", tenphuongthuc: "10 tháng" },
+        { maphuongthuc: "11", tenphuongthuc: "11 tháng" },
+        { maphuongthuc: "12", tenphuongthuc: "12 tháng" },
+        {
+          maphuongthuc: "D1LNCT",
+          tenphuongthuc: "Đóng 1 lần cho những năm còn thiếu (Nghỉ hưu)",
+        },
+        {
+          maphuongthuc: "D1LNVS",
+          tenphuongthuc: "Đóng 1 lần cho những năm về sau",
         },
       ],
       luongcoso: 0,
@@ -1349,6 +1741,10 @@ export default {
       datanhaphosomodal: {},
       isRoleSent: false,
       benhvienInfo: null,
+
+      checkDong1lanchocacnamvesauVaConthieu: false,
+      NVS: false,
+      NCT: false,
     };
   },
 
@@ -1447,8 +1843,100 @@ export default {
   },
 
   methods: {
+    maxNCT() {
+      if (this.datanhaphosomodal.sothang > 120) {
+        Swal.fire({
+          text: `Số tháng đóng bù không được lớn hơn 120 tháng`,
+          icon: "error",
+        });
+      }
+      if (this.datanhaphosomodal.sothang < 0) {
+        Swal.fire({
+          text: `Số tháng đóng bù không được nhập nhỏ hơn 0`,
+          icon: "error",
+        });
+      }
+    },
+
+    maxNVS() {
+      if (this.datanhaphosomodal.sothang > 80) {
+        Swal.fire({
+          text: `Số tháng đóng bù không được lớn hơn 80 tháng`,
+          icon: "error",
+        });
+      }
+      if (this.datanhaphosomodal.sothang < 0) {
+        Swal.fire({
+          text: `Số tháng đóng bù không được nhập nhỏ hơn 0`,
+          icon: "error",
+        });
+      }
+    },
+
+    maxNCTItem(item, index) {
+      console.log(item);
+      console.log(index);
+
+      const value = item.sothang;
+
+      console.log(value);
+
+      if (value > 120) {
+        Swal.fire({
+          text: `Hàng ${
+            index + 1
+          }: Số tháng đóng bù không được lớn hơn 120 tháng`,
+          icon: "error",
+        });
+      } else if (value < 0) {
+        Swal.fire({
+          text: `Hàng ${index + 1}: Số tháng đóng bù không được nhỏ hơn 0`,
+          icon: "error",
+        });
+      }
+    },
+
+    maxNVSItem(item, index) {
+      console.log(item);
+      console.log(index);
+      const value = item.sothang;
+
+      console.log(value);
+
+      if (value > 80) {
+        Swal.fire({
+          text: `Hàng ${
+            index + 1
+          }: Số tháng đóng bù không được lớn hơn 80 tháng`,
+          icon: "error",
+        });
+      } else if (value < 0) {
+        Swal.fire({
+          text: `Hàng ${index + 1}: Số tháng đóng bù không được nhỏ hơn 0`,
+          icon: "error",
+        });
+      }
+    },
+
     async findNguoihuong(masobhxh, index) {
       if (masobhxh !== "") {
+        const isDuplicate = this.items.some(
+          (item, idx) =>
+            idx !== index &&
+            (item.masobhxh === masobhxh || item.cccd === this.items[index].cccd)
+        );
+
+        if (isDuplicate) {
+          Swal.fire({
+            text: `Mã số ${masobhxh} vừa được đăng ký trong loại hình này xong, vui lòng kiểm tra lại!`,
+            icon: "error",
+          });
+
+          // Xoá mã số BHXH vừa nhập
+          this.items[index].masobhxh = "";
+          return;
+        }
+
         try {
           const res = await this.$axios.get(
             `/api/nguoihuong/find-nguoihuong?MaSoBhxh=${masobhxh}`
@@ -1549,6 +2037,10 @@ export default {
 
     addHosokekhai() {
       (this.selectedOptionHtnt = "- Chọn hình thức nạp tiền -"),
+        (this.selectedOptionpa = "- Chọn phương án -"),
+        (this.selectedOptionptd = "- Chọn phương thức đóng -"),
+        (this.selectedOptionDoituongdong = "- Chọn đối tượng đóng -"),
+        (this.selectedOptionptdDongbu = "- Chọn phương thức đóng -"),
         (this.addedIndex = 0); // là chỉ mục index của item hiện tại đang được nhập tại modal
       // Mở trạng thái nhập hồ sơ
       this.isActive_nhaphoso = true;
@@ -1579,9 +2071,83 @@ export default {
         denyButtonText: `Không`,
       });
       if (result.isConfirmed) {
+        // check toàn bộ ô để valid form
+        const fieldNames = {
+          masobhxh: "Mã số BHXH",
+          hoten: "Họ tên",
+          ngaysinh: "Ngày sinh",
+          cccd: "Căn cước công dân",
+          maphuongan: "Phương án",
+          muctiendong: "Mức tiền phải đóng",
+          tuthang: "Từ tháng",
+          madoituong: "Đối tượng đóng",
+          tenphuongthucdong: "Phương thức đóng",
+          hinhthucnap: "Hình thức nạp",
+          tentinh: "Tỉnh",
+        };
+
+        const fieldsToValidate = [
+          "masobhxh",
+          "hoten",
+          "ngaysinh",
+          "cccd",
+          "maphuongan",
+          "muctiendong",
+          "tuthang",
+          "madoituong",
+          "tenphuongthucdong",
+          "hinhthucnap",
+          "tentinh",
+        ];
+
+        for (const key of fieldsToValidate) {
+          const value = this.datanhaphosomodal[key];
+
+          if (!value || value === "") {
+            const fieldName = fieldNames[key] || key;
+            const Toast = Swal.mixin({
+              toast: true,
+              position: "top-end",
+              showConfirmButton: false,
+              timer: 3000,
+              timerProgressBar: true,
+              didOpen: (toast) => {
+                toast.addEventListener("mouseenter", Swal.stopTimer);
+                toast.addEventListener("mouseleave", Swal.resumeTimer);
+              },
+            });
+            Toast.fire({
+              icon: "error",
+              title: `Vui lòng nhập ${fieldName}!`,
+            });
+            return;
+          }
+
+          // ✅ Thêm kiểm tra riêng cho muctiendong
+          if (key === "muctiendong" && (value === "0" || value === 0)) {
+            const Toast = Swal.mixin({
+              toast: true,
+              position: "top-end",
+              showConfirmButton: false,
+              timer: 3000,
+              timerProgressBar: true,
+              didOpen: (toast) => {
+                toast.addEventListener("mouseenter", Swal.stopTimer);
+                toast.addEventListener("mouseleave", Swal.resumeTimer);
+              },
+            });
+            Toast.fire({
+              icon: "error",
+              title: `Vui lòng nhập vào mức thu nhập hàng tháng đóng!`,
+            });
+            return;
+          }
+        }
+
         this.items[this.addedIndex] = this.datanhaphosomodal;
         this.datanhaphosomodal = {};
         this.isActive_nhaphoso = false;
+
         // console.log(this.items);
       }
     },
@@ -1600,6 +2166,8 @@ export default {
     },
 
     async guiKekhai() {
+      // console.log(this.items);
+
       if (this.items.length > 0) {
         this.isActive_xacnhan = true;
       } else {
@@ -1622,6 +2190,12 @@ export default {
     },
 
     addRow() {
+      const now = new Date();
+      const currentMonthYear = `${String(now.getMonth() + 1).padStart(
+        2,
+        "0"
+      )}/${now.getFullYear()}`;
+
       try {
         this.items.push({
           matochuc: this.user.matochuc,
@@ -1671,7 +2245,7 @@ export default {
           doituong: this.doituongdong,
           madoituong: "",
           tendoituong: "",
-          tuthang: "", // kiểu string
+          tuthang: currentMonthYear, // kiểu string
           nguoithu: 0,
           tylengansachdiaphuong: 0,
           tyledong: 0,
@@ -1682,6 +2256,7 @@ export default {
           tiennsnnht: 0,
           tylensdp: 0,
           tiennsdp: 0,
+          sothang: 0, // code ngày 29/4/2025 đợt sửa IS sau khi đi vinh về. cái này là số tháng mà người ta đóng bù
 
           // hồ sơ kê khai
           dotkekhai: "",
@@ -2001,12 +2576,135 @@ export default {
       }
     },
 
+    async doituongChangeDongbu(e, index) {
+      const madoituong = e.target.value;
+      const tendoituong = e.target.options[e.target.selectedIndex].text;
+      this.items[index].madoituong = madoituong;
+      this.items[index].tendoituong = tendoituong;
+
+      // const mucDong = parseFloat(
+      //   this.items[index].muctiendong.replace(/,/g, "")
+      // );
+
+      // let castMucdong = mucDong * (this.tyledongbhyt / 100);
+      // let castSubTwhotro = this.chuanngheo * (this.tyledongbhyt / 100);
+      // let castDiaphuonght =
+      //   this.chuanngheo *
+      //   (this.tyledongbhyt / 100) *
+      //   (this.tylediaphuonghotroIs / 100);
+      // let castDiaphuonghtKhac =
+      //   this.chuanngheo *
+      //   (this.tyledongbhyt / 100) *
+      //   (this.tylehotrokhacIs / 100);
+
+      // if (this.items[index].madoituong === "BT") {
+      //   let madoituong = "";
+      //   for (let i = 0; i < this.doituongdong.length; i++) {
+      //     const doituong = this.doituongdong[i];
+      //     // CHÚNG TA TÌM TỶ LỆ HỖ TRỢ TƯƠNG ỨNG TẠI ĐÂY
+      //     if (doituong.madoituong === "BT") {
+      //       madoituong = doituong.tylehotro;
+      //     }
+      //   }
+
+      //   // Bắt đầu tính tiền
+      //   castSubTwhotro = castSubTwhotro * (madoituong / 100);
+      //   let tienPhaidong =
+      //     (castMucdong -
+      //       castSubTwhotro -
+      //       castDiaphuonght -
+      //       castDiaphuonghtKhac) *
+      //     parseFloat(this.items[index].maphuongthucdong);
+      //   this.items[index].sotien = tienPhaidong;
+      //   // console.log(this.items[index].sotien);
+      // } else if (this.items[index].madoituong === "CN") {
+      //   let madoituong = "";
+      //   for (let i = 0; i < this.doituongdong.length; i++) {
+      //     const doituong = this.doituongdong[i];
+      //     // CHÚNG TA TÌM TỶ LỆ HỖ TRỢ TƯƠNG ỨNG TẠI ĐÂY
+      //     if (doituong.madoituong === "CN") {
+      //       madoituong = doituong.tylehotro;
+      //     }
+      //   }
+
+      //   // Bắt đầu tính tiền
+      //   castSubTwhotro = castSubTwhotro * (madoituong / 100);
+      //   let tienPhaidong =
+      //     (castMucdong -
+      //       castSubTwhotro -
+      //       castDiaphuonght -
+      //       castDiaphuonghtKhac) *
+      //     parseFloat(this.items[index].maphuongthucdong);
+      //   this.items[index].sotien = tienPhaidong;
+      // } else if (this.items[index].madoituong === "N") {
+      //   let madoituong = "";
+      //   for (let i = 0; i < this.doituongdong.length; i++) {
+      //     const doituong = this.doituongdong[i];
+      //     // CHÚNG TA TÌM TỶ LỆ HỖ TRỢ TƯƠNG ỨNG TẠI ĐÂY
+      //     if (doituong.madoituong === "N") {
+      //       madoituong = doituong.tylehotro;
+      //     }
+      //   }
+
+      //   // Bắt đầu tính tiền
+      //   castSubTwhotro = castSubTwhotro * (madoituong / 100);
+      //   let tienPhaidong =
+      //     (castMucdong -
+      //       castSubTwhotro -
+      //       castDiaphuonght -
+      //       castDiaphuonghtKhac) *
+      //     parseFloat(this.items[index].maphuongthucdong);
+      //   this.items[index].sotien = tienPhaidong;
+      // } else if (this.items[index].madoituong === "NT") {
+      //   let madoituong = "";
+      //   for (let i = 0; i < this.doituongdong.length; i++) {
+      //     const doituong = this.doituongdong[i];
+      //     // CHÚNG TA TÌM TỶ LỆ HỖ TRỢ TƯƠNG ỨNG TẠI ĐÂY
+      //     if (doituong.madoituong === "NT") {
+      //       madoituong = doituong.tylehotro;
+      //     }
+      //   }
+
+      //   // Bắt đầu tính tiền
+      //   castSubTwhotro = castSubTwhotro * (madoituong / 100);
+      //   let tienPhaidong =
+      //     (castMucdong - castSubTwhotro - castDiaphuonghtKhac) *
+      //     parseFloat(this.items[index].maphuongthucdong);
+      //   this.items[index].sotien = tienPhaidong;
+      // }
+    },
+
     // phương thức đóng
     async phuongthucdChange(e, index) {
+      // console.log(e);
+      // console.log(index);
+
       const maphuongthucdong = e.target.value;
       const tenphuongthucdong = e.target.options[e.target.selectedIndex].text;
       this.items[index].maphuongthucdong = maphuongthucdong;
       this.items[index].tenphuongthucdong = tenphuongthucdong;
+      this.items[index].sothang = 0;
+
+      // console.log(maphuongthucdong);
+
+      if (maphuongthucdong == "D1LNCT" || maphuongthucdong == "D1LNVS") {
+        this.checkDong1lanchocacnamvesauVaConthieu = true;
+        if (maphuongthucdong == "D1LNCT") {
+          this.NCT = true;
+          this.NVS = false;
+        }
+        if (maphuongthucdong == "D1LNVS") {
+          this.NVS = true;
+          this.NCT = false;
+        }
+      } else {
+        this.checkDong1lanchocacnamvesauVaConthieu = false;
+      }
+
+      // console.log(`NCT: ${this.NCT}`);
+      // console.log(`NVS: ${this.NVS}`);
+
+      // console.log(this.checkDong1lanchocacnamvesauVaConthieu);
 
       // tính số tiền phải nạp
       // console.log(this.items[index].muctiendong);
@@ -2137,10 +2835,172 @@ export default {
       }
     },
 
+    // áp dụng cho đóng bù
+    async phuongthucdChangeDongbu(e, index) {
+      // console.log(e.target.options[e.target.selectedIndex].text);
+
+      const maphuongthucdong = e.target.value;
+      const tenphuongthucdong = e.target.options[e.target.selectedIndex].text;
+      // console.log(maphuongthucdong);
+      // console.log(this.items[index].maphuongthucdong);
+
+      this.items[index].maphuongthucdong = maphuongthucdong;
+      this.items[index].tenphuongthucdong = tenphuongthucdong;
+      this.items[index].sothang = 0;
+
+      if (maphuongthucdong == "D1LNCT" || maphuongthucdong == "D1LNVS") {
+        this.checkDong1lanchocacnamvesauVaConthieu = true;
+        if (maphuongthucdong == "D1LNCT") {
+          this.NCT = true;
+          this.NVS = false;
+        }
+        if (maphuongthucdong == "D1LNVS") {
+          this.NVS = true;
+          this.NCT = false;
+        }
+      } else {
+        this.checkDong1lanchocacnamvesauVaConthieu = false;
+      }
+
+      // console.log(`NCT: ${this.NCT}`);
+      // console.log(`NVS: ${this.NVS}`);
+
+      // // tính số tiền phải nạp
+      // // console.log(this.items[index].muctiendong);
+      // // console.log(typeof(this.items[index].muctiendong));
+
+      // // ***  CÁC TỶ LỆ HỖ TRỢ ĐƯA VÀO DANH MỤC VÀ THAY ĐỔI THEO TỪNG ĐỊA PHƯƠNG
+      // // 1. this.tyledongbhyt (tỷ lệ đóng 22% .. thay đổi thì vào danh mục)
+      // // 2. this.chuanngeo (mức chuẩn nghèo do nhà nước quy định)
+      // // 3. this.tylediaphuonghotroIs (tỷ lệ này do địa phương - do tỉnh - từng nơi qy định)
+      // // 4. this.tylehotrokhacIs (các tỷ lệ khác đôi khi do từng huyện xin được hỗ trợ)
+
+      // // mức tiền đóng do lao động lựa chọn
+      // // cái này phải yêu cầu chọn chẵn tiền ví dụ 1.050.000 hoặc 1.300.000 không được lẻ như 1.020.000
+      // // khống chế < 20 lần lương cơ bản (<20*1.800.000)
+      // const mucDong = parseFloat(
+      //   this.items[index].muctiendong.replace(/,/g, "")
+      // );
+      // // console.log(typeof mucDong);
+      // // console.log(mucDong);
+
+      // // công thức tính cần đưa danh mục
+      // // tỷ lệ đóng: 22%
+      // // chuẩn hộ nghèo: 1500000
+
+      // // lương cơ sở là 1800000
+      // // hạn chế không được nhập mức tiền đóng > luongcoso * 20 (lần)
+
+      // // công thức tính đóng hàng tháng háng
+      // // ((mức tiền lương chọn đóng * tỷ lệ đóng) -
+      // // (chuẩn hộ nghèo * tỷ lệ đóng * 10% (NSTW hỗ trợ cho đối tượng BT))) * số tháng
+      // // tách đối tượng đóng:
+
+      // let castMucdong = mucDong * (this.tyledongbhyt / 100);
+      // let castSubTwhotro = this.chuanngheo * (this.tyledongbhyt / 100);
+      // let castDiaphuonght =
+      //   this.chuanngheo *
+      //   (this.tyledongbhyt / 100) *
+      //   (this.tylediaphuonghotroIs / 100);
+      // let castDiaphuonghtKhac =
+      //   this.chuanngheo *
+      //   (this.tyledongbhyt / 100) *
+      //   (this.tylehotrokhacIs / 100);
+
+      // // console.log(castDiaphuonght, castDiaphuonghtKhac);
+
+      // // console.log(castMucdong);
+      // // console.log(castSubTwhotro);
+      // // console.log(castDiaphuonght);
+
+      // // Bắt đầu tính tiền khi người dùng chọn số tháng nạp
+      // // Ở đây với mỗi đối tượng đóng được chọn thì sẽ có công thức tính khác nhau
+      // // console.log(this.items[index].madoituong);
+      // // console.log(this.doituongdong);
+      // if (this.items[index].madoituong === "BT") {
+      //   let madoituong = "";
+      //   for (let i = 0; i < this.doituongdong.length; i++) {
+      //     const doituong = this.doituongdong[i];
+      //     // CHÚNG TA TÌM TỶ LỆ HỖ TRỢ TƯƠNG ỨNG TẠI ĐÂY
+      //     if (doituong.madoituong === "BT") {
+      //       madoituong = doituong.tylehotro;
+      //     }
+      //   }
+
+      //   // Bắt đầu tính tiền
+      //   castSubTwhotro = castSubTwhotro * (madoituong / 100);
+      //   let tienPhaidong =
+      //     (castMucdong -
+      //       castSubTwhotro -
+      //       castDiaphuonght -
+      //       castDiaphuonghtKhac) *
+      //     parseFloat(this.items[index].maphuongthucdong);
+      //   this.items[index].sotien = tienPhaidong;
+      //   // console.log(this.items[index].sotien);
+      // } else if (this.items[index].madoituong === "CN") {
+      //   let madoituong = "";
+      //   for (let i = 0; i < this.doituongdong.length; i++) {
+      //     const doituong = this.doituongdong[i];
+      //     // CHÚNG TA TÌM TỶ LỆ HỖ TRỢ TƯƠNG ỨNG TẠI ĐÂY
+      //     if (doituong.madoituong === "CN") {
+      //       madoituong = doituong.tylehotro;
+      //     }
+      //   }
+
+      //   // Bắt đầu tính tiền
+      //   castSubTwhotro = castSubTwhotro * (madoituong / 100);
+      //   let tienPhaidong =
+      //     (castMucdong -
+      //       castSubTwhotro -
+      //       castDiaphuonght -
+      //       castDiaphuonghtKhac) *
+      //     parseFloat(this.items[index].maphuongthucdong);
+      //   this.items[index].sotien = tienPhaidong;
+      // } else if (this.items[index].madoituong === "N") {
+      //   let madoituong = "";
+      //   for (let i = 0; i < this.doituongdong.length; i++) {
+      //     const doituong = this.doituongdong[i];
+      //     // CHÚNG TA TÌM TỶ LỆ HỖ TRỢ TƯƠNG ỨNG TẠI ĐÂY
+      //     if (doituong.madoituong === "N") {
+      //       madoituong = doituong.tylehotro;
+      //     }
+      //   }
+
+      //   // Bắt đầu tính tiền
+      //   castSubTwhotro = castSubTwhotro * (madoituong / 100);
+      //   let tienPhaidong =
+      //     (castMucdong -
+      //       castSubTwhotro -
+      //       castDiaphuonght -
+      //       castDiaphuonghtKhac) *
+      //     parseFloat(this.items[index].maphuongthucdong);
+      //   this.items[index].sotien = tienPhaidong;
+      // } else if (this.items[index].madoituong === "NT") {
+      //   let madoituong = "";
+      //   for (let i = 0; i < this.doituongdong.length; i++) {
+      //     const doituong = this.doituongdong[i];
+      //     // CHÚNG TA TÌM TỶ LỆ HỖ TRỢ TƯƠNG ỨNG TẠI ĐÂY
+      //     if (doituong.madoituong === "NT") {
+      //       madoituong = doituong.tylehotro;
+      //     }
+      //   }
+
+      //   // Bắt đầu tính tiền
+      //   castSubTwhotro = castSubTwhotro * (madoituong / 100);
+      //   let tienPhaidong =
+      //     (castMucdong - castSubTwhotro - castDiaphuonghtKhac) *
+      //     parseFloat(this.items[index].maphuongthucdong);
+      //   this.items[index].sotien = tienPhaidong;
+      // }
+    },
+
     // phương án
     async phuonganChange(e, index) {
+      // console.log(e.target.options[e.target.selectedIndex]);
       const maphuongan = e.target.value;
       const tenphuongan = e.target.options[e.target.selectedIndex].text;
+      // console.log(maphuongan);
+      // console.log(tenphuongan);
       this.items[index].maphuongan = maphuongan;
       this.items[index].tenphuongan = tenphuongan;
     },
@@ -2253,10 +3113,10 @@ export default {
     },
 
     // check phone number
-    isValidPhoneNumber(phoneNumber) {
-      const cleanedPhoneNumber = phoneNumber.replace(/\D/g, "");
-      return cleanedPhoneNumber.length === 10;
-    },
+    // isValidPhoneNumber(phoneNumber) {
+    //   const cleanedPhoneNumber = phoneNumber.replace(/\D/g, "");
+    //   return cleanedPhoneNumber.length === 10;
+    // },
 
     // check số cccd
     isValidCCCD(cccd) {
@@ -2356,28 +3216,28 @@ export default {
       }
     },
 
-    checkAlertSodienthoai(dienthoai) {
-      if (dienthoai !== "") {
-        const cleanedPhone = dienthoai.replace(/\D/g, "");
-        if (cleanedPhone.length !== 10) {
-          const Toast = Swal.mixin({
-            toast: true,
-            position: "top-end",
-            showConfirmButton: false,
-            timer: 3000,
-            timerProgressBar: true,
-            didOpen: (toast) => {
-              toast.addEventListener("mouseenter", Swal.stopTimer);
-              toast.addEventListener("mouseleave", Swal.resumeTimer);
-            },
-          });
-          Toast.fire({
-            icon: "error",
-            title: "Số điện thoại phải có đúng 10 chữ số !",
-          });
-        }
-      }
-    },
+    // checkAlertSodienthoai(dienthoai) {
+    //   if (dienthoai !== "") {
+    //     const cleanedPhone = dienthoai.replace(/\D/g, "");
+    //     if (cleanedPhone.length !== 10) {
+    //       const Toast = Swal.mixin({
+    //         toast: true,
+    //         position: "top-end",
+    //         showConfirmButton: false,
+    //         timer: 3000,
+    //         timerProgressBar: true,
+    //         didOpen: (toast) => {
+    //           toast.addEventListener("mouseenter", Swal.stopTimer);
+    //           toast.addEventListener("mouseleave", Swal.resumeTimer);
+    //         },
+    //       });
+    //       Toast.fire({
+    //         icon: "error",
+    //         title: "Số điện thoại phải có đúng 10 chữ số !",
+    //       });
+    //     }
+    //   }
+    // },
 
     async checkFormData() {
       for (let i = 0; i < this.items.length; i++) {
@@ -2458,27 +3318,27 @@ export default {
           return false;
         }
 
-        if (!this.items[i].dienthoai) {
-          this.$toasted.show("Thiếu điện thoại", {
-            duration: 3000,
-            theme: "bubble",
-          });
-          if (this.$refs.dienthoaiInput[i]) {
-            this.$refs.dienthoaiInput[i].focus();
-          }
-          return false;
-        }
+        // if (!this.items[i].dienthoai) {
+        //   this.$toasted.show("Thiếu điện thoại", {
+        //     duration: 3000,
+        //     theme: "bubble",
+        //   });
+        //   if (this.$refs.dienthoaiInput[i]) {
+        //     this.$refs.dienthoaiInput[i].focus();
+        //   }
+        //   return false;
+        // }
 
-        if (!this.isValidPhoneNumber(this.items[i].dienthoai)) {
-          this.$toasted.show("Số điện thoại không hợp lệ", {
-            duration: 3000,
-            theme: "bubble",
-          });
-          if (this.$refs.dienthoaiInput[i]) {
-            this.$refs.dienthoaiInput[i].focus();
-          }
-          return false;
-        }
+        // if (!this.isValidPhoneNumber(this.items[i].dienthoai)) {
+        //   this.$toasted.show("Số điện thoại không hợp lệ", {
+        //     duration: 3000,
+        //     theme: "bubble",
+        //   });
+        //   if (this.$refs.dienthoaiInput[i]) {
+        //     this.$refs.dienthoaiInput[i].focus();
+        //   }
+        //   return false;
+        // }
 
         if (!this.items[i].maphuongan || !this.items[i].tenphuongan) {
           this.$toasted.show("Chọn một phương án", {
@@ -2524,16 +3384,16 @@ export default {
           return false;
         }
 
-        if (!this.items[i].tothon) {
-          this.$toasted.show("Thiếu tổ thôn", {
-            duration: 3000,
-            theme: "bubble",
-          });
-          if (this.$refs.tothonInput[i]) {
-            this.$refs.tothonInput[i].focus();
-          }
-          return false;
-        }
+        // if (!this.items[i].tothon) {
+        //   this.$toasted.show("Thiếu tổ thôn", {
+        //     duration: 3000,
+        //     theme: "bubble",
+        //   });
+        //   if (this.$refs.tothonInput[i]) {
+        //     this.$refs.tothonInput[i].focus();
+        //   }
+        //   return false;
+        // }
 
         if (!this.items[i].hinhthucnap) {
           this.$toasted.show("Chọn hình thức nạp tiền", {
@@ -2811,6 +3671,7 @@ export default {
           try {
             for (let i = 0; i < this.items.length; i++) {
               this.items[i].sotien = this.items[i].sotien.replace(/,/g, "");
+
               this.items[i].muctiendong = this.items[i].muctiendong.replace(
                 /,/g,
                 ""

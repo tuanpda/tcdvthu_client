@@ -128,6 +128,12 @@
                 </span>
                 &ensp; Tra cứu Hồ sơ kê khai
               </nuxt-link>
+              <nuxt-link to="/nhanviendailythu/timkiemhoso" class="navbar-item">
+                <span style="color: #3850b7" class="icon is-small is-left">
+                  <i class="far fa-calendar-alt"></i>
+                </span>
+                &ensp; Tra cứu Hồ sơ kê khai (tìm kiếm)
+              </nuxt-link>
               <nuxt-link to="/nhanviendailythu/taokekhai" class="navbar-item">
                 <span style="color: #3850b7" class="icon is-small is-left">
                   <i class="fas fa-file-signature"></i>
