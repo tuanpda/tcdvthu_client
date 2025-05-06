@@ -129,7 +129,7 @@
                 <td rowspan="2" style="text-align: center">Kỳ kê khai</td>
                 <td rowspan="2" style="text-align: center">Ngày kê khai</td>
                 <td rowspan="2" style="text-align: center">Số người</td>
-                <td rowspan="2" style="text-align: center">Trạng thái</td>
+                <!-- <td rowspan="2" style="text-align: center">Trạng thái</td> -->
                 <td rowspan="2" style="text-align: center">Xem hồ sơ</td>
                 <td colspan="2" style="text-align: center">
                   Xuất mẫu <br />
@@ -156,7 +156,7 @@
                 <td style="text-align: center">{{ item.kykekhai }}</td>
                 <td style="text-align: right">{{ item.ngaykekhai }}</td>
                 <td style="text-align: center">{{ item.so_luong }}</td>
-                <td style="text-align: center">{{ item.trangthai }}</td>
+                <!-- <td style="text-align: center">{{ item.trangthai }}</td> -->
                 <td style="text-align: center">
                   <a @click="view_details(item)"
                     ><span class="icon">
@@ -302,8 +302,8 @@
                         <td style="text-align: center">Tỉnh / Thành phố</td>
                         <td style="text-align: center">Quận / Huyện</td>
                         <td style="text-align: center">Xã phường</td>
-                        <td style="text-align: center">Tổ thôn</td>
-                        <td style="text-align: center">Bệnh viện tỉnh</td>
+                        <!-- <td style="text-align: center">Tổ thôn</td>
+                        <td style="text-align: center">Bệnh viện tỉnh</td> -->
                         <td style="text-align: center">Bệnh viện</td>
                         <td style="text-align: center">Ghi chú</td>
                       </tr>
@@ -378,13 +378,13 @@
                           {{ item.tenxaphuong }}
                         </td>
                         <!-- tổ thôn -->
-                        <td>
+                        <!-- <td>
                           {{ item.tothon }}
-                        </td>
+                        </td> -->
                         <!-- tỉnh bệnh viện -->
-                        <td style="text-align: center">
+                        <!-- <td style="text-align: center">
                           {{ item.benhvientinh }}
-                        </td>
+                        </td> -->
                         <!-- bệnh viện -->
                         <td>
                           {{ item.tenbenhvien }}
@@ -473,7 +473,15 @@
                   >
                     <thead style="font-weight: bold">
                       <tr style="font-size: small; background-color: #fff8dc">
+                        <td style="text-align: center; width: 3%">
+                          <input
+                            type="checkbox"
+                            v-model="selectAll"
+                            @change="toggleAll"
+                          />
+                        </td>
                         <td style="text-align: center; width: 3%">STT</td>
+                        <td style="text-align: center">Xem chi tiết</td>
                         <td style="text-align: center">Gửi lên cổng</td>
                         <td style="text-align: center">Trạng thái</td>
                         <td style="text-align: center">Mã xác nhận</td>
@@ -496,8 +504,8 @@
                         <td style="text-align: center">Tỉnh / Thành phố</td>
                         <td style="text-align: center">Quận / Huyện</td>
                         <td style="text-align: center">Xã phường</td>
-                        <td style="text-align: center">Tổ thôn</td>
-                        <td style="text-align: center">Bệnh viện tỉnh</td>
+                        <!-- <td style="text-align: center">Tổ thôn</td>
+                        <td style="text-align: center">Bệnh viện tỉnh</td> -->
                         <td style="text-align: center">Bệnh viện</td>
                         <td style="text-align: center">Ghi chú</td>
                       </tr>
@@ -509,8 +517,20 @@
                         style="font-size: small"
                       >
                         <td style="text-align: center; vertical-align: middle">
+                          <input
+                            class=""
+                            type="checkbox"
+                            v-model="selectedItems"
+                            :value="item"
+                            :disabled="
+                              item.trangthai == 0 || item.status_hosoloi == 1
+                            "
+                          />
+                        </td>
+                        <td style="text-align: center; vertical-align: middle">
                           {{ index + 1 }}
                         </td>
+                        <td></td>
                         <td style="text-align: center">
                           <template v-if="item.trangthai == 1">
                             <button
@@ -535,7 +555,15 @@
                           </template>
                         </td>
                         <td style="text-align: center; font-weight: 500">
-                          {{ item.trangthai }}
+                          <span
+                            style="color: red; font-weight: 700"
+                            v-if="item.trangthai == 1"
+                          >
+                            Chưa gửi cổng
+                          </span>
+                          <span style="color: green; font-weight: 700" v-else>
+                            Đã gửi cổng
+                          </span>
                         </td>
                         <td style="text-align: center; font-weight: 500">
                           {{ item.maxacnhan }}
@@ -620,13 +648,13 @@
                           {{ item.tenxaphuong }}
                         </td>
                         <!-- tổ thôn -->
-                        <td>
+                        <!-- <td>
                           {{ item.tothon }}
-                        </td>
+                        </td> -->
                         <!-- tỉnh bệnh viện -->
-                        <td style="text-align: center">
+                        <!-- <td style="text-align: center">
                           {{ item.benhvientinh }}
-                        </td>
+                        </td> -->
                         <!-- bệnh viện -->
                         <td>
                           {{ item.tenbenhvien }}
@@ -655,6 +683,7 @@
                           </span>
                           <span>Thoát</span>
                         </button>
+                        <button @click="xacNhanTraHoSo">Trả hồ sơ</button>
                       </div>
                     </div>
                   </div>
@@ -738,7 +767,16 @@ export default {
       res_save_info_db: false,
       res_inbienlai: false,
       res_save_res_from_bhxhvn: false,
+
+      selectedItems: [], // mảng các dòng đã chọn
+      selectAll: false,
     };
+  },
+
+  watch: {
+    selectedItems(newVal) {
+      this.selectAll = newVal.length === this.data_kekhai_details.length;
+    },
   },
 
   mounted() {
@@ -814,6 +852,47 @@ export default {
   },
 
   methods: {
+    toggleAll() {
+      // Chỉ chọn những mục có trangthai khác 0
+      if (this.selectAll) {
+        this.selectedItems = this.data_kekhai_details.filter(
+          (item) => item.trangthai != 0 || item.status_hosoloi == 1
+        );
+      } else {
+        this.selectedItems = [];
+      }
+    },
+
+    async xacNhanTraHoSo() {
+      try {
+        let dataItems = this.selectedItems.map((item) => ({ id: item._id }));
+        // Gửi yêu cầu gửi tất cả các hồ sơ và cập nhật trạng thái trong một lần
+        const res = await this.$axios.post(`/api/kekhai/trahosoloi`, {
+          items: dataItems,
+        });
+
+        if (res.data.success) {
+          Swal.fire({
+            title: "Thành công!",
+            text: "Tất cả hồ sơ đã được trả về điểm thu",
+            icon: "success",
+          });
+        } else {
+          Swal.fire({
+            title: "Thất bại!",
+            text: "Tất cả hồ sơ chưa được trả về điểm thu",
+            icon: "error",
+          });
+        }
+      } catch (error) {
+        Swal.fire({
+          title: "Có lỗi xảy ra, liên hệ quản trị hệ thống",
+          text: error,
+          icon: "error",
+        });
+      }
+    },
+
     // suggest điểm thu
     onInput() {
       if (!this.diemthu) {
@@ -908,6 +987,7 @@ export default {
         isSent: false, // Gán trạng thái gửi mặc định là chưa gửi
       }));
       this.isActive_detail = true;
+      // console.log(this.data_kekhai_details);
     },
 
     calculateEndDate(tuNgay, soThang) {
@@ -1102,40 +1182,7 @@ export default {
       // this.matochuc_mst = mst;
       // Xây dựng đường dẫn API dựa trên mã số thuế
 
-      if (this.user.nvcongty === true && this.user.role !== 2) {
-        // const res = await this.$axios.get(
-        //   `/api/kekhai/kykekhai-search-series-pagi-nvcty?kykekhai=${this.kykekhai}&page=${page}`
-        // );
-        try {
-          const res = await this.$axios.get(
-            `/api/kekhai/kykekhai-search-series-pagi-nvcty?kykekhai=${this.kykekhai}&dotkekhai=${this.dotkekhai}&ngaykekhai=${this.ngaykekhaitu}&ngaykekhaiden=${this.ngaykekhaiden}&sohoso=${this.sohoso}&tendaily=${this.diemthu}&maloaihinh=${this.maloaihinh}&page=${page}`
-          );
-          // console.log(res.data.kekhai);
-          if (res.data.results.length > 0) {
-            this.data_kekhai = res.data.results;
-            this.totalPages = res.data.info.pages;
-            this.currentPage = page;
-          } else {
-            const Toast = Swal.mixin({
-              toast: true,
-              position: "top-end",
-              showConfirmButton: false,
-              timer: 2000,
-              timerProgressBar: true,
-              didOpen: (toast) => {
-                toast.addEventListener("mouseenter", Swal.stopTimer);
-                toast.addEventListener("mouseleave", Swal.resumeTimer);
-              },
-            });
-            Toast.fire({
-              icon: "error",
-              title: `Không tìm thấy hồ sơ`,
-            });
-          }
-        } catch (error) {
-          console.log(error);
-        }
-      } else if (this.user.nvcongty === true && this.user.role == 2) {
+      if (this.user.role == 2) {
         try {
           const res = await this.$axios.get(
             `/api/kekhai/kykekhai-search-series-pagi-tonghop?kykekhai=${this.kykekhai}&dotkekhai=${this.dotkekhai}&ngaykekhai=${this.ngaykekhaitu}&ngaykekhaiden=${this.ngaykekhaiden}&sohoso=${this.sohoso}&maloaihinh=${this.maloaihinh}&page=${page}`
@@ -1143,6 +1190,8 @@ export default {
           // console.log(res.data.results.length);
           if (res.data.results.length > 0) {
             this.data_kekhai = res.data.results;
+            console.log(this.data_kekhai);
+
             this.totalPages = res.data.info.pages;
             this.currentPage = page;
           } else {
@@ -1195,38 +1244,6 @@ export default {
           console.log(error);
         }
       }
-
-      // if (this.user.role == 2) {
-      //   try {
-      //     const res = await this.$axios.get(
-      //       `/api/kekhai/kykekhai-search-series-pagi-tonghop?kykekhai=${this.kykekhai}&dotkekhai=${this.dotkekhai}&ngaykekhai=${this.ngaykekhaitu}&ngaykekhaiden=${this.ngaykekhaiden}&sohoso=${this.sohoso}&page=${page}`
-      //     );
-      //     // console.log(res.data.results.length);
-      //     if (res.data.results.length > 0) {
-      //       this.data_kekhai = res.data.results;
-      //       this.totalPages = res.data.info.pages;
-      //       this.currentPage = page;
-      //     } else {
-      //       const Toast = Swal.mixin({
-      //         toast: true,
-      //         position: "top-end",
-      //         showConfirmButton: false,
-      //         timer: 2000,
-      //         timerProgressBar: true,
-      //         didOpen: (toast) => {
-      //           toast.addEventListener("mouseenter", Swal.stopTimer);
-      //           toast.addEventListener("mouseleave", Swal.resumeTimer);
-      //         },
-      //       });
-      //       Toast.fire({
-      //         icon: "error",
-      //         title: `Không tìm thấy hồ sơ`,
-      //       });
-      //     }
-      //   } catch (error) {
-      //     console.log(error);
-      //   }
-      // }
     },
 
     // pagi
