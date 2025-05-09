@@ -1888,7 +1888,7 @@ export default {
             `/api/nguoihuong/find-nguoihuong?MaSoBhxh=${masobhxh}`
           );
           this.isLoading = true;
-          // console.log(res.data);
+          console.log(res.data);
           if (res.data.length > 0) {
             this.isLoading = false;
             const Toast = Swal.mixin({
@@ -1911,11 +1911,7 @@ export default {
             try {
               this.items[index].hoten = data.HoTen;
               this.items[index].ngaysinh = data.NgaySinh;
-              if (data.GioiTinh === "0") {
-                this.items[index].gioitinh = "Nữ";
-              } else {
-                this.items[index].gioitinh = "Nam";
-              }
+              this.items[index].gioitinh = data.GioiTinh;
               this.items[index].cccd = data.Cmnd;
               this.items[index].dienthoai = data.DienThoai;
               this.items[index].matinh = data.HoKhauTinhId;

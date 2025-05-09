@@ -36,6 +36,11 @@
   height: auto;
 }
 
+.modal-card-fix-hoso {
+  width: 950px;
+  height: auto;
+}
+
 /* Tùy chỉnh giao diện của input */
 .custom-input {
   width: 50%;

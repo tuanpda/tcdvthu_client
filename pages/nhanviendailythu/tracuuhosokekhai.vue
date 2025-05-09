@@ -14,6 +14,23 @@
         </div>
       </div>
 
+      <div v-if="listhsloi.length > 0" class="box">
+        <span style="font-weight: 600; color: red"
+          >Hiện điểm thu bạn đang có {{ listhsloi.length }} hồ sơ kê khai lỗi bị
+          trả lại:</span
+        >
+        <ul>
+          <li
+            style="font-weight: 500; color: #198754"
+            v-for="(hoso, index) in listhsloi"
+            :key="index"
+          >
+            {{ index + 1 }}: Nằm trong bộ hồ sơ: {{ hoso.sohoso }}, Đã nạp vào
+            ngày {{ hoso.ngaykekhai | formatDate }}
+          </li>
+        </ul>
+      </div>
+
       <div class="box">
         <div class="columns">
           <!-- <div class="column">
@@ -439,7 +456,7 @@
         </div>
       </div>
 
-      <!-- modal xem hồ sơ -->
+      <!-- modal xem hồ sơ-->
       <div class="">
         <div :class="{ 'is-active': isActive_detail }" class="modal">
           <div class="modal-background"></div>
@@ -530,13 +547,26 @@
                         <td style="text-align: center; vertical-align: middle">
                           {{ index + 1 }}
                         </td>
-                        <td></td>
+                        <td style="text-align: center">
+                          <a @click="vieweditHs(item)">
+                            <span
+                              style="color: #0d6efd"
+                              class="icon is-small is-left"
+                            >
+                              <i class="fas fa-file-alt"></i>
+                            </span>
+                          </a>
+                        </td>
                         <td style="text-align: center">
                           <template v-if="item.trangthai == 1">
                             <button
                               @click="guiDulieuLenCongBhxhvn(item)"
                               class="button is-small is-success"
-                              :disabled="item.isSent || !isRoleSent"
+                              :disabled="
+                                item.isSent ||
+                                !isRoleSent ||
+                                item.status_hosoloi == 1
+                              "
                             >
                               <span class="icon is-small" v-if="!item.isSent">
                                 <i
@@ -569,8 +599,12 @@
                           {{ item.maxacnhan }}
                         </td>
                         <td style="text-align: center; font-weight: 500">
-                          <!-- <template v-if="motaloi"></template>
-                          <template></template> -->
+                          <span
+                            style="color: #ffc107; font-weight: 600"
+                            v-if="item.status_hosoloi == 1"
+                          >
+                            Hồ sơ bị trả về
+                          </span>
                         </td>
                         <td style="text-align: center">
                           <template v-if="item.trangthai == 0">
@@ -683,12 +717,46 @@
                           </span>
                           <span>Thoát</span>
                         </button>
-                        <button @click="xacNhanTraHoSo">Trả hồ sơ</button>
+                        <button
+                          @click="xacNhanTraHoSo"
+                          class="button is-small is-success"
+                        >
+                          <span class="icon">
+                            <i class="fab fa-stack-overflow"></i>
+                          </span>
+                          <span>Trả hồ sơ lỗi</span>
+                        </button>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
+            </section>
+          </div>
+        </div>
+      </div>
+
+      <!-- modal fix hồ sơ -->
+      <div class="">
+        <div :class="{ 'is-active': isActive_fix }" class="modal">
+          <div class="modal-background"></div>
+          <div class="modal-content modal-card-fix-hoso box">
+            <section class="modal-card-fix-hoso-body">
+              <div>
+                <span style="font-weight: 800; font-size: 15px; color: #3cb371"
+                  >Chỉnh sửa hồ sơ</span
+                >
+              </div>
+              <div style="text-align: end">
+                <button
+                  @click="isActive_fix = false"
+                  class="button is-small is-info"
+                >
+                  Thoát
+                </button>
+              </div>
+
+              <div>djkhgkjd</div>
             </section>
           </div>
         </div>
@@ -735,6 +803,7 @@ export default {
       data_xuatmau: [],
       isActive: false,
       isActive_detail: false,
+      isActive_fix: false,
       isVtVnpt: false,
 
       // pagi
@@ -770,6 +839,7 @@ export default {
 
       selectedItems: [], // mảng các dòng đã chọn
       selectAll: false,
+      listhsloi: [],
     };
   },
 
@@ -804,6 +874,7 @@ export default {
 
     this.getDateTime();
     this.getDmDiemthu();
+    this.hosoLoitrave();
   },
 
   computed: {
@@ -856,7 +927,7 @@ export default {
       // Chỉ chọn những mục có trangthai khác 0
       if (this.selectAll) {
         this.selectedItems = this.data_kekhai_details.filter(
-          (item) => item.trangthai != 0 || item.status_hosoloi == 1
+          (item) => item.trangthai != 0 && item.status_hosoloi != 1
         );
       } else {
         this.selectedItems = [];
@@ -864,32 +935,64 @@ export default {
     },
 
     async xacNhanTraHoSo() {
-      try {
-        let dataItems = this.selectedItems.map((item) => ({ id: item._id }));
-        // Gửi yêu cầu gửi tất cả các hồ sơ và cập nhật trạng thái trong một lần
-        const res = await this.$axios.post(`/api/kekhai/trahosoloi`, {
-          items: dataItems,
+      // console.log(this.selectedItems);
+      if (this.selectedItems.length <= 0) {
+        const Toast = Swal.mixin({
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.addEventListener("mouseenter", Swal.stopTimer);
+            toast.addEventListener("mouseleave", Swal.resumeTimer);
+          },
         });
-
-        if (res.data.success) {
-          Swal.fire({
-            title: "Thành công!",
-            text: "Tất cả hồ sơ đã được trả về điểm thu",
-            icon: "success",
-          });
-        } else {
-          Swal.fire({
-            title: "Thất bại!",
-            text: "Tất cả hồ sơ chưa được trả về điểm thu",
-            icon: "error",
-          });
-        }
-      } catch (error) {
-        Swal.fire({
-          title: "Có lỗi xảy ra, liên hệ quản trị hệ thống",
-          text: error,
+        Toast.fire({
           icon: "error",
+          title: "Không có hồ sơ nào được chọn",
         });
+      } else {
+        const result = await Swal.fire({
+          title: `Xác nhận trả lại hồ sơ lỗi cho điểm thu ?`,
+          showDenyButton: true,
+          confirmButtonText: "Xác nhận",
+          denyButtonText: `Hủy`,
+        });
+        if (result.isConfirmed) {
+          try {
+            let dataItems = this.selectedItems.map((item) => ({
+              id: item._id,
+            }));
+            // Gửi yêu cầu gửi tất cả các hồ sơ và cập nhật trạng thái trong một lần
+            const res = await this.$axios.post(`/api/kekhai/trahosoloi`, {
+              items: dataItems,
+            });
+
+            if (res.data.success) {
+              Swal.fire({
+                title: "Thành công!",
+                text: "Tất cả hồ sơ đã được trả về điểm thu",
+                icon: "success",
+              });
+              this.isActive_detail = false;
+            } else {
+              Swal.fire({
+                title: "Thất bại!",
+                text: "Tất cả hồ sơ chưa được trả về điểm thu",
+                icon: "error",
+              });
+              this.isActive_detail = false;
+            }
+          } catch (error) {
+            Swal.fire({
+              title: "Có lỗi xảy ra, liên hệ quản trị hệ thống",
+              text: error,
+              icon: "error",
+            });
+            this.isActive_detail = false;
+          }
+        }
       }
     },
 
@@ -1010,7 +1113,122 @@ export default {
       return `${endDay}/${endMonth}/${endYear}`;
     },
 
+    async hosoLoitrave() {
+      const madaily = { madaily: this.dailyview };
+      try {
+        const res = await this.$axios.post(
+          `/api/kekhai/hosoloitrave-diemthu`,
+          madaily
+        );
+
+        console.log(res);
+
+        if (res.data.success == true) {
+          this.listhsloi = res.data.hs;
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
     async guiDulieuLenCongBhxhvn(data) {
+      const nowInVietnam = DateTime.now().setZone("Asia/Ho_Chi_Minh");
+      const formattedDate = nowInVietnam.toFormat("dd-MM-yyyy HH:mm:ss");
+
+      // console.log(data);
+      let matochucDvt = "";
+      if (data.maloaihinh == "AR") {
+        matochucDvt = "AR0013M";
+      } else if (data.maloaihinh == "BI") {
+        matochucDvt = "BI0007M";
+      } else {
+        matochucDvt = "IS0012M";
+      }
+
+      // thông tin biên lai
+      const currentYear = new Date().getFullYear();
+      let curentInvoiceNumber = 0;
+
+      const getCurrentSobienlai = await this.$axios.get(
+        `/api/kekhai/sobienlai`
+      );
+      // console.log(getCurrentSobienlai.data.bienlai[0].sobienlai);
+      curentInvoiceNumber = getCurrentSobienlai.data.bienlai[0].sobienlai;
+      // console.log(curentInvoiceNumber);
+
+      const dataPost = {
+        _id_hskk: data._id,
+        hosoIdentity: data.hosoIdentity,
+        maSoBhxh: data.masobhxh,
+        hoTen: data.hoten,
+        soCccd: data.cccd,
+        ngaySinh: data.ngaysinh,
+        gioiTinh: data.gioitinh,
+        soDienThoai: data.dienthoai,
+        loaiDt: data.tenloaihinh,
+        soTien: data.sotien,
+        soThang: data.maphuongthucdong,
+        maToChucDvt: matochucDvt,
+        tenToChucDvt: data.tentochuc,
+        maNhanVienThu: "NVT" + data.cccd,
+        tenNhanVienThu: this.user.name,
+        maCqBhxh: this.user.macqbhxh,
+        tenCqBhxh: this.user.tencqbhxh,
+        keyfrombhvn: data.key,
+        tuNgay: data.tungay,
+        denNgay: data.denngay,
+        tuThang: data.tuthang,
+        denThang: data.denthang,
+        maDaiLy: data.madaily,
+        tenDaiLy: data.tendaily,
+        soHoSo: data.sohoso,
+        dotKeKhai: data.dotkekhai,
+        kyKeKhai: data.kykekhai,
+        ngayKeKhai: data.ngaykekhai,
+        createdBy: this.user.username,
+        sobienlai: curentInvoiceNumber,
+        ngaybienlai: formattedDate,
+        maloaihinh: data.maloaihinh,
+        currentYear: currentYear,
+        tothon: data.tothon,
+        tenquanhuyen: data.tenquanhuyen,
+        tentinh: data.tentinh,
+      };
+
+      // console.log(dataPost);
+
+      const url = `/api/kekhai/pushinfotoportbhxhvn`;
+
+      // console.log("pushinfotoportbhxhvn");
+      const response = await this.$axios.post(url, dataPost);
+      // console.log(response);
+      // response.data.data
+      const resDatafromBHXHVN = {
+        maLoi: response.data.data.maLoi,
+        moTaLoi: response.data.data.moTaLoi,
+        maXacNhan: response.data.data.maXacNhan,
+        noiDung: response.data.data.noiDung,
+      };
+
+      // Kết hợp dataPost và resDatafromBHXHVN
+      const combinedData = {
+        ...dataPost,
+        ...resDatafromBHXHVN,
+      };
+
+      // console.log(combinedData);
+
+      // ghi dữ liệu biên lai
+      const ghibienlai = await this.$axios.post(
+        `/api/kekhai/ghidulieubienlai`,
+        combinedData
+      );
+
+      // lưu biên lai vào máy chủ
+      await this.inBienLaiDientu(combinedData);
+    },
+
+    async guiDulieuLenCongBhxhvn1(data) {
       const nowInVietnam = DateTime.now().setZone("Asia/Ho_Chi_Minh");
       const formattedDate = nowInVietnam.toFormat("dd-MM-yyyy HH:mm:ss");
 
@@ -1118,6 +1336,9 @@ export default {
               combinedData
             );
 
+            // lưu biên lai vào máy chủ
+            await this.inBienLaiDientu(combinedData);
+
             // console.log("ghidulieubienlai");
             // console.log(ghibienlai);
 
@@ -1132,20 +1353,26 @@ export default {
               // Cập nhật trạng thái isSent
               data.isSent = true;
 
-              const Toast = Swal.mixin({
-                toast: true,
-                position: "top-end",
-                showConfirmButton: false,
-                timer: 3000,
-                timerProgressBar: true,
-                didOpen: (toast) => {
-                  toast.addEventListener("mouseenter", Swal.stopTimer);
-                  toast.addEventListener("mouseleave", Swal.resumeTimer);
-                },
-              });
-              Toast.fire({
+              // const Toast = Swal.mixin({
+              //   toast: true,
+              //   position: "top-end",
+              //   showConfirmButton: false,
+              //   timer: 3000,
+              //   timerProgressBar: true,
+              //   didOpen: (toast) => {
+              //     toast.addEventListener("mouseenter", Swal.stopTimer);
+              //     toast.addEventListener("mouseleave", Swal.resumeTimer);
+              //   },
+              // });
+              // Toast.fire({
+              //   icon: "success",
+              //   title: "Đã gửi thông tin hồ sơ lên cổng thành công",
+              // });
+
+              Swal.fire({
+                title: "Gửi thành công!",
+                text: "Đã gửi thông tin hồ sơ lên cổng BHXH VN!",
                 icon: "success",
-                title: "Đã gửi thông tin hồ sơ lên cổng thành công",
               });
 
               // đổi trạng thái của hồ sơ trong kê khai
@@ -1190,7 +1417,7 @@ export default {
           // console.log(res.data.results.length);
           if (res.data.results.length > 0) {
             this.data_kekhai = res.data.results;
-            console.log(this.data_kekhai);
+            // console.log(this.data_kekhai);
 
             this.totalPages = res.data.info.pages;
             this.currentPage = page;
@@ -2883,14 +3110,15 @@ export default {
       document.body.removeChild(a);
     },
 
-    async inBienLaiDientu(item) {
-      // console.log(item);
+    async inBienLaiDientu(data) {
+      console.log(data);
 
-      const res = await this.$axios(
-        `/api/kekhai/bienlaidientuf?_id_hskk=${item._id}&hosoIdentity=${item.hosoIdentity}`
-      );
-      // console.log(res.data[0]);
-      let data = res.data[0];
+      // const res = await this.$axios(
+      //   `/api/kekhai/bienlaidientu?_id_hskk=${item._id}&hosoIdentity=${item.hosoIdentity}`
+      // );
+      // // console.log(res.data[0]);
+      // let data = res.data[0];
+      // bỏ đoạn này do in biên lai khi gửi lên cổng code ngày 08/5/2025
 
       const doc = new jsPDF({
         orientation: "l",
@@ -2915,16 +3143,16 @@ export default {
       // add the font to jsPDF
       doc.addFont("OpenSans-Bold-normal.ttf", "OpenSans-Bold", "bold");
       doc.setFont("OpenSans-Bold", "bold");
-      doc.setFontSize(14);
+      doc.setFontSize(12);
       doc.setTextColor("#04368c");
-      doc.text(`BẢO HIỂM XÃ HỘI HUYỆN DIỄN CHÂU`, 50, 10, {
+      doc.text(`BẢO HIỂM XÃ HỘI LIÊN HUYỆN DIỄN CHÂU - NGHI LỘC`, 60, 10, {
         align: "center",
         fontWeight: "bold",
       });
 
-      doc.setFontSize(14);
+      doc.setFontSize(12);
       doc.setTextColor("ff0000");
-      doc.text(`CÔNG TY TNHH ASXH PHỦ DIỄN`, 48, 17, {
+      doc.text(`CÔNG TY TNHH ASXH PHỦ DIỄN`, 60, 17, {
         align: "center",
         fontWeight: "bold",
       });
@@ -2995,16 +3223,18 @@ export default {
         fontWeight: "bold",
       });
 
-      const dateTimeString = data.ngaybienlai;
-      // Tách chuỗi ngày tháng theo định dạng
-      const parts = dateTimeString.split(" ")[0].split("-"); // Lấy phần ngày và tách theo dấu "-"
-      // Lấy giá trị năm
-      const year = parts[2];
+      // const dateTimeString = data.ngaybienlai;
+      // // Tách chuỗi ngày tháng theo định dạng
+      // const parts = dateTimeString.split(" ")[0].split("-"); // Lấy phần ngày và tách theo dấu "-"
+      // // Lấy giá trị năm
+      // const year = parts[2];
+
+      const year = data.ngaybienlai.split("-")[2].split(" ")[0];
 
       doc.text(`Ký hiệu: `, 155, 55, {
         fontWeight: "bold",
       });
-      doc.text(`${data.loaihinh}-${data.madaily}-${year}`, 165, 55, {
+      doc.text(`${data.maloaihinh}-${data.maDaiLy}-${year}`, 165, 55, {
         fontWeight: "bold",
       });
 
@@ -3031,7 +3261,7 @@ export default {
         fontWeight: "bold",
       });
       doc.text(
-        `${data.hoten} - Mã số BHXH: ${data.masobhxh}`,
+        `${data.hoTen} - Mã số BHXH: ${data.maSoBhxh}`,
         toadoXInfo + 43,
         toadoYInfo,
         {
@@ -3052,7 +3282,7 @@ export default {
       var noidungText = "";
 
       if (data.maloaihinh == "AR" || data.maloaihinh == "BI") {
-        noidungText = `Tiền đóng BHYT, phương thức đóng ${data.maphuongthucdong} tháng, từ ngày ${data.tungay} đến ngày ${data.denngay}`;
+        noidungText = `Tiền đóng BHYT, phương thức đóng ${data.soThang} tháng, từ ngày ${data.tuNgay} đến ngày ${data.denNgay}`;
       } else {
         noidungText = `Đóng tiền tham gia BHXH Tự nguyện`;
       }
@@ -3064,7 +3294,8 @@ export default {
         fontWeight: "bold",
       });
 
-      const formattedMoney = Number(data.sotien).toLocaleString("vi-VN");
+      const formattedMoney = Number(data.soTien).toLocaleString("vi-VN");
+      // console.log(formattedMoney);
 
       doc.text(`Số tiền thu: `, toadoXInfo, toadoYInfo + 24, {
         fontWeight: "bold",
@@ -3077,9 +3308,13 @@ export default {
         fontWeight: "bold",
       });
 
-      let tienbangchuText = num2words(data.sotien);
+      // console.log(data.soTien);
+
+      let tienbangchuText = num2words(data.soTien);
       let tienHoa = this.capitalizeFirstLetter(tienbangchuText);
       tienHoa += "đồng./.";
+
+      // console.log(tienHoa);
 
       doc.text(`(Viết bằng chữ: ${tienHoa}) `, toadoXInfo, toadoYInfo + 32, {
         fontWeight: "bold",
@@ -3158,9 +3393,11 @@ export default {
         fontWeight: "bold",
       });
 
+      // console.log(data.maXacNhan);
+
       doc.setFontSize(11);
       doc.setTextColor("#dc143c");
-      doc.text(`${data.maxacnhan} `, toadoXInfo + 14, toadoYInfo + 58, {
+      doc.text(`${data.maXacNhan} `, toadoXInfo + 14, toadoYInfo + 58, {
         fontWeight: "bold",
       });
 
@@ -3201,15 +3438,32 @@ export default {
       );
 
       // Lưu file PDF trên một tab mới
-      const tenbienlai = `bienlaidienthu_${data.hoten}`;
-      doc.output("dataurlnewwindow");
+      const tenbienlai = `${data.sobienlai}_${data.hoTen}`;
+      // doc.output("dataurlnewwindow");
       // window.open(pdfURL, tenbienlai);
       // doc.save("a4.pdf");
+
+      const pdfBlob = doc.output("blob");
+
+      const formData = new FormData();
+      formData.append("pdf", pdfBlob, `${tenbienlai}.pdf`);
+
+      // Gửi về backend
+      await this.$axios.post("/api/kekhai/upload-bienlai", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
     },
 
     capitalizeFirstLetter(str) {
       if (!str) return "";
       return str.charAt(0).toUpperCase() + str.slice(1);
+    },
+
+    vieweditHs(data) {
+      this.isActive_fix = true;
+      // console.log(data);
     },
   },
 };

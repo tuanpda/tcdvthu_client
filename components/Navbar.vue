@@ -6,14 +6,22 @@
   >
     <div class="container">
       <div class="navbar-brand">
-        <a href="/" class="navbar-item">
+        <nuxt-link to="/" class="navbar-item">
           <img
             src="@/assets/logos/an-sinh-ph-din-high-resolution-logo.png"
             width="200"
             height="100"
             style="background-color: white"
           />
-        </a>
+        </nuxt-link>
+        <!-- <a href="/" class="navbar-item">
+          <img
+            src="@/assets/logos/an-sinh-ph-din-high-resolution-logo.png"
+            width="200"
+            height="100"
+            style="background-color: white"
+          />
+        </a> -->
 
         <a
           role="button"

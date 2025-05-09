@@ -4,14 +4,33 @@
       <div class="columns">
         <div class="column">
           <div class="control">
-            <span style="color: #4b0082" class="icon is-small is-left">
+            <span style="color: #198754" class="icon is-small is-left">
               <i class="far fa-calendar-alt"></i>
             </span>
-            <span style="font-weight: bold; color: #4b0082"
+            <span style="font-weight: bold; color: #198754"
               >Tìm kiếm hồ sơ kê khai</span
             >
           </div>
         </div>
+      </div>
+
+      <div v-if="listhsloi.length > 0" class="box">
+        <span style="font-weight: 600; color: red"
+          >Hiện điểm thu bạn đang có {{ listhsloi.length }} người kê khai lỗi bị
+          trả lại:</span
+        >
+        <ul>
+          <li
+            style="font-weight: 500; color: #198754"
+            v-for="(hoso, index) in listhsloi"
+            :key="index"
+          >
+            {{ index + 1 }}: Loại hình: {{ hoso.maloaihinh }}, Mã số BHXH:
+            {{ hoso.masobhxh }}, Họ tên: {{ hoso.hoten }}, Đợt Kê khai:
+            {{ hoso.dotkekhai }}, Kỳ kê khai: {{ hoso.kykekhai }}, Ngày kê khai:
+            {{ hoso.ngaykekhai | formatDate }}
+          </li>
+        </ul>
       </div>
 
       <div class="box">
@@ -161,6 +180,7 @@
                 <td rowspan="2" style="text-align: center; width: 3%">STT</td>
                 <td rowspan="2" style="text-align: center">_ID</td>
                 <td style="text-align: center">Trạng thái</td>
+                <td style="text-align: center">Xem chi tiết</td>
                 <td rowspan="2" style="text-align: center">Mã xác nhận</td>
                 <td rowspan="2" style="text-align: center">In Biên lai</td>
                 <td rowspan="2" style="text-align: center">Số hồ sơ</td>
@@ -196,14 +216,26 @@
                 <td style="text-align: center">
                   <template v-if="item.trangthai == 0"
                     ><span style="font-weight: 700; color: #00947e"
-                      >Đã chuyển</span
+                      >Đã lên cổng</span
                     ></template
                   >
-                  <template v-else>
+                  <template v-else-if="item.status_hosoloi == 1">
                     <span style="font-weight: 800; color: red"
-                      >Chưa chuyển</span
+                      >Hồ sơ bị trả</span
                     >
                   </template>
+                  <template v-else="item.status_hosoloi == 1">
+                    <span style="font-weight: 800; color: #6f42c1"
+                      >Chưa đẩy</span
+                    >
+                  </template>
+                </td>
+                <td style="text-align: center">
+                  <a @click="vieweditHs(item)">
+                    <span style="color: #0d6efd" class="icon is-small is-left">
+                      <i class="fas fa-file-alt"></i>
+                    </span>
+                  </a>
                 </td>
                 <td style="text-align: center">{{ item.maxacnhan }}</td>
                 <td style="text-align: center">
@@ -712,6 +744,32 @@
           </div>
         </div>
       </div>
+
+      <!-- modal fix hồ sơ -->
+      <div class="">
+        <div :class="{ 'is-active': isActive_fix }" class="modal">
+          <div class="modal-background"></div>
+          <div class="modal-content modal-card-fix-hoso box">
+            <section class="modal-card-fix-hoso-body">
+              <div>
+                <span style="font-weight: 800; font-size: 15px; color: #3cb371"
+                  >Chỉnh sửa hồ sơ</span
+                >
+              </div>
+              <div style="text-align: end">
+                <button
+                  @click="isActive_fix = false"
+                  class="button is-small is-info"
+                >
+                  Thoát
+                </button>
+              </div>
+
+              <div>djkhgkjd</div>
+            </section>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -754,6 +812,7 @@ export default {
       data_xuatmau: [],
       isActive: false,
       isActive_detail: false,
+      isActive_fix: false,
       isVtVnpt: false,
 
       // pagi
@@ -782,6 +841,7 @@ export default {
       isDiemthu: false,
 
       dtaDiemthu: [],
+      listhsloi: [],
     };
   },
 
@@ -819,6 +879,7 @@ export default {
 
     this.getDateTime();
     this.getDmDiemthu();
+    this.hosoLoitrave();
   },
 
   computed: {
@@ -939,6 +1000,24 @@ export default {
       const second = nowInVietnam.second; // Giây
 
       this.kykekhai = kyKeKhai;
+    },
+
+    async hosoLoitrave() {
+      const madaily = { madaily: this.dailyview };
+      try {
+        const res = await this.$axios.post(
+          `/api/kekhai/hosoloitrave-diemthu`,
+          madaily
+        );
+
+        // console.log(res);
+
+        if (res.data.success == true) {
+          this.listhsloi = res.data.hs;
+        }
+      } catch (error) {
+        console.log(error);
+      }
     },
 
     async view_details(data) {
@@ -1118,8 +1197,12 @@ export default {
         //   `/api/kekhai/kykekhai-search-series-pagi-nvcty?kykekhai=${this.kykekhai}&page=${page}`
         // );
         try {
+          // const res = await this.$axios.get(
+          //   `/api/kekhai/kykekhai-search-hoso?kykekhai=${this.kykekhai}&dotkekhai=${this.dotkekhai}&ngaykekhai=${this.ngaykekhaitu}&ngaykekhaiden=${this.ngaykekhaiden}&sohoso=${this.sohoso}&masobhxh=${this.masobhxh}&hoten=${this.hoten}&tendaily=${this.diemthu}&maloaihinh=${this.maloaihinh}&page=${page}`
+          // );
+          // tạm thời bỏ điểm thu ra code ngày 07/5/2025
           const res = await this.$axios.get(
-            `/api/kekhai/kykekhai-search-hoso?kykekhai=${this.kykekhai}&dotkekhai=${this.dotkekhai}&ngaykekhai=${this.ngaykekhaitu}&ngaykekhaiden=${this.ngaykekhaiden}&sohoso=${this.sohoso}&masobhxh=${this.masobhxh}&hoten=${this.hoten}&tendaily=${this.diemthu}&maloaihinh=${this.maloaihinh}&page=${page}`
+            `/api/kekhai/kykekhai-search-hoso?kykekhai=${this.kykekhai}&dotkekhai=${this.dotkekhai}&ngaykekhai=${this.ngaykekhaitu}&ngaykekhaiden=${this.ngaykekhaiden}&sohoso=${this.sohoso}&masobhxh=${this.masobhxh}&hoten=${this.hoten}&maloaihinh=${this.maloaihinh}&page=${page}`
           );
           // console.log(res);
           if (res.data.results.length > 0) {
@@ -1584,6 +1667,11 @@ export default {
     capitalizeFirstLetter(str) {
       if (!str) return "";
       return str.charAt(0).toUpperCase() + str.slice(1);
+    },
+
+    async vieweditHs(item) {
+      this.isActive_fix = true;
+      // console.log(data);
     },
   },
 };
