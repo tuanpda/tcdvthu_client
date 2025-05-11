@@ -1941,6 +1941,9 @@ export default {
           ngaybienlai: "",
           sobienlai: "",
           trangthai: 1,
+
+          status_hosoloi: 0,
+          status_naptien: 0,
         });
 
         // console.log(this.items);

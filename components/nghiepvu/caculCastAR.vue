@@ -1888,7 +1888,7 @@ export default {
             `/api/nguoihuong/find-nguoihuong?MaSoBhxh=${masobhxh}`
           );
           this.isLoading = true;
-          console.log(res.data);
+          // console.log(res.data);
           if (res.data.length > 0) {
             this.isLoading = false;
             const Toast = Swal.mixin({
@@ -2185,6 +2185,9 @@ export default {
           ngaybienlai: "",
           sobienlai: "",
           trangthai: 1,
+
+          status_hosoloi: 0,
+          status_naptien: 0,
         });
 
         // console.log(this.items)

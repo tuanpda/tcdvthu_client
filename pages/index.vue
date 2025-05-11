@@ -116,7 +116,7 @@
         <div class="column is-2">
           <div class="box has-text-centered">
             <nuxt-link
-              to="/nhanviendailythu/timkiemhoso"
+              to="/nhanviendailythu/hosoloibitrave"
               style="text-decoration: none"
             >
               <span
@@ -155,16 +155,22 @@
 
         <div class="column is-3">
           <div class="box has-text-centered">
-            <span
-              style="
-                font-size: 60px;
-                font-weight: 700;
-                font-family: 'Roboto', sans-serif;
-                color: #fd7e14;
-              "
+            <nuxt-link
+              to="/nhanviendailythu/hosochuaguilencong"
+              style="text-decoration: none"
             >
-              {{ reportHoso.hoso_chuagui }}
-            </span>
+              <span
+                style="
+                  font-size: 60px;
+                  font-weight: 700;
+                  font-family: 'Roboto', sans-serif;
+                  color: #fd7e14;
+                "
+              >
+                {{ reportHoso.hoso_chuagui }}
+              </span>
+            </nuxt-link>
+
             <hr class="navbar-divider" />
             <span style="font-size: 15px; font-weight: 500"
               >Tổng kê khai chưa gửi lên cổng</span
@@ -332,12 +338,20 @@ export default {
       // console.log(this.user.madaily);
 
       const madaily = { madaily: this.user.madaily };
-      const res = await this.$axios.post(
-        `/api/kekhai/thongke-hosokekhai`,
-        madaily
-      );
-      // console.log(res.data.data);
-      this.reportHoso = res.data.data;
+      if (this.user.role !== 2) {
+        const res = await this.$axios.post(
+          `/api/kekhai/thongke-hosokekhai`,
+          madaily
+        );
+        // console.log(res.data.data);
+        this.reportHoso = res.data.data;
+      } else {
+        const res = await this.$axios.get(
+          `/api/kekhai/thongke-hosokekhai-tonghop`
+        );
+        // console.log(res.data.data);
+        this.reportHoso = res.data.data;
+      }
     },
 
     updateTime() {

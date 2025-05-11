@@ -26,7 +26,7 @@
             :key="index"
           >
             {{ index + 1 }}: Nằm trong bộ hồ sơ: {{ hoso.sohoso }}, Đã nạp vào
-            ngày {{ hoso.ngaykekhai | formatDate }}
+            ngày {{ hoso.ngaykekhai }}
           </li>
         </ul>
       </div>

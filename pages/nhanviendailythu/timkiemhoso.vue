@@ -28,7 +28,7 @@
             {{ index + 1 }}: Loại hình: {{ hoso.maloaihinh }}, Mã số BHXH:
             {{ hoso.masobhxh }}, Họ tên: {{ hoso.hoten }}, Đợt Kê khai:
             {{ hoso.dotkekhai }}, Kỳ kê khai: {{ hoso.kykekhai }}, Ngày kê khai:
-            {{ hoso.ngaykekhai | formatDate }}
+            {{ hoso.ngaykekhai }}
           </li>
         </ul>
       </div>
@@ -231,11 +231,19 @@
                   </template>
                 </td>
                 <td style="text-align: center">
-                  <a @click="vieweditHs(item)">
-                    <span style="color: #0d6efd" class="icon is-small is-left">
-                      <i class="fas fa-file-alt"></i>
-                    </span>
-                  </a>
+                  <template v-if="item.status_hosoloi == 1">
+                    <a @click="vieweditHs(item)">
+                      <span
+                        style="color: #0d6efd"
+                        class="icon is-small is-left"
+                      >
+                        <i class="fas fa-file-alt"></i>
+                      </span>
+                    </a>
+                  </template>
+                  <template v-else>
+                    <span></span>
+                  </template>
                 </td>
                 <td style="text-align: center">{{ item.maxacnhan }}</td>
                 <td style="text-align: center">
@@ -765,7 +773,13 @@
                 </button>
               </div>
 
-              <div>djkhgkjd</div>
+              <!-- Hiển thị component editAR -->
+              <editAR
+                v-if="selectedItem"
+                :hoso="selectedItem"
+                :key="editKey"
+                @close="closeModal"
+              />
             </section>
           </div>
         </div>
@@ -797,11 +811,14 @@ import qrcode from "~/assets/images/QR-BHXH.png";
 
 import num2words from "vn-num2words";
 
+import editAR from "@/components/nghiepvu/editAR";
+
 export default {
   name: "DanhsachKekhaiPage",
   components: {
     ExportExcel_Viettel,
     ExportExcel_Vnpt,
+    editAR,
   },
 
   data() {
@@ -842,6 +859,9 @@ export default {
 
       dtaDiemthu: [],
       listhsloi: [],
+      selectedItem: {},
+
+      editKey: 0,
     };
   },
 
@@ -928,6 +948,10 @@ export default {
   },
 
   methods: {
+    handleClick(item) {
+      if (item.status_hosoloi !== 1) return;
+      this.vieweditHs(item);
+    },
     // suggest điểm thu
     onInput() {
       if (!this.diemthu) {
@@ -1009,9 +1033,7 @@ export default {
           `/api/kekhai/hosoloitrave-diemthu`,
           madaily
         );
-
         // console.log(res);
-
         if (res.data.success == true) {
           this.listhsloi = res.data.hs;
         }
@@ -1672,6 +1694,15 @@ export default {
     async vieweditHs(item) {
       this.isActive_fix = true;
       // console.log(data);
+      // this.selectedItem = item;
+      this.selectedItem = JSON.parse(JSON.stringify(item)); // tạo bản sao để không ảnh hưởng dữ liệu gốc
+      this.editKey = Date.now(); // tạo key mới để ép component con re-render
+      // console.log(this.selectedItem);
+    },
+
+    closeModal() {
+      this.isActive_fix = false;
+      this.selectedItem = null;
     },
   },
 };
@@ -1683,5 +1714,11 @@ export default {
 
 .pagination {
   margin-top: 1em;
+}
+
+.is-disabled {
+  pointer-events: none;
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 </style>
