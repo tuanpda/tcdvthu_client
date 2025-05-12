@@ -498,7 +498,7 @@
                           />
                         </td>
                         <td style="text-align: center; width: 3%">STT</td>
-                        <td style="text-align: center">Xem chi tiết</td>
+                        <!-- <td style="text-align: center">Xem chi tiết</td> -->
                         <td style="text-align: center">Gửi lên cổng</td>
                         <td style="text-align: center">Trạng thái</td>
                         <td style="text-align: center">Mã xác nhận</td>
@@ -547,7 +547,7 @@
                         <td style="text-align: center; vertical-align: middle">
                           {{ index + 1 }}
                         </td>
-                        <td style="text-align: center">
+                        <!-- <td style="text-align: center">
                           <a @click="vieweditHs(item)">
                             <span
                               style="color: #0d6efd"
@@ -556,7 +556,7 @@
                               <i class="fas fa-file-alt"></i>
                             </span>
                           </a>
-                        </td>
+                        </td> -->
                         <td style="text-align: center">
                           <template v-if="item.trangthai == 1">
                             <button
@@ -1131,104 +1131,104 @@ export default {
       }
     },
 
+    // async guiDulieuLenCongBhxhvn(data) {
+    //   const nowInVietnam = DateTime.now().setZone("Asia/Ho_Chi_Minh");
+    //   const formattedDate = nowInVietnam.toFormat("dd-MM-yyyy HH:mm:ss");
+
+    //   // console.log(data);
+    //   let matochucDvt = "";
+    //   if (data.maloaihinh == "AR") {
+    //     matochucDvt = "AR0013M";
+    //   } else if (data.maloaihinh == "BI") {
+    //     matochucDvt = "BI0007M";
+    //   } else {
+    //     matochucDvt = "IS0012M";
+    //   }
+
+    //   // thông tin biên lai
+    //   const currentYear = new Date().getFullYear();
+    //   let curentInvoiceNumber = 0;
+
+    //   const getCurrentSobienlai = await this.$axios.get(
+    //     `/api/kekhai/sobienlai`
+    //   );
+    //   // console.log(getCurrentSobienlai.data.bienlai[0].sobienlai);
+    //   curentInvoiceNumber = getCurrentSobienlai.data.bienlai[0].sobienlai;
+    //   // console.log(curentInvoiceNumber);
+
+    //   const dataPost = {
+    //     _id_hskk: data._id,
+    //     hosoIdentity: data.hosoIdentity,
+    //     maSoBhxh: data.masobhxh,
+    //     hoTen: data.hoten,
+    //     soCccd: data.cccd,
+    //     ngaySinh: data.ngaysinh,
+    //     gioiTinh: data.gioitinh,
+    //     soDienThoai: data.dienthoai,
+    //     loaiDt: data.tenloaihinh,
+    //     soTien: data.sotien,
+    //     soThang: data.maphuongthucdong,
+    //     maToChucDvt: matochucDvt,
+    //     tenToChucDvt: data.tentochuc,
+    //     maNhanVienThu: "NVT" + data.cccd,
+    //     tenNhanVienThu: this.user.name,
+    //     maCqBhxh: this.user.macqbhxh,
+    //     tenCqBhxh: this.user.tencqbhxh,
+    //     keyfrombhvn: data.key,
+    //     tuNgay: data.tungay,
+    //     denNgay: data.denngay,
+    //     tuThang: data.tuthang,
+    //     denThang: data.denthang,
+    //     maDaiLy: data.madaily,
+    //     tenDaiLy: data.tendaily,
+    //     soHoSo: data.sohoso,
+    //     dotKeKhai: data.dotkekhai,
+    //     kyKeKhai: data.kykekhai,
+    //     ngayKeKhai: data.ngaykekhai,
+    //     createdBy: this.user.username,
+    //     sobienlai: curentInvoiceNumber,
+    //     ngaybienlai: formattedDate,
+    //     maloaihinh: data.maloaihinh,
+    //     currentYear: currentYear,
+    //     tothon: data.tothon,
+    //     tenquanhuyen: data.tenquanhuyen,
+    //     tentinh: data.tentinh,
+    //   };
+
+    //   // console.log(dataPost);
+
+    //   const url = `/api/kekhai/pushinfotoportbhxhvn`;
+
+    //   // console.log("pushinfotoportbhxhvn");
+    //   const response = await this.$axios.post(url, dataPost);
+    //   // console.log(response);
+    //   // response.data.data
+    //   const resDatafromBHXHVN = {
+    //     maLoi: response.data.data.maLoi,
+    //     moTaLoi: response.data.data.moTaLoi,
+    //     maXacNhan: response.data.data.maXacNhan,
+    //     noiDung: response.data.data.noiDung,
+    //   };
+
+    //   // Kết hợp dataPost và resDatafromBHXHVN
+    //   const combinedData = {
+    //     ...dataPost,
+    //     ...resDatafromBHXHVN,
+    //   };
+
+    //   // console.log(combinedData);
+
+    //   // ghi dữ liệu biên lai
+    //   const ghibienlai = await this.$axios.post(
+    //     `/api/kekhai/ghidulieubienlai`,
+    //     combinedData
+    //   );
+
+    //   // lưu biên lai vào máy chủ
+    //   await this.inBienLaiDientu(combinedData);
+    // },
+
     async guiDulieuLenCongBhxhvn(data) {
-      const nowInVietnam = DateTime.now().setZone("Asia/Ho_Chi_Minh");
-      const formattedDate = nowInVietnam.toFormat("dd-MM-yyyy HH:mm:ss");
-
-      // console.log(data);
-      let matochucDvt = "";
-      if (data.maloaihinh == "AR") {
-        matochucDvt = "AR0013M";
-      } else if (data.maloaihinh == "BI") {
-        matochucDvt = "BI0007M";
-      } else {
-        matochucDvt = "IS0012M";
-      }
-
-      // thông tin biên lai
-      const currentYear = new Date().getFullYear();
-      let curentInvoiceNumber = 0;
-
-      const getCurrentSobienlai = await this.$axios.get(
-        `/api/kekhai/sobienlai`
-      );
-      // console.log(getCurrentSobienlai.data.bienlai[0].sobienlai);
-      curentInvoiceNumber = getCurrentSobienlai.data.bienlai[0].sobienlai;
-      // console.log(curentInvoiceNumber);
-
-      const dataPost = {
-        _id_hskk: data._id,
-        hosoIdentity: data.hosoIdentity,
-        maSoBhxh: data.masobhxh,
-        hoTen: data.hoten,
-        soCccd: data.cccd,
-        ngaySinh: data.ngaysinh,
-        gioiTinh: data.gioitinh,
-        soDienThoai: data.dienthoai,
-        loaiDt: data.tenloaihinh,
-        soTien: data.sotien,
-        soThang: data.maphuongthucdong,
-        maToChucDvt: matochucDvt,
-        tenToChucDvt: data.tentochuc,
-        maNhanVienThu: "NVT" + data.cccd,
-        tenNhanVienThu: this.user.name,
-        maCqBhxh: this.user.macqbhxh,
-        tenCqBhxh: this.user.tencqbhxh,
-        keyfrombhvn: data.key,
-        tuNgay: data.tungay,
-        denNgay: data.denngay,
-        tuThang: data.tuthang,
-        denThang: data.denthang,
-        maDaiLy: data.madaily,
-        tenDaiLy: data.tendaily,
-        soHoSo: data.sohoso,
-        dotKeKhai: data.dotkekhai,
-        kyKeKhai: data.kykekhai,
-        ngayKeKhai: data.ngaykekhai,
-        createdBy: this.user.username,
-        sobienlai: curentInvoiceNumber,
-        ngaybienlai: formattedDate,
-        maloaihinh: data.maloaihinh,
-        currentYear: currentYear,
-        tothon: data.tothon,
-        tenquanhuyen: data.tenquanhuyen,
-        tentinh: data.tentinh,
-      };
-
-      // console.log(dataPost);
-
-      const url = `/api/kekhai/pushinfotoportbhxhvn`;
-
-      // console.log("pushinfotoportbhxhvn");
-      const response = await this.$axios.post(url, dataPost);
-      // console.log(response);
-      // response.data.data
-      const resDatafromBHXHVN = {
-        maLoi: response.data.data.maLoi,
-        moTaLoi: response.data.data.moTaLoi,
-        maXacNhan: response.data.data.maXacNhan,
-        noiDung: response.data.data.noiDung,
-      };
-
-      // Kết hợp dataPost và resDatafromBHXHVN
-      const combinedData = {
-        ...dataPost,
-        ...resDatafromBHXHVN,
-      };
-
-      // console.log(combinedData);
-
-      // ghi dữ liệu biên lai
-      const ghibienlai = await this.$axios.post(
-        `/api/kekhai/ghidulieubienlai`,
-        combinedData
-      );
-
-      // lưu biên lai vào máy chủ
-      await this.inBienLaiDientu(combinedData);
-    },
-
-    async guiDulieuLenCongBhxhvn1(data) {
       const nowInVietnam = DateTime.now().setZone("Asia/Ho_Chi_Minh");
       const formattedDate = nowInVietnam.toFormat("dd-MM-yyyy HH:mm:ss");
 
@@ -1499,7 +1499,8 @@ export default {
         `/api/kekhai/get-all-kekhai-xuatmau?sohoso=${item.sohoso}`
       );
       // console.log(res.data.kekhai);
-      this.data_xuatmau = res.data.kekhai;
+      // Chỉ lấy những kê khai có trạng thái = 0
+      this.data_xuatmau = res.data.kekhai.filter((k) => k.trangthai === 0);
     },
 
     // từ A - BU
@@ -3111,7 +3112,7 @@ export default {
     },
 
     async inBienLaiDientu(data) {
-      console.log(data);
+      // console.log(data);
 
       // const res = await this.$axios(
       //   `/api/kekhai/bienlaidientu?_id_hskk=${item._id}&hosoIdentity=${item.hosoIdentity}`

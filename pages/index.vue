@@ -108,7 +108,7 @@
             </span>
             <hr class="navbar-divider" />
             <span style="font-size: 15px; font-weight: 500"
-              >Tổng số bộ hồ sơ đã nạp</span
+              >Số bộ hồ sơ nạp lên</span
             >
           </div>
         </div>
@@ -136,16 +136,21 @@
             >
           </div>
           <div class="box has-text-centered">
-            <span
-              style="
-                font-size: 60px;
-                font-weight: 700;
-                font-family: 'Roboto', sans-serif;
-                color: #198754;
-              "
+            <nuxt-link
+              to="/nhanviendailythu/hosodaguilencong"
+              style="text-decoration: none"
             >
-              {{ reportHoso.hoso_dagui }}
-            </span>
+              <span
+                style="
+                  font-size: 60px;
+                  font-weight: 700;
+                  font-family: 'Roboto', sans-serif;
+                  color: #198754;
+                "
+              >
+                {{ reportHoso.hoso_dagui }}
+              </span>
+            </nuxt-link>
             <hr class="navbar-divider" />
             <span style="font-size: 15px; font-weight: 500"
               >Tổng số hồ sơ đã lên cổng</span

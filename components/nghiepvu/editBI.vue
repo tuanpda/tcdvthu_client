@@ -121,22 +121,6 @@
       </div>
     </div>
     <div class="columns">
-      <div class="column is-2">
-        <div style="margin-bottom: 5px">
-          <label class="labelFix">Lương CS</label>
-        </div>
-        <div>
-          <input
-            v-model="hoso.tienluongcs"
-            class="input is-small"
-            type="text"
-            v-mask="mask"
-            disabled
-          />
-        </div>
-      </div>
-    </div>
-    <div class="columns">
       <div class="column">
         <div style="margin-bottom: 5px">
           <label class="labelFix">Phương án</label>
@@ -158,59 +142,59 @@
           </select>
         </div>
       </div>
-
       <div class="column">
         <div style="margin-bottom: 5px">
-          <label class="labelFix">Tỷ lệ NSTW %</label>
+          <label class="labelFix">Người thứ</label>
+        </div>
+        <div>
+          <div class="select is-fullwidth is-small">
+            <select
+              @change="nguoithuChange"
+              ref="nguoithuSelect"
+              v-model="hoso.nguoithu"
+            >
+              <option selected disabled>- Chọn người thứ ? -</option>
+              <option
+                v-for="(item, index) in nguoithu"
+                :key="index"
+                :value="item.nguoithu"
+              >
+                {{ item.nguoithu }}
+              </option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="column">
+        <div style="margin-bottom: 5px">
+          <label class="labelFix">Lương CS</label>
         </div>
         <div>
           <input
-            v-model="hoso.tylensnnht"
+            v-model="hoso.tienluongcs"
             class="input is-small"
-            type="number"
+            type="text"
+            v-mask="mask"
+            disabled
           />
         </div>
       </div>
-      <div class="column">
-        <div style="margin-bottom: 5px">
-          <label class="labelFix">Tỷ lệ NSĐP %</label>
-        </div>
-        <div>
-          <input v-model="hoso.tylensdp" class="input is-small" type="number" />
-        </div>
-      </div>
-      <div class="column">
-        <div style="margin-bottom: 5px">
-          <label class="labelFix">Hỗ trợ khác</label>
-        </div>
-        <div>
-          <input
-            v-model="hoso.hotrokhac"
-            class="input is-small"
-            type="number"
-          />
-        </div>
-      </div>
-    </div>
-
-    <div class="columns">
       <div class="column">
         <div style="margin-bottom: 5px">
           <label class="labelFix">Từ ngày</label>
         </div>
-        <div>
-          <!-- <date-picker v-model="hoso.tungay" valueType="format"></date-picker> -->
-          <!-- <input v-model="hoso.tungay" class="input is-small" type="date" /> -->
-          <date-picker
-            v-model="hoso.tungay"
-            valueType="format"
-            format="DD/MM/YYYY"
-            type="date"
-            placeholder="Chọn ngày"
-            :editable="false"
-          />
-        </div>
+        <date-picker
+          v-model="hoso.tungay"
+          valueType="format"
+          format="DD/MM/YYYY"
+          type="date"
+          placeholder="Chọn ngày"
+          :editable="false"
+        />
       </div>
+    </div>
+
+    <div class="columns">
       <div class="column">
         <div style="margin-bottom: 5px">
           <label class="labelFix">Số tháng</label>
@@ -248,6 +232,7 @@
           />
         </div>
       </div>
+
       <div class="column">
         <div style="margin-bottom: 5px">
           <label class="labelFix">Hình thức nạp tiền</label>
@@ -299,6 +284,7 @@
           </select>
         </div>
       </div>
+
       <div class="column">
         <div style="margin-bottom: 5px">
           <label class="labelFix">Xã phường</label>
@@ -616,11 +602,49 @@ export default {
       }
     },
 
+    // người thứ ?
+    async nguoithuChange(event) {
+      let manguoithu = 0;
+      const selectedValue = event.target.value;
+      // console.log(selectedValue);
+      const selected = this.nguoithu.find(
+        (item) => item.nguoithu == selectedValue
+      );
+      // console.log(selected);
+      if (selected) {
+        this.hoso.nguoithu = selected.nguoithu;
+        manguoithu = selected.manguoithu;
+      }
+
+      const cast =
+        this.luongcoso * 0.045 * parseInt(this.hoso.maphuongthucdong);
+      if (manguoithu === 1) {
+        this.hoso.sotien = cast;
+      } else if (manguoithu === 2) {
+        this.hoso.sotien = cast * 0.7;
+      } else if (manguoithu === 3) {
+        this.hoso.sotien = cast * 0.6;
+      } else if (manguoithu === 4) {
+        this.hoso.sotien = cast * 0.5;
+      } else {
+        this.hoso.sotien = cast * 0.4;
+      }
+
+      // console.log(this.hoso.nguoithu);
+      // console.log(this.hoso.sotien);
+    },
+
     // phương thức đóng
     async phuongthucdChange(event) {
-      const selectedValue = event.target.value;
-      //   console.log(selectedValue);
+      let manguoithu = 0;
+      const nguoithu = this.nguoithu.find(
+        (item) => item.nguoithu == this.hoso.nguoithu
+      );
+      if (nguoithu) {
+        manguoithu = nguoithu.manguoithu;
+      }
 
+      const selectedValue = event.target.value;
       const selected = this.phuongthucdong.find(
         (item) => item.maphuongthuc == selectedValue
       );
@@ -633,40 +657,24 @@ export default {
         this.hoso.maphuongthucdong = "";
       }
 
-      //   console.log(this.hoso.maphuongthucdong);
-      //   console.log(this.hoso.tenphuongthucdong);
-
-      //   const maphuongthucdong = e.target.value;
-      //   const tenphuongthucdong = e.target.options[e.target.selectedIndex].text;
-      //   this.items[index].maphuongthucdong = maphuongthucdong;
-      //   this.items[index].tenphuongthucdong = tenphuongthucdong;
-
-      // tính số tiền phải nạp
-      // console.log(typeof(this.luongcoso));
       const cast =
         this.luongcoso * 0.045 * parseInt(this.hoso.maphuongthucdong);
+      if (manguoithu === 1) {
+        this.hoso.sotien = cast;
+      } else if (manguoithu === 2) {
+        this.hoso.sotien = cast * 0.7;
+      } else if (manguoithu === 3) {
+        this.hoso.sotien = cast * 0.6;
+      } else if (manguoithu === 4) {
+        this.hoso.sotien = cast * 0.5;
+      } else {
+        this.hoso.sotien = cast * 0.4;
+      }
 
-      const twHotro =
-        this.luongcoso *
-        0.045 *
-        parseInt(this.hoso.maphuongthucdong) *
-        (this.tylengansachtw / 100);
-
-      const dpHotro =
-        this.luongcoso *
-        0.045 *
-        parseInt(this.hoso.maphuongthucdong) *
-        (this.tylenngansachdp / 100);
-
-      const hotroKhac =
-        this.luongcoso *
-        0.045 *
-        parseInt(this.hoso.maphuongthucdong) *
-        parseInt(this.hoso.hotrokhac);
-
-      const sotienPhaidong = cast - (twHotro + dpHotro + hotroKhac);
-      this.hoso.sotien = sotienPhaidong;
-      // console.log(this.items[index]);
+      console.log(this.hoso.maphuongthucdong);
+      console.log(this.hoso.tenphuongthucdong);
+      console.log(this.hoso.nguoithu);
+      console.log(this.hoso.sotien);
     },
 
     // tỉnh thành phố

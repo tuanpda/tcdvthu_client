@@ -8,7 +8,7 @@
               <i class="far fa-calendar-alt"></i>
             </span>
             <span style="font-weight: bold; color: #198754"
-              >Hồ sơ lỗi bị trả về</span
+              >Hồ sơ đã gửi lên cổng BHXH VN</span
             >
           </div>
         </div>
@@ -24,7 +24,6 @@
                 <td rowspan="2" style="text-align: center; width: 3%">STT</td>
                 <td rowspan="2" style="text-align: center">_ID</td>
                 <td style="text-align: center">Trạng thái</td>
-                <td style="text-align: center">Xem chi tiết</td>
                 <td rowspan="2" style="text-align: center">Số hồ sơ</td>
                 <td rowspan="2" style="text-align: center">Mã đại lý</td>
                 <td rowspan="2" style="text-align: center">Tên đại lý</td>
@@ -71,21 +70,7 @@
                     >
                   </template>
                 </td>
-                <td style="text-align: center">
-                  <template v-if="item.status_hosoloi == 1">
-                    <a @click="vieweditHs(item)">
-                      <span
-                        style="color: #0d6efd"
-                        class="icon is-small is-left"
-                      >
-                        <i class="fas fa-file-alt"></i>
-                      </span>
-                    </a>
-                  </template>
-                  <template v-else>
-                    <span></span>
-                  </template>
-                </td>
+
                 <td
                   style="text-align: center; font-weight: 700; color: chocolate"
                 >
@@ -97,7 +82,6 @@
                     title="Copy số hồ sơ"
                   ></i>
                 </td>
-
                 <td style="text-align: center">{{ item.madaily }}</td>
                 <td style="text-align: left">{{ item.tendaily }}</td>
                 <td style="text-align: center">{{ item.maloaihinh }}</td>
@@ -127,7 +111,6 @@
             </tbody>
           </table>
         </div>
-
         <div style="margin-top: 10px" class="total-sotien">
           Tổng số tiền:
           <span style="font-weight: 900; color: red">{{
@@ -196,51 +179,6 @@
           </nav>
         </div>
       </div>
-
-      <!-- modal fix hồ sơ -->
-      <div class="">
-        <div :class="{ 'is-active': isActive_fix }" class="modal">
-          <div class="modal-background"></div>
-          <div class="modal-content modal-card-fix-hoso box">
-            <section class="modal-card-fix-hoso-body">
-              <div>
-                <span style="font-weight: 800; font-size: 15px; color: #3cb371"
-                  >Chỉnh sửa hồ sơ</span
-                >
-              </div>
-              <div style="text-align: end">
-                <button
-                  @click="isActive_fix = false"
-                  class="button is-small is-info"
-                >
-                  Thoát
-                </button>
-              </div>
-
-              <!-- Hiển thị component Editor -->
-              <editAR
-                v-if="selectedItem && selectedItem.maloaihinh === 'AR'"
-                :hoso="selectedItem"
-                :key="editKey"
-                @close="closeModal"
-              />
-
-              <editBI
-                v-else-if="selectedItem && selectedItem.maloaihinh === 'BI'"
-                :hoso="selectedItem"
-                :key="editKey"
-                @close="closeModal"
-              />
-            </section>
-          </div>
-        </div>
-      </div>
-    </div>
-    <!-- Biểu tượng loading -->
-    <div v-if="isLoading" class="loading-overlay">
-      <!-- Biểu tượng loading -->
-      <div class="loading-spinner"></div>
-      <span>waitting some minute ...</span>
     </div>
   </div>
 </template>
@@ -269,7 +207,6 @@ import qrcode from "~/assets/images/QR-BHXH.png";
 import num2words from "vn-num2words";
 
 import editAR from "@/components/nghiepvu/editAR";
-import editBI from "@/components/nghiepvu/editBI";
 
 export default {
   name: "DanhsachKekhaiPage",
@@ -277,7 +214,6 @@ export default {
     ExportExcel_Viettel,
     ExportExcel_Vnpt,
     editAR,
-    editBI,
   },
 
   data() {
@@ -321,8 +257,6 @@ export default {
       selectedItem: {},
 
       editKey: 0,
-
-      isLoading: false,
     };
   },
 
@@ -346,7 +280,7 @@ export default {
       this.isDiemthu = true;
     }
 
-    this.getDataLoi();
+    this.getDataChuakekhai();
   },
 
   computed: {
@@ -395,42 +329,6 @@ export default {
   },
 
   methods: {
-    async getDataLoi() {
-      if (this.user.role == 2) {
-        try {
-          const res = await this.$axios.get(`/api/kekhai/hosoloitrave-tonghop`);
-          // console.log(res);
-          if (res.data.success == true) {
-            this.data_kekhai = res.data.hs;
-          }
-        } catch (error) {
-          console.log(error);
-        }
-      } else {
-        const madaily = { madaily: this.dailyview };
-        try {
-          const res = await this.$axios.post(
-            `/api/kekhai/hosoloitrave-diemthu`,
-            madaily
-          );
-          // console.log(res);
-          if (res.data.success == true) {
-            this.data_kekhai = res.data.hs;
-          }
-        } catch (error) {
-          console.log(error);
-        }
-      }
-    },
-
-    formatCurrency(text) {
-      const number = parseFloat(text);
-      return number.toLocaleString("vi-VN", {
-        style: "currency",
-        currency: "VND",
-      });
-    },
-
     copyToClipboard(text) {
       navigator.clipboard
         .writeText(text)
@@ -454,6 +352,42 @@ export default {
         });
     },
 
+    async getDataChuakekhai() {
+      if (this.user.role == 2) {
+        try {
+          const res = await this.$axios.get(`/api/kekhai/hosodadaylencongbhvn`);
+          // console.log(res);
+          if (res.data.success == true) {
+            this.data_kekhai = res.data.hs;
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      } else {
+        const madaily = { madaily: this.dailyview };
+        try {
+          const res = await this.$axios.post(
+            `/api/kekhai/hosodadaylencongbhvn-diemthu`,
+            madaily
+          );
+          // console.log(res);
+          if (res.data.success == true) {
+            this.data_kekhai = res.data.hs;
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    },
+
+    formatCurrency(text) {
+      const number = parseFloat(text);
+      return number.toLocaleString("vi-VN", {
+        style: "currency",
+        currency: "VND",
+      });
+    },
+
     // pagi
     goToPreviousPage() {
       if (this.currentPage > 1) {
@@ -469,24 +403,6 @@ export default {
 
     goToPage(page) {
       this.filterData(page); // Di chuyển đến trang được chỉ định
-    },
-
-    async vieweditHs(item) {
-      this.isActive_fix = true;
-      // console.log(data);
-      // this.selectedItem = item;
-      this.selectedItem = JSON.parse(JSON.stringify(item)); // tạo bản sao để không ảnh hưởng dữ liệu gốc
-      this.editKey = Date.now(); // tạo key mới để ép component con re-render
-      // console.log(this.selectedItem);
-    },
-
-    async closeModal() {
-      this.isActive_fix = false;
-      this.selectedItem = null;
-
-      this.isLoading = true;
-      await this.getDataLoi();
-      this.isLoading = false;
     },
   },
 };
