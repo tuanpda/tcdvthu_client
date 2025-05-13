@@ -80,16 +80,22 @@
 
         <div class="column is-2">
           <div class="box has-text-centered">
-            <span
-              style="
-                font-size: 60px;
-                font-weight: 700;
-                font-family: 'Roboto', sans-serif;
-                color: #ffc107;
-              "
+            <nuxt-link
+              to="/nhanviendailythu/tongsokekhai"
+              style="text-decoration: none"
             >
-              {{ reportHoso.tong_hoso }}
-            </span>
+              <span
+                style="
+                  font-size: 60px;
+                  font-weight: 700;
+                  font-family: 'Roboto', sans-serif;
+                  color: #ffc107;
+                "
+              >
+                {{ reportHoso.tong_hoso }}
+              </span>
+            </nuxt-link>
+
             <hr class="navbar-divider" />
             <span style="font-size: 15px; font-weight: 500"
               >Tổng số người đã kê khai</span

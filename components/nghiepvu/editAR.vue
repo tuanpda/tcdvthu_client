@@ -739,21 +739,21 @@ export default {
     },
 
     // tỉnh bệnh viện
-    async benhvienChange(e, index) {
-      const matinh = e.target.value;
-      this.items[index].benhvientinh = matinh;
-      try {
-        const response = await this.$axios.get(
-          `/api/danhmucs/dmbenhvienwithtinh?matinh=${matinh}`
-        );
-        if (response.data.length > 0) {
-          this.items[index].info_benhvien = response.data;
-          this.checkXaphuongOpen = true;
-        }
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    },
+    // async benhvienChange(e, index) {
+    //   const matinh = e.target.value;
+    //   this.items[index].benhvientinh = matinh;
+    //   try {
+    //     const response = await this.$axios.get(
+    //       `/api/danhmucs/dmbenhvienwithtinh?matinh=${matinh}`
+    //     );
+    //     if (response.data.length > 0) {
+    //       this.items[index].info_benhvien = response.data;
+    //       this.checkXaphuongOpen = true;
+    //     }
+    //   } catch (error) {
+    //     console.error("Error fetching data:", error);
+    //   }
+    // },
 
     // thông tin bệnh viện
     async hopChange(event) {

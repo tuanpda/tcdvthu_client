@@ -1874,12 +1874,12 @@ export default {
     },
 
     maxNCTItem(item, index) {
-      console.log(item);
-      console.log(index);
+      // console.log(item);
+      // console.log(index);
 
       const value = item.sothang;
 
-      console.log(value);
+      // console.log(value);
 
       if (value > 120) {
         Swal.fire({
@@ -1897,11 +1897,11 @@ export default {
     },
 
     maxNVSItem(item, index) {
-      console.log(item);
-      console.log(index);
+      // console.log(item);
+      // console.log(index);
       const value = item.sothang;
 
-      console.log(value);
+      // console.log(value);
 
       if (value > 80) {
         Swal.fire({
@@ -3096,7 +3096,23 @@ export default {
       const regex = /^(0[1-9]|1[0-2])\/\d{4}$/; // Định dạng MM/YYYY
       if (!regex.test(tuthang)) {
         this.items[index].tuthang = ""; // Xóa giá trị nếu không đúng định dạng
-        alert("Định dạng không đúng. Vui lòng nhập MM/YYYY.");
+        this.hoso.tuthang = ""; // Xóa giá trị nếu không đúng định dạng
+        const Toast = Swal.mixin({
+          toast: true,
+          position: "top",
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.addEventListener("mouseenter", Swal.stopTimer);
+            toast.addEventListener("mouseleave", Swal.resumeTimer);
+          },
+        });
+        Toast.fire({
+          icon: "error",
+          title: `Nhập đúng định dạng MM/YYYY`,
+        });
+        return;
       } else {
         // Nếu định dạng đúng, cập nhật giá trị
         this.items[index].tuthang = tuthang;

@@ -671,10 +671,10 @@ export default {
         this.hoso.sotien = cast * 0.4;
       }
 
-      console.log(this.hoso.maphuongthucdong);
-      console.log(this.hoso.tenphuongthucdong);
-      console.log(this.hoso.nguoithu);
-      console.log(this.hoso.sotien);
+      // console.log(this.hoso.maphuongthucdong);
+      // console.log(this.hoso.tenphuongthucdong);
+      // console.log(this.hoso.nguoithu);
+      // console.log(this.hoso.sotien);
     },
 
     // tỉnh thành phố
@@ -747,21 +747,21 @@ export default {
     },
 
     // tỉnh bệnh viện
-    async benhvienChange(e, index) {
-      const matinh = e.target.value;
-      this.items[index].benhvientinh = matinh;
-      try {
-        const response = await this.$axios.get(
-          `/api/danhmucs/dmbenhvienwithtinh?matinh=${matinh}`
-        );
-        if (response.data.length > 0) {
-          this.items[index].info_benhvien = response.data;
-          this.checkXaphuongOpen = true;
-        }
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    },
+    // async benhvienChange(e, index) {
+    //   const matinh = e.target.value;
+    //   this.items[index].benhvientinh = matinh;
+    //   try {
+    //     const response = await this.$axios.get(
+    //       `/api/danhmucs/dmbenhvienwithtinh?matinh=${matinh}`
+    //     );
+    //     if (response.data.length > 0) {
+    //       this.items[index].info_benhvien = response.data;
+    //       this.checkXaphuongOpen = true;
+    //     }
+    //   } catch (error) {
+    //     console.error("Error fetching data:", error);
+    //   }
+    // },
 
     // thông tin bệnh viện
     async hopChange(event) {
