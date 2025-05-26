@@ -6,13 +6,8 @@
           v-if="viewXacnhan == true && data"
           class="container has-text-centered"
         >
-          <h2 class="title is-5">Số biên lai: {{ data.sobienlai }}</h2>
-          <iframe
-            :src="pdfSrc"
-            width="100%"
-            height="600px"
-            style="border: none"
-          ></iframe>
+          <!-- <h2 class="title is-5">Số biên lai: {{ data.sobienlai }}</h2> -->
+          <iframe :src="pdfSrc" class="pdf-frame"></iframe>
         </div>
         <div v-else class="container has-text-centered">
           <div class="column is-4 is-offset-4">
@@ -138,7 +133,7 @@ export default {
 
         // encode để tránh lỗi Unicode trong URL
         const fileName = `${sobienlai}_${hoten}`.replace(/\s+/g, "%20");
-        this.pdfSrc = `/bienlaidientu/${fileName}.pdf`;
+        this.pdfSrc = `http://27.73.37.94:4042/bienlaidientu/${fileName}.pdf`;
         // this.pdfSrc = `http://27.73.37.94:4042/bienlaidientu/0000003_Th%C3%A1i%20B%C3%A1%20Long.pdf`;
       }
     },
@@ -200,5 +195,17 @@ p.subtitle {
 
 .forgotpas:hover {
   color: #ffcc00; /* Màu vàng khi di chuột */
+}
+
+.pdf-frame {
+  width: 100%;
+  height: 700px;
+  border: none;
+}
+
+@media (max-width: 768px) {
+  .pdf-frame {
+    height: 400px; /* Hoặc bất kỳ chiều cao phù hợp */
+  }
 }
 </style>
