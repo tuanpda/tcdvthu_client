@@ -1374,6 +1374,8 @@ export default {
             hs.hoten
           )}.pdf`;
           const pdfUrl = `http://27.73.37.94:4042/bienlaidientu/${fileName}`;
+          // console.log(pdfUrl);
+
           window.open(pdfUrl, "_blank");
         } else {
           console.warn("Thiếu thông tin số biên lai hoặc họ tên!");
