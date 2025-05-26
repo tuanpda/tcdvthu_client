@@ -139,6 +139,7 @@ export default {
         // encode để tránh lỗi Unicode trong URL
         const fileName = `${sobienlai}_${hoten}`.replace(/\s+/g, "%20");
         this.pdfSrc = `/bienlaidientu/${fileName}.pdf`;
+        // this.pdfSrc = `http://27.73.37.94:4042/bienlaidientu/0000003_Th%C3%A1i%20B%C3%A1%20Long.pdf`;
       }
     },
   },
