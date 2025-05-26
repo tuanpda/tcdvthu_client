@@ -1121,7 +1121,7 @@ export default {
           madaily
         );
 
-        console.log(res);
+        // console.log(res);
 
         if (res.data.success == true) {
           this.listhsloi = res.data.hs;
@@ -1228,6 +1228,30 @@ export default {
     //   await this.inBienLaiDientu(combinedData);
     // },
 
+    async guiDulieuLenCongBhxhvntest(data) {
+      // thông tin biên lai
+      const currentYear = new Date().getFullYear();
+      // console.log(currentYear);
+
+      const getCurrentSobienlai = await this.$axios.get(
+        `/api/kekhai/sobienlai?namtaichinh=${currentYear}`
+      );
+      // console.log(getCurrentSobienlai.data.bienlai);
+      let maxInvoiceStr = getCurrentSobienlai.data.bienlai || null;
+
+      let nextInvoice = "";
+
+      if (!maxInvoiceStr) {
+        // Nếu chưa có biên lai năm nay → bắt đầu từ 0000001
+        nextInvoice = "0000001";
+      } else {
+        const nextNumber = parseInt(maxInvoiceStr, 10) + 1;
+        nextInvoice = String(nextNumber).padStart(7, "0");
+      }
+
+      console.log(nextInvoice);
+    },
+
     async guiDulieuLenCongBhxhvn(data) {
       const nowInVietnam = DateTime.now().setZone("Asia/Ho_Chi_Minh");
       const formattedDate = nowInVietnam.toFormat("dd-MM-yyyy HH:mm:ss");
@@ -1244,14 +1268,23 @@ export default {
 
       // thông tin biên lai
       const currentYear = new Date().getFullYear();
-      let curentInvoiceNumber = 0;
+      // console.log(currentYear);
 
       const getCurrentSobienlai = await this.$axios.get(
-        `/api/kekhai/sobienlai`
+        `/api/kekhai/sobienlai?namtaichinh=${currentYear}`
       );
-      // console.log(getCurrentSobienlai.data.bienlai[0].sobienlai);
-      curentInvoiceNumber = getCurrentSobienlai.data.bienlai[0].sobienlai;
-      // console.log(curentInvoiceNumber);
+      // console.log(getCurrentSobienlai.data.bienlai);
+      let maxInvoiceStr = getCurrentSobienlai.data.bienlai || null;
+
+      let nextInvoice = "";
+
+      if (!maxInvoiceStr) {
+        // Nếu chưa có biên lai năm nay → bắt đầu từ 0000001
+        nextInvoice = "0000001";
+      } else {
+        const nextNumber = parseInt(maxInvoiceStr, 10) + 1;
+        nextInvoice = String(nextNumber).padStart(7, "0");
+      }
 
       const dataPost = {
         _id_hskk: data._id,
@@ -1283,7 +1316,7 @@ export default {
         kyKeKhai: data.kykekhai,
         ngayKeKhai: data.ngaykekhai,
         createdBy: this.user.username,
-        sobienlai: curentInvoiceNumber,
+        sobienlai: nextInvoice,
         ngaybienlai: formattedDate,
         maloaihinh: data.maloaihinh,
         currentYear: currentYear,

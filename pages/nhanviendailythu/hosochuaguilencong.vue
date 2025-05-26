@@ -330,9 +330,37 @@ export default {
 
   methods: {
     copyToClipboard(text) {
-      navigator.clipboard
-        .writeText(text)
-        .then(() => {
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard
+          .writeText(text)
+          .then(() => {
+            Swal.fire({
+              toast: true,
+              position: "top-end",
+              icon: "success",
+              title: "Đã copy số hồ sơ!",
+              showConfirmButton: false,
+              timer: 1500,
+            });
+          })
+          .catch((err) => {
+            console.error("Lỗi khi copy:", err);
+            Swal.fire({
+              icon: "error",
+              title: "Không thể copy",
+              text: "Vui lòng thử lại.",
+            });
+          });
+      } else {
+        // Fallback cho HTTP (hoặc trình duyệt cũ)
+        const textArea = document.createElement("textarea");
+        textArea.value = text;
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+
+        try {
+          document.execCommand("copy");
           Swal.fire({
             toast: true,
             position: "top-end",
@@ -341,15 +369,17 @@ export default {
             showConfirmButton: false,
             timer: 1500,
           });
-        })
-        .catch((err) => {
-          console.error("Lỗi khi copy:", err);
+        } catch (err) {
+          console.error("Fallback copy failed:", err);
           Swal.fire({
             icon: "error",
             title: "Không thể copy",
             text: "Vui lòng thử lại.",
           });
-        });
+        }
+
+        document.body.removeChild(textArea);
+      }
     },
 
     async getDataChuakekhai() {
