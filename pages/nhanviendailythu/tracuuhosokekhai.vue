@@ -3414,22 +3414,22 @@ export default {
       doc.setFont("OpenSans-Regular-normal", "bold");
       doc.setFontSize(12);
       doc.setTextColor("#dc143c");
-      doc.text(
-        `Ký bởi: CÔNG TY TNHH ASXH PHỦ DIỄN`,
-        toadoXInfo + 100,
-        toadoYInfo + 53,
-        {
-          fontWeight: "bold",
-        }
-      );
-      doc.text(
-        `Ngày ký: 18/12/2024 15:15:09`,
-        toadoXInfo + 110,
-        toadoYInfo + 58,
-        {
-          fontWeight: "bold",
-        }
-      );
+      // doc.text(
+      //   `Ký bởi: CÔNG TY TNHH ASXH PHỦ DIỄN`,
+      //   toadoXInfo + 100,
+      //   toadoYInfo + 53,
+      //   {
+      //     fontWeight: "bold",
+      //   }
+      // );
+      // doc.text(
+      //   `Ngày ký: 18/12/2024 15:15:09`,
+      //   toadoXInfo + 110,
+      //   toadoYInfo + 58,
+      //   {
+      //     fontWeight: "bold",
+      //   }
+      // );
 
       doc.addFont(
         "OpenSans-ExtraBold-normal.ttf",

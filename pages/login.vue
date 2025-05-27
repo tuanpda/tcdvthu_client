@@ -112,16 +112,18 @@ export default {
         // console.log(res);
 
         // lấy thông tin này đem vào để gọi me
-        const itme = await this.$axios.$get("/api/users/auth/user");
-        // console.log(itme.user);
+        const item = await this.$axios.$get("/api/users/auth/user");
+        // console.log(item.user);
 
         // Gọi commit vào module auth
         const comitLogin = await this.$store.dispatch(
           "modules/users/fetchUsersLogin",
-          itme.user
+          item.user
         );
         // console.log(comitLogin);
-        if (comitLogin.success == true) {
+        if (comitLogin.success == true && item.user.role === 9) {
+          this.$router.push("/tracuubienlai");
+        } else {
           this.$router.push("/");
         }
       } catch (error) {
