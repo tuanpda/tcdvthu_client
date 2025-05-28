@@ -8,7 +8,7 @@
               <i class="far fa-address-card"></i>
             </span>
             <span style="font-weight: bold; color: #ea4aaa"
-              >Thêm mới người dùng</span
+              >Quản lý người dùng tra cứu biên lai BHXH</span
             >
           </div>
         </div>
@@ -48,13 +48,14 @@
           <thead style="font-size: small; font-weight: bold">
             <tr style="background-color: hsl(207deg, 61%, 53%)">
               <td style="text-align: center; width: 3%; color: white">STT</td>
-              <td style="text-align: center; color: white">Họ tên</td>
+              <td style="text-align: center; color: white">Mã số BHXH</td>
               <td style="text-align: center; color: white">Tên người dùng</td>
-              <td style="text-align: center; color: white">CCCD</td>
               <td style="text-align: center; color: white">Email</td>
               <td style="text-align: center; color: white">Điện thoại</td>
-              <td style="text-align: center; color: white">Điểm thu</td>
+              <td style="text-align: center; color: white">CCCD</td>
+              <td style="text-align: center; color: white">Tên đơn vị</td>
               <td style="text-align: center; color: white">Tình trạng</td>
+              <td style="text-align: center; color: white">Chức năng</td>
             </tr>
           </thead>
           <tbody>
@@ -67,22 +68,22 @@
                 {{ index + 1 }}
               </td>
               <td style="">
+                {{ item.masobhxh }}
+              </td>
+              <td style="text-align: center">
                 {{ item.name }}
               </td>
               <td style="text-align: center">
-                {{ item.username }}
+                {{ item.email }}
+              </td>
+              <td>
+                {{ item.sodienthoai }}
               </td>
               <td style="text-align: center">
                 {{ item.cccd }}
               </td>
-              <td>
-                {{ item.email }}
-              </td>
               <td style="text-align: center">
-                {{ item.sodienthoai }}
-              </td>
-              <td style="text-align: center">
-                {{ item.tendaily }}
+                {{ item.donvi }}
               </td>
               <td style="text-align: center">
                 <span v-if="item.active === false">
@@ -91,6 +92,18 @@
                 <span v-else>
                   <i style="color: #00947e" class="fa fa-circle"></i>
                 </span>
+              </td>
+              <td style="text-align: center">
+                <a @click="activeUpdate(item)">
+                  <span class="icon is-larger" style="color: green">
+                    <i class="fas fa-feather"></i>
+                  </span>
+                </a>
+                <a @click="onDelete(item)">
+                  <span class="icon is-larger" style="color: red">
+                    <i class="fas fa-trash-alt"></i>
+                  </span>
+                </a>
               </td>
             </tr>
           </tbody>
@@ -170,138 +183,7 @@
                   Thoát
                 </button>
               </div>
-
-              <label class="label is-small">Tên tổ chức</label>
-              <div class="field">
-                <div class="control">
-                  <div class="select is-small">
-                    <select @change="TcdvthugChange($event)">
-                      <option selected>-- Chọn tổ chức dịch vụ thu --</option>
-                      <option
-                        v-for="(item, index) in tochucdvt"
-                        :key="index"
-                        :value="item.matochuc"
-                      >
-                        {{ item.tentochuc }}
-                      </option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-
-              <div style="margin-top: 10px">
-                <div class="field">
-                  <label class="label is-small">Họ tên</label>
-                  <div class="control">
-                    <input
-                      v-model="form.name"
-                      ref="nameInput"
-                      class="input is-small"
-                      type="text"
-                      placeholder="Nhập vào họ tên"
-                      id="fullName"
-                    />
-                  </div>
-                </div>
-
-                <!-- select tỉnh thành phố -->
-                <div class="field">
-                  <label class="label is-small">Tỉnh / Thành phố</label>
-                  <input
-                    autoComplete="on"
-                    list="provinceSuggestions"
-                    class="custom-input"
-                    @blur="provinceChange"
-                    ref="provinceInput"
-                  />
-                  <datalist id="provinceSuggestions">
-                    <option v-for="(item, index) in dm_Tinhs" :key="index">
-                      {{ item.matinh }} - {{ item.tentinh }}
-                    </option>
-                  </datalist>
-                </div>
-
-                <!-- select quận huyện -->
-                <div class="field">
-                  <label class="label is-small">Quận huyện / Thị xã</label>
-                  <input
-                    :disabled="isDisabled_Huyenxa"
-                    autoComplete="on"
-                    list="districtSuggestions"
-                    class="custom-input"
-                    @blur="quanhuyenChange"
-                    ref="districtInput"
-                  />
-                  <datalist id="districtSuggestions">
-                    <option v-for="(item, index) in quanhuyenData" :key="index">
-                      {{ item.maquanhuyen }} - {{ item.tenquanhuyen }}
-                    </option>
-                  </datalist>
-                </div>
-
-                <!-- select xã phường -->
-                <div class="field">
-                  <label class="label is-small">Xã phường</label>
-                  <input
-                    :disabled="isDisabled_Xaphuong"
-                    autoComplete="on"
-                    list="xaphuongSuggestions"
-                    class="custom-input"
-                    @blur="xaphuongChange"
-                    ref="xphuongInput"
-                  />
-                  <datalist id="xaphuongSuggestions">
-                    <option v-for="(item, index) in xaphuongData" :key="index">
-                      {{ item.maxaphuong }} - {{ item.tenxaphuong }}
-                    </option>
-                  </datalist>
-                </div>
-
-                <label class="label is-small">Điểm thu - Công ty DV thu?</label>
-                <div class="field">
-                  <div class="control">
-                    <div class="select is-small">
-                      <select
-                        @change="nhanvienCtyChange($event)"
-                        :disabled="isDisabled_Daily"
-                      >
-                        <option selected>-- Chọn phân cấp --</option>
-                        <option value="true">Nhân viên công ty</option>
-                        <option value="false">Điểm thu</option>
-                      </select>
-                    </div>
-                  </div>
-                </div>
-
-                <label class="label is-small">Gửi lên cổng BHXH VN?</label>
-                <div class="field">
-                  <div class="control">
-                    <div class="select is-small">
-                      <select
-                        @change="sentChange($event)"
-                        :disabled="isDisabled_Daily"
-                      >
-                        <option selected>-- Chọn quyền --</option>
-                        <option value="true">Cho phép</option>
-                        <option value="false">Không cho phép</option>
-                      </select>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="field">
-                  <label class="label is-small">Địa chỉ</label>
-                  <div class="control">
-                    <input
-                      v-model="form.diachi"
-                      class="input is-small"
-                      type="text"
-                      placeholder="Nhập vào địa chỉ"
-                      ref="diachiInput"
-                    />
-                  </div>
-                </div>
-
+              <div>
                 <div class="field">
                   <label class="label is-small">Mã số BHXH</label>
                   <div class="control">
@@ -313,6 +195,19 @@
                       minlength="10"
                       placeholder="Nhập vào Mã số BHXH"
                       ref="masobhxhInput"
+                    />
+                  </div>
+                </div>
+
+                <div class="field">
+                  <label class="label is-small">Họ tên</label>
+                  <div class="control">
+                    <input
+                      v-model="form.name"
+                      class="input is-small"
+                      type="text"
+                      placeholder="Nhập vào Fullname"
+                      ref="nameInput"
                     />
                   </div>
                 </div>
@@ -333,6 +228,19 @@
                 </div>
 
                 <div class="field">
+                  <label class="label is-small">Email</label>
+                  <div class="control">
+                    <input
+                      v-model="form.email"
+                      class="input is-small"
+                      type="email"
+                      placeholder="Nhập Email"
+                      ref="emailInput"
+                    />
+                  </div>
+                </div>
+
+                <div class="field">
                   <label class="label is-small">Số điện thoại</label>
                   <div class="control">
                     <input
@@ -346,14 +254,13 @@
                 </div>
 
                 <div class="field">
-                  <label class="label is-small">Email</label>
+                  <label class="label is-small">Đơn vị công tác</label>
                   <div class="control">
                     <input
-                      v-model="form.email"
+                      v-model="form.donvi"
                       class="input is-small"
-                      type="email"
-                      placeholder="Nhập vào email"
-                      ref="emailInput"
+                      type="text"
+                      placeholder="Nhập vào tên đơn vị"
                     />
                   </div>
                 </div>
@@ -422,223 +329,189 @@
         </div>
       </div>
 
-      <!-- modal import user -->
+      <!-- modal update user -->
       <div class="">
-        <div :class="{ 'is-active': isActive_import }" class="modal">
+        <div :class="{ 'is-active': isActive }" class="modal">
           <div class="modal-background"></div>
-          <div class="modal-content modal-card-import box">
+          <div class="modal-content modal-card box">
             <section class="modal-card-body">
               <div style="text-align: end">
-                <button @click="exitImport" class="button is-small is-danger">
+                <button
+                  @click="isActive = false"
+                  class="button is-small is-info"
+                >
                   Thoát
                 </button>
               </div>
+              <div v-if="user_data" style="margin-top: 10px">
+                <div class="field">
+                  <label class="label is-small">Mã số BHXH</label>
+                  <div class="control">
+                    <input
+                      v-model="user_data.masobhxh"
+                      class="input is-small"
+                      type="text"
+                    />
+                  </div>
+                </div>
 
-              <div class="columns">
-                <div class="column is-10">
-                  <div class="file is-small is-info has-name">
+                <div class="field">
+                  <label class="label is-small">Họ tên</label>
+                  <div class="control">
+                    <input
+                      v-model="user_data.name"
+                      ref="nameInput"
+                      class="input is-small"
+                      type="text"
+                      placeholder="Nhập vào họ tên"
+                      id="fullName"
+                    />
+                  </div>
+                </div>
+
+                <label class="label is-small">Kích hoạt - Active</label>
+                <div class="field">
+                  <label class="switch" style="vertical-align: middle">
+                    <input v-model="user_data.active" type="checkbox" />
+                    <span class="slider"></span>
+                  </label>
+                </div>
+
+                <div class="field">
+                  <label class="label is-small">Căn cước công dân</label>
+                  <div class="control">
+                    <input
+                      v-model="user_data.cccd"
+                      class="input is-small"
+                      type="number"
+                      maxlength="12"
+                      minlength="12"
+                      placeholder="Nhập vào CCCD"
+                      ref="cccdInput"
+                    />
+                  </div>
+                </div>
+
+                <div class="field">
+                  <label class="label is-small">Số điện thoại</label>
+                  <div class="control">
+                    <input
+                      v-model="user_data.sodienthoai"
+                      class="input is-small"
+                      type="number"
+                      placeholder="Nhập vào số điện thoại"
+                      ref="sdtInput"
+                    />
+                  </div>
+                </div>
+
+                <div class="field">
+                  <label class="label is-small">Email</label>
+                  <div class="control">
+                    <input
+                      v-model="user_data.email"
+                      class="input is-small"
+                      type="email"
+                      placeholder="Nhập vào email"
+                      ref="emailInput"
+                    />
+                  </div>
+                </div>
+
+                <div class="field">
+                  <label class="label is-small">Đơn vị</label>
+                  <div class="control">
+                    <input
+                      v-model="user_data.donvi"
+                      class="input is-small"
+                      type="text"
+                    />
+                  </div>
+                </div>
+
+                <div class="field">
+                  <label class="label is-small">Ghi chú</label>
+                  <div class="control">
+                    <input
+                      v-model="user_data.ghichu"
+                      class="input is-small"
+                      type="email"
+                      placeholder="Ghi chú thêm"
+                    />
+                  </div>
+                </div>
+
+                <div class="field">
+                  <label class="label is-small">Ảnh đại diện</label>
+                  <div class="file is-small has-name is-info">
                     <label class="file-label">
                       <input
                         ref="fileInput"
-                        @change="onFileChange_import"
+                        @change="onFileChange"
                         class="file-input"
                         type="file"
                         name="resume"
-                        accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                       />
                       <span class="file-cta">
                         <span class="file-icon">
                           <i class="fas fa-upload"></i>
                         </span>
-                        <span class="file-label"> Chọn file excel </span>
+                        <span class="file-label"> Sửa lại ảnh đại diện </span>
                       </span>
                       <span class="file-name">
-                        {{ fileName_import }}
+                        {{ fileName }}
                       </span>
                     </label>
                   </div>
                 </div>
-              </div>
 
-              <div>
-                <!-- progress import -->
-              </div>
-
-              <div class="column">
-                <div v-if="res_Data_Exist.length > 0">
-                  <span style="color: #ea4aaa; font-weight: 600"
-                    >Có dữ liệu trùng, kéo xuống dưới để xem chi tiết</span
-                  >
-                </div>
-                <div style="text-align: right; margin-bottom: 5px">
-                  <button>
-                    <a
-                      href="http://27.73.37.94:4042/filemauimport/importusers.xlsx"
-                      >Download File mẫu Import</a
-                    >
-                  </button>
-                  <button
-                    :disabled="!isImport || res_Data_Exist.length > 0"
-                    @click="clickImport"
-                    class="button is-small is-success"
-                  >
-                    Import người dùng
-                  </button>
-                </div>
-
-                <template>
-                  <div class="table_wrapper">
-                    <table
-                      class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth"
-                    >
-                      <thead style="font-size: small; font-weight: bold">
-                        <tr style="">
-                          <td style="text-align: center; width: 3%">STT</td>
-                          <td style="text-align: center">Tiến trình import</td>
-                          <td style="text-align: center">Status Import</td>
-                          <td style="text-align: center">Họ tên</td>
-                          <td style="text-align: center">Tên người dùng</td>
-                          <td style="text-align: center">CCCD</td>
-                          <td style="text-align: center">Điện thoại</td>
-                          <td style="text-align: center">Địa chỉ</td>
-                          <td style="text-align: center">Mã Điểm thu</td>
-                          <td style="text-align: center">Tên điểm thu</td>
-                          <td style="text-align: center">Mã số BHXH</td>
-                        </tr>
-                      </thead>
-                      <tbody v-if="data_import.length > 0">
-                        <tr
-                          v-for="(item, index) in data_import"
-                          :key="index"
-                          style="font-size: small"
-                        >
-                          <td style="text-align: center">
-                            {{ index + 1 }}
-                          </td>
-                          <td tyle="text-align: center">
-                            <progress
-                              class="progress is-success"
-                              :value="item.process"
-                              max="100"
-                            ></progress>
-                          </td>
-                          <td style="text-align: center">
-                            <template v-if="item.statusImport == 0">
-                              <span style="font-weight: 500; color: red"
-                                >Chưa import</span
-                              >
-                            </template>
-                            <template v-else>
-                              <span style="font-weight: 500; color: #00947e"
-                                >Thành công</span
-                              >
-                            </template>
-                          </td>
-                          <td style="">
-                            {{ item.name }}
-                          </td>
-                          <td style="">
-                            {{ item.username }}
-                          </td>
-                          <td style="text-align: center">
-                            {{ item.cccd }}
-                          </td>
-                          <td style="text-align: center">
-                            {{ item.sodienthoai }}
-                          </td>
-                          <td>
-                            {{ item.diachi }}
-                          </td>
-                          <td>
-                            {{ item.madaily }}
-                          </td>
-                          <td>
-                            {{ item.tendaily }}
-                          </td>
-                          <td>
-                            {{ item.masobhxh }}
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </template>
-
-                <!-- dữ liệu trùng -->
-                <template v-if="res_Data_Exist.length > 0">
-                  <div class="table_wrapper">
-                    <div style="margin-bottom: 5px; margin-top: 5px">
-                      <span style="font-weight: bold; color: red"
-                        >Người dùng đã tồn tại trong CSDL (Trùng CCCD)</span
-                      >
-                      |
-                      <a @click="catTrung"
-                        ><span style="font-weight: bold"
-                          >Xác nhận cắt bỏ các dòng trùng để tiếp tục
-                          import</span
-                        ></a
-                      >
+                <div class="columns">
+                  <div class="column">
+                    <div class="field">
+                      <div v-if="user_data.avatar" class="column">
+                        <div id="preview">
+                          <img :src="user_data.avatar" />
+                        </div>
+                      </div>
                     </div>
-                    <table
-                      class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth"
-                    >
-                      <thead
-                        style="
-                          font-size: small;
-                          font-weight: bold;
-                          background-color: #ea4aaa;
-                        "
-                      >
-                        <tr style="">
-                          <td style="text-align: center; width: 3%">STT</td>
-                          <td style="text-align: center">Họ tên</td>
-                          <td style="text-align: center">Tên người dùng</td>
-                          <td style="text-align: center">CCCD</td>
-                          <td style="text-align: center">Điện thoại</td>
-                          <td style="text-align: center">Địa chỉ</td>
-                          <td style="text-align: center">Mã Điểm thu</td>
-                          <td style="text-align: center">Tên điểm thu</td>
-                          <td style="text-align: center">Mã số BHXH</td>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr
-                          v-for="(item, index) in res_Data_Exist"
-                          :key="index"
-                          style="font-size: small"
-                        >
-                          <td style="text-align: center">
-                            {{ index + 1 }}
-                          </td>
-                          <td style="">
-                            {{ item.name }}
-                          </td>
-                          <td style="">
-                            {{ item.username }}
-                          </td>
-                          <td style="text-align: center; color: #ea4aaa">
-                            {{ item.cccd }}
-                          </td>
-                          <td style="text-align: center">
-                            {{ item.sodienthoai }}
-                          </td>
-                          <td>
-                            {{ item.diachi }}
-                          </td>
-                          <td>
-                            {{ item.madaily }}
-                          </td>
-                          <td>
-                            {{ item.tendaily }}
-                          </td>
-                          <td>
-                            {{ item.masobhxh }}
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
                   </div>
-                </template>
+                  <div class="column">
+                    <div class="field">
+                      <div v-if="url" class="column">
+                        <div id="preview">
+                          <img :src="url" />
+                        </div>
+                        <span style="color: red" class="icon is-small is-left">
+                          <i @click="remove" class="far fa-trash-alt"
+                            ><a>Xóa ảnh</a></i
+                          >
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <hr />
+
+                <div class="field is-grouped-function">
+                  <div class="control">
+                    <button
+                      @click="onUpdate()"
+                      class="button is-success is-small"
+                    >
+                      Ghi dữ liệu
+                    </button>
+                  </div>
+                  &nbsp;
+                  <div class="control">
+                    <button
+                      @click="isActive = false"
+                      class="button is-info is-small"
+                    >
+                      Thoát
+                    </button>
+                  </div>
+                </div>
               </div>
             </section>
           </div>
@@ -660,47 +533,25 @@ export default {
     return {
       users_data: [],
       isActive: false,
-      isActive_import: false,
-      checkHuyenxaOpen: false,
-      checkXaphuongOpen: false,
-      checkDailyOpen: false,
-      fileName: "",
-      selectedFile: null,
-      tochucdvt: [],
-      tinhthpData: [],
-      quanhuyenData: [],
-      xaphuongData: [],
-      dailyData: [],
+      user_data: {},
+
       linkActive: "",
       isLoading: false,
       url: null,
+
+      fileName: "",
+      selectedFile: null,
       form: {
-        matochuc: "",
-        tentochuc: "",
-        matinh: "",
-        tentinh: "",
-        mahuyen: "",
-        tenhuyen: "",
-        maxa: "",
-        tenxa: "",
-        madaily: "",
-        tendaily: "",
-        nvcongty: 0,
-        diachi: "",
         masobhxh: "",
+        name: "",
         cccd: "",
         sodienthoai: "",
         email: "",
-        username: "",
-        name: "",
         password: "",
-        role: 4, // nomal user
+        donvi: "",
         avatar: "http://27.73.37.94:4042/avatar/default-image.jpg",
         active: 0,
-        // createdBy: this.$auth.user.username,
         createdAt: null,
-        updatedBy: "",
-        updatedAt: "",
       },
       // sort and pagi
       sortDirection: 1,
@@ -720,7 +571,7 @@ export default {
 
   mounted() {
     this.fetchDataUsers();
-    this.fetchDataTCDVT();
+    // this.fetchDataTCDVT();
 
     const user = this.user;
     this.form.createdBy = user.username;
@@ -806,21 +657,10 @@ export default {
     // ...mapActions("modules/danhmucs", ["getdmQuanhuyens"]),
     async fetchDataUsers() {
       try {
-        const res = await this.$axios.get(`/api/users/`);
+        const res = await this.$axios.get(
+          `/api/users/taikhoan-tracuu-bienlai-dientu`
+        );
         this.users_data = res.data;
-      } catch (error) {
-        console.log(error);
-        Swal.fire({
-          title: "Lỗi",
-          text: "Lỗi trong quá trình tải dữ liệu từ máy chủ",
-        });
-      }
-    },
-
-    async fetchDataTCDVT() {
-      try {
-        const res = await this.$axios.get(`/api/tochucdvt/all-org`);
-        this.tochucdvt = res.data;
       } catch (error) {
         console.log(error);
         Swal.fire({
@@ -841,109 +681,6 @@ export default {
     changePage(pageNumber) {
       if (pageNumber >= 1 && pageNumber <= this.pageCount) {
         this.currentPage = pageNumber;
-      }
-    },
-
-    generateRandomString(length) {
-      const characters =
-        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-      let result = "";
-      for (let i = 0; i < length; i++) {
-        const randomIndex = Math.floor(Math.random() * characters.length);
-        result += characters[randomIndex];
-      }
-      return result;
-    },
-
-    // tổ chức dịch vụ thu
-    async TcdvthugChange(e) {
-      this.form.matochuc = e.target.value;
-      this.form.tentochuc = e.target.options[e.target.selectedIndex].text;
-      // console.log(this.form.tentochuc.text);
-    },
-
-    // tỉnh
-    async provinceChange(event) {
-      const selectedOption = event.target.value;
-      let position = selectedOption.split("-");
-      // console.log(position);
-      if (selectedOption) {
-        this.form.matinh = position[0].trim();
-        this.form.tentinh = position[1].trim();
-        try {
-          const response = await this.$axios.get(
-            `/api/danhmucs/dmquanhuyenwithmatinh?matinh=${this.form.matinh}`
-          );
-          // console.log(response.data);
-          this.quanhuyenData = response.data;
-          if (this.quanhuyenData.length > 0) {
-            this.checkHuyenxaOpen = true;
-          }
-        } catch (error) {
-          console.error("Error fetching data:", error);
-        }
-      }
-    },
-
-    async quanhuyenChange(event) {
-      const selectedOption = event.target.value;
-      let position = selectedOption.split("-");
-      // console.log(position);
-      if (selectedOption) {
-        this.form.mahuyen = position[0].trim();
-        this.form.tenhuyen = position[1].trim();
-        try {
-          const response = await this.$axios.get(
-            `/api/danhmucs/dmxaphuongwithmahuyen?maquanhuyen=${this.form.mahuyen}`
-          );
-          this.xaphuongData = response.data;
-          // console.log(this.xaphuongData);
-          if (this.xaphuongData.length > 0) {
-            this.checkXaphuongOpen = true;
-          }
-        } catch (error) {
-          console.error("Error fetching data:", error);
-        }
-      }
-    },
-
-    async xaphuongChange(event) {
-      const selectedOption = event.target.value;
-      let position = selectedOption.split("-");
-      // console.log(position);
-      if (selectedOption) {
-        this.form.maxa = position[0].trim();
-        this.form.tenxa = position[1].trim();
-      }
-      this.checkDailyOpen = true;
-
-      // try {
-      //   const response = await this.$axios.get(
-      //     `/api/danhmucs/dmxaphuongwithmahuyen?maquanhuyen=${this.form.mahuyen}`
-      //   );
-      //   this.xaphuongData = response.data;
-      //   if (this.xaphuongData.length > 0) {
-      //     this.checkXaphuongOpen = true;
-      //   }
-      // } catch (error) {
-      //   console.error("Error fetching data:", error);
-      // }
-    },
-
-    nhanvienCtyChange(event) {
-      const selectedOption = event.target.value;
-      // console.log(selectedOption); // nhận giá trị true hoặc false - true là nhân viên công ty - giá trị mặc định là false
-      if (selectedOption) {
-        this.form.nvcongty = selectedOption;
-      }
-    },
-
-    sentChange(event) {
-      const selectedOption = event.target.value;
-      console.log(selectedOption);
-
-      if (selectedOption) {
-        this.form.res_sent = selectedOption;
       }
     },
 
@@ -995,65 +732,8 @@ export default {
     },
 
     async checkFormData() {
-      // Kiểm tra tồn tại email
-      const res_email_exists = await this.$axios.get(
-        `/api/users/findemail?email=${this.form.email}`
-      );
-      // console.log(res_email_exists.data.length);
-      if (res_email_exists.data.length > 0) {
-        Swal.fire({
-          title: "Tài khoản đã tồn tại",
-          text: "Email này đã tồn tại trong hệ thống",
-        });
-        this.$refs.emailInput.focus();
-        return false; // Trả về false để ngăn chặn quá trình lưu dữ liệu
-      }
       // Kiểm tra xem các trường thông tin bắt buộc đã được điền đầy đủ chưa
-      if (!this.form.name) {
-        // Hiển thị thông báo lỗi
-        this.$toasted.show("Tên người dùng không được để trống", {
-          duration: 3000,
-          theme: "bubble",
-        });
-        this.$refs.nameInput.focus();
-        return false; // Trả về false để ngăn chặn quá trình lưu dữ liệu
-      }
-      if (!this.form.matinh || !this.form.tentinh) {
-        // Hiển thị thông báo lỗi
-        this.$toasted.show("Chọn thông tin Tỉnh / Thành phố", {
-          duration: 3000,
-          theme: "bubble",
-        });
-        this.$refs.provinceInput.focus();
-        return false; // Trả về false để ngăn chặn quá trình lưu dữ liệu
-      }
-      if (!this.form.mahuyen || !this.form.tenhuyen) {
-        // Hiển thị thông báo lỗi
-        this.$toasted.show("Chọn thông tin Quận huyện", {
-          duration: 3000,
-          theme: "bubble",
-        });
-        this.$refs.districtInput.focus();
-        return false; // Trả về false để ngăn chặn quá trình lưu dữ liệu
-      }
-      if (!this.form.maxa || !this.form.tenxa) {
-        // Hiển thị thông báo lỗi
-        this.$toasted.show("Chọn thông tin Xã phường", {
-          duration: 3000,
-          theme: "bubble",
-        });
-        this.$refs.xphuongInput.focus();
-        return false; // Trả về false để ngăn chặn quá trình lưu dữ liệu
-      }
-      if (!this.form.diachi) {
-        // Hiển thị thông báo lỗi
-        this.$toasted.show("Chọn thông tin Địa chỉ", {
-          duration: 3000,
-          theme: "bubble",
-        });
-        this.$refs.diachiInput.focus();
-        return false; // Trả về false để ngăn chặn quá trình lưu dữ liệu
-      }
+
       if (!this.form.masobhxh) {
         // Hiển thị thông báo lỗi
         this.$toasted.show("Chọn mã số BHXH", {
@@ -1061,6 +741,15 @@ export default {
           theme: "bubble",
         });
         this.$refs.masobhxhInput.focus();
+        return false; // Trả về false để ngăn chặn quá trình lưu dữ liệu
+      }
+      if (!this.form.name) {
+        // Hiển thị thông báo lỗi
+        this.$toasted.show("Tên người dùng không được để trống", {
+          duration: 3000,
+          theme: "bubble",
+        });
+        this.$refs.nameInput.focus();
         return false; // Trả về false để ngăn chặn quá trình lưu dữ liệu
       }
       if (!this.form.cccd) {
@@ -1072,15 +761,6 @@ export default {
         this.$refs.cccdInput.focus();
         return false; // Trả về false để ngăn chặn quá trình lưu dữ liệu
       }
-      if (!this.form.sodienthoai) {
-        // Hiển thị thông báo lỗi
-        this.$toasted.show("Chọn thông tin Số điện thoại", {
-          duration: 3000,
-          theme: "bubble",
-        });
-        this.$refs.sdtInput.focus();
-        return false; // Trả về false để ngăn chặn quá trình lưu dữ liệu
-      }
       if (!this.form.email) {
         // Hiển thị thông báo lỗi
         this.$toasted.show("Chọn thông tin Email", {
@@ -1090,6 +770,16 @@ export default {
         this.$refs.emailInput.focus();
         return false; // Trả về false để ngăn chặn quá trình lưu dữ liệu
       }
+      if (!this.form.sodienthoai) {
+        // Hiển thị thông báo lỗi
+        this.$toasted.show("Chọn thông tin Số điện thoại", {
+          duration: 3000,
+          theme: "bubble",
+        });
+        this.$refs.sdtInput.focus();
+        return false; // Trả về false để ngăn chặn quá trình lưu dữ liệu
+      }
+
       if (!this.isValidPhoneNumber(this.form.sodienthoai)) {
         this.$toasted.show("Số điện thoại không hợp lệ", {
           duration: 3000,
@@ -1314,9 +1004,8 @@ export default {
         this.isLoading = true;
         // sau này thì username sẽ bằng username + mã đại lý
         // random 8 ký tự
-        const randomString = this.generateRandomString(10);
         // activeString
-        let passtranfomer = this.form.username + this.form.cccd + randomString;
+        let passtranfomer = "TracuuBienlai@Bhxh123";
         // console.log(passtranfomer);
         // ngày tạo user
         const current = new Date();
@@ -1324,101 +1013,38 @@ export default {
         this.form.createdAt = current;
 
         let data = new FormData();
-        data.append("matochuc", this.form.matochuc);
-        data.append("tentochuc", this.form.tentochuc);
-        data.append("matinh", this.form.matinh);
-        data.append("tentinh", this.form.tentinh);
-        data.append("mahuyen", this.form.mahuyen);
-        data.append("tenhuyen", this.form.tenhuyen);
-        data.append("maxa", this.form.maxa);
-        data.append("tenxa", this.form.tenxa);
-        data.append("madaily", this.form.maxa);
-        data.append("tendaily", this.form.tenxa);
-        data.append("nvcongty", this.form.nvcongty);
-        data.append("diachi", this.form.diachi);
-        data.append("cccd", this.form.cccd);
+
         data.append("masobhxh", this.form.masobhxh);
-        data.append("sodienthoai", this.form.sodienthoai);
-        data.append("email", this.form.email);
-        data.append("username", this.form.cccd);
         data.append("name", this.form.name);
         data.append("password", passtranfomer);
-        data.append("role", this.form.role);
+        data.append("email", this.form.email);
+        data.append("donvi", this.form.donvi);
+        data.append("sodienthoai", this.form.sodienthoai);
+        data.append("cccd", this.form.cccd);
         if (this.selectedFile) {
           data.append("avatar", this.selectedFile, this.selectedFile.name);
         } else {
           data.append("avatar", this.form.avatar);
         }
-        data.append("active", this.form.active);
+        data.append("active", 1);
         data.append("createdAt", this.form.createdAt);
         data.append("createdBy", this.form.createdBy);
-        data.append("updatedAt", this.form.updatedAt);
-        data.append("updatedBy", this.form.updatedBy);
-        data.append("res_sent", this.form.res_sent);
-        data.append("macqbhxh", "04013");
-        data.append("tencqbhxh", "Bảo hiểm xã hội huyện Diễn Châu");
 
         try {
-          const response = await this.$store.dispatch(
-            "modules/users/createUser",
+          const response = await this.$axios.post(
+            "api/users/account-tracuubienlaidientu-bhxh",
             data
           );
-          if (response.success == true) {
+          console.log(response);
+          if (response.status == 200) {
             this.isActive = false;
-            // console.log(this.form);
-            // Swal.fire({
-            //   title: "Tạo thành công tài khoản",
-            //   text: `Mật khẩu của bạn là (ghi nhớ mật khẩu trước khi tắt thông báo): ${passtranfomer}`,
-            // });
             this.fetchDataUsers();
-            // tạo chuỗi active
-            // this.linkActive = `http://localhost:3000/${this.form.email}/actived`;
-            this.linkActive = `http://ansinhbhxh.online:4042/${this.form.email}/actived`;
-            //   // gửi mail kích hoạt và mật khẩu gọi API send mail
-            const data_send_mail = {
-              email: this.form.email,
-              subject: `Mail kích hoạt tài khoản đăng ký sử dụng phần mềm hỗ trợ Tổ chức dịch vụ thu`,
-              content: `
-              <p>Xin chào bạn ${this.form.cccd}!</p>
-              <p>Chúng tôi đã nhận được đăng ký sử dụng phần mềm từ bạn hoặc cá nhân tổ chức nào đó lấy thông tin email của bạn để đăng ký (nếu trường hợp không phải là bạn thì bạn hãy bỏ qua email này và không bấm vào link kích hoạt mà gửi email phản hồi lại cho chúng tôi thông qua email sonthucompany@gmail.com)</p>
-              <hr />
-              <p>Bạn đã đăng ký thành công tài khoản sử dụng phần mềm kê khai dành cho tổ chức dịch vụ thu của chúng tôi. Cảm ơn bạn. Sau đây là thông tin tài khoản của bạn:</p>
-              <ul>
-                <li>Email: ${this.form.email}</li>
-                <li>Username: ${this.form.cccd} (Đây là thông tin tài khoản dùng truy cập vào phần mềm)</li>
-                <li>Password: ${passtranfomer} (Đây là mật khẩu đăng nhập vào phần mềm, tuyệt đối không tiết lộ hay chia sẽ cho bất kỳ ai)</li>
-              </ul>
-              <hr />
-              <p>Cuối cùng để hoàn thành việc đăng ký sử dụng bạn hãy kích hoạt tài khoản bằng cách bấm vào link kích hoạt bên dưới (nếu chính bạn là người đã đăng ký sử dụng)</p>
-              <p>Link kích hoạt tài khoản của bạn là: <a href="${this.linkActive}">Link kích hoạt tài khoản</a></p>
-              <p>* LƯU Ý THỜI GIAN KÍCH HOẠT TỪ KHI TẠO TÀI KHOẢN LÀ 5 PHÚT. SAU 5 PHÚT LINK SẼ KHÔNG CÒN TỒN TẠI *</p>
-            `,
-            };
 
-            // GỌI ENDPOINT SEND EMAIL ĐẾN CHO NGƯỜI ĐĂNG KÝ -- tạm khoá chức năng gửi mail
-            // const res_send_mail = await this.$axios.post(
-            //   `/api/nodemailer/email/send`,
-            //   data_send_mail
-            // );
-            // console.log(res_send_mail.status == 200);
-            // if (res_send_mail.status == 200) {
-            //   // Khi gửi email thành công, dừng hiển thị biểu tượng loading
-            //   this.isLoading = false;
-            //   this.isActive = false;
-            //   this.form = [];
-            //   // console.log(this.form);
-            //   Swal.fire({
-            //     title: "Tạo thành công tài khoản",
-            //     text: `Tên đăng nhập là: ${this.form.cccd}`,
-            //     text: `Mật khẩu nhập là: ${passtranfomer}`,
-            //   });
-            //   this.fetchDataUsers();
-            // }
             this.isLoading = false;
             this.isActive = false;
             Swal.fire({
               title: "Tạo thành công tài khoản",
-              text: `Tên đăng nhập là: ${this.form.cccd}; Mật khẩu nhập là: ${passtranfomer}`,
+              text: `Tên đăng nhập là: ${this.form.masobhxh}; Mật khẩu nhập là: ${passtranfomer}`,
             });
             this.fetchDataUsers();
             this.form = [];
@@ -1463,6 +1089,155 @@ export default {
             title: `Lỗi! Không thể tạo tài khoản`,
           });
         }
+      }
+    },
+
+    async activeUpdate(data) {
+      this.user_data = {};
+      this.user_data = data;
+      this.isActive = true;
+    },
+
+    async onUpdate() {
+      const result = await Swal.fire({
+        title: `Xác nhận tạo mới người dùng ?`,
+        showDenyButton: true,
+        confirmButtonText: "Xác nhận tạo",
+        denyButtonText: `Hủy tạo`,
+      });
+      if (result.isConfirmed) {
+        // Bắt đầu hiển thị biểu tượng loading
+        this.isLoading = true;
+
+        let data = new FormData();
+        data.append("_id", this.user_data._id);
+        data.append("masobhxh", this.user_data.masobhxh);
+        data.append("name", this.user_data.name);
+        data.append("cccd", this.user_data.cccd);
+        data.append("sodienthoai", this.user_data.sodienthoai);
+        data.append("email", this.user_data.email);
+        data.append("donvi", this.user_data.donvi);
+
+        if (this.selectedFile) {
+          data.append("avatar", this.selectedFile, this.selectedFile.name);
+          data.append("avatarOld", this.user_data.avatar);
+        } else {
+          data.append("avatar", this.user_data.avatar);
+        }
+
+        data.append("active", this.user_data.active);
+
+        try {
+          const response = await this.$axios.post(
+            "api/users/user/fix-tracuu-bienlaidientu",
+            data
+          );
+          console.log(response);
+          if (response.status == 200) {
+            this.isLoading = false;
+            Swal.fire({
+              title: "Cập nhật thành công",
+            });
+            this.fetchDataUsers();
+            this.isActive = false;
+          }
+        } catch (error) {
+          console.log(error);
+          const Toast = Swal.mixin({
+            toast: true,
+            position: "top-end",
+            showConfirmButton: false,
+            timer: 2000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+              toast.addEventListener("mouseenter", Swal.stopTimer);
+              toast.addEventListener("mouseleave", Swal.resumeTimer);
+            },
+          });
+          Toast.fire({
+            icon: "error",
+            title: `Lỗi! Không thể cập nhật`,
+          });
+        }
+      }
+    },
+
+    async onDelete(data) {
+      if (this.user.role === 1) {
+        const result = await Swal.fire({
+          title: `Xác nhận xóa tài khoản này? Sẽ không thể lấy lại!`,
+          showDenyButton: true,
+          confirmButtonText: "Xác nhận xóa",
+          denyButtonText: `Hủy xóa`,
+        });
+        if (result.isConfirmed) {
+          if (data.role === 1) {
+            const Toast = Swal.mixin({
+              toast: true,
+              position: "top-end",
+              showConfirmButton: false,
+              timer: 2000,
+              timerProgressBar: true,
+              didOpen: (toast) => {
+                toast.addEventListener("mouseenter", Swal.stopTimer);
+                toast.addEventListener("mouseleave", Swal.resumeTimer);
+              },
+            });
+            Toast.fire({
+              icon: "error",
+              title: `Không thể xóa User này !!!`,
+            });
+          } else {
+            try {
+              const res = await this.$axios.post(
+                `/api/users/delete/user-tracuuu-bienlai-dientu`,
+                data
+              );
+              // console.log(res.data.success);
+              if (res.data.success == true) {
+                Swal.fire({
+                  title: "Đã xóa tài khoản khỏi hệ thống",
+                  text: "Deleted!",
+                });
+                this.fetchDataUsers();
+              }
+            } catch (error) {
+              console.log(error);
+              const Toast = Swal.mixin({
+                toast: true,
+                position: "top-end",
+                showConfirmButton: false,
+                timer: 2000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                  toast.addEventListener("mouseenter", Swal.stopTimer);
+                  toast.addEventListener("mouseleave", Swal.resumeTimer);
+                },
+              });
+              Toast.fire({
+                icon: "error",
+                title: `Lỗi! Không thể xóa`,
+              });
+            }
+          }
+        }
+      } else {
+        const Toast = this.$swal.mixin({
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.addEventListener("mouseenter", this.$swal.stopTimer);
+            toast.addEventListener("mouseleave", this.$swal.resumeTimer);
+          },
+        });
+        Toast.fire({
+          icon: "error",
+          title:
+            "Bạn không có quyền xóa dữ liệu này. Liên hệ quản trị phần mềm !!!",
+        });
       }
     },
   },

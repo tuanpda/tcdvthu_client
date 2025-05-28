@@ -2,11 +2,13 @@
   <div>
     <section class="special-layout">
       <nuxt />
+      <Footer />
     </section>
   </div>
 </template>
 
 <script>
+import Footer from "~/components/Footer";
 export default {
   name: "TracuuBienLaiLayout",
 

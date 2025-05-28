@@ -346,22 +346,29 @@ export default {
     },
 
     async report() {
-      // console.log(this.user.madaily);
+      let madaily = "";
 
-      const madaily = { madaily: this.user.madaily };
-      if (this.user.role !== 2) {
-        const res = await this.$axios.post(
-          `/api/kekhai/thongke-hosokekhai`,
-          madaily
-        );
-        // console.log(res.data.data);
-        this.reportHoso = res.data.data;
-      } else {
-        const res = await this.$axios.get(
-          `/api/kekhai/thongke-hosokekhai-tonghop`
-        );
-        // console.log(res.data.data);
-        this.reportHoso = res.data.data;
+      if (this.user.madaily !== "") {
+        // console.log(this.user.madaily);
+        madaily = { madaily: this.user.madaily };
+      }
+
+      try {
+        if (this.user.role == 1 || this.user.role == 2) {
+          // console.log(this.user.role);
+          const res = await this.$axios.get(
+            `/api/kekhai/thongke-hosokekhai-tonghop`
+          );
+          this.reportHoso = res.data.data;
+        } else {
+          const res = await this.$axios.post(
+            `/api/kekhai/thongke-hosokekhai`,
+            madaily
+          );
+          this.reportHoso = res.data.data;
+        }
+      } catch (err) {
+        console.error("❌ Lỗi khi gọi API:", err);
       }
     },
 
@@ -402,7 +409,7 @@ export default {
 
 <style lang="css" scoped>
 .pageIdex {
-  height: 850px;
+  height: auto;
   background: white; /* hoặc màu nền bạn muốn */
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* đổ bóng mềm, đẹp */
   border-radius: 12px; /* bo tròn nhẹ cho đẹp */

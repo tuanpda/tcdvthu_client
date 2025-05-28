@@ -116,11 +116,14 @@
                 </span>
                 &ensp; Quản trị
               </nuxt-link>
-              <nuxt-link to="" class="navbar-item">
+              <nuxt-link
+                to="/admin/users/add-user-tracuubienlai-bhxh"
+                class="navbar-item"
+              >
                 <span style="color: #ea4aaa" class="icon is-small is-left">
                   <i class="fab fa-trade-federation"></i>
                 </span>
-                &ensp; Phân quyền
+                &ensp; User tra cứu biên lai BHXH
               </nuxt-link>
               <hr class="navbar-divider" />
               <nuxt-link to="" class="navbar-item">

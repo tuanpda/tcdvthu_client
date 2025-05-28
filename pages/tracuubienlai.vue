@@ -19,8 +19,9 @@
 
           <!-- Name + Email -->
           <div>
-            <p class="has-text-weight-semibold">{{ user.username }}</p>
+            <p class="has-text-weight-semibold">{{ user.name }}</p>
             <p class="is-size-7 has-text-grey">{{ user.email }}</p>
+            <p class="is-size-7 has-text-grey">{{ user.cccd }}</p>
           </div>
         </div>
 
@@ -239,7 +240,7 @@
 import Swal from "sweetalert2";
 
 export default {
-  layout: "none",
+  layout: "tracuubienlai-bhxh",
 
   data() {
     return {
@@ -403,8 +404,8 @@ export default {
   margin-top: 1em;
 }
 
-.custom-background {
-  min-height: 100vh;
+/* .custom-background {
+  min-height: auto;
   background: #d3d3d3;
   background-image: url("../assets/images/login2.jpg");
   background-size: cover;
@@ -416,7 +417,7 @@ export default {
 .box {
   margin-top: 2rem;
   border: 5px solid white;
-}
+} */
 
 /* (giữ nguyên các phần khác như avatar, table_wrapper, pdf-frame...) */
 </style>

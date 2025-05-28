@@ -155,7 +155,7 @@
           <div class="loading-spinner"></div>
         </div>
 
-        <!-- modal add user -->
+        <!-- modal update user -->
         <div class="">
           <div :class="{ 'is-active': isActive }" class="modal">
             <div class="modal-background"></div>
@@ -823,77 +823,85 @@ export default {
     },
 
     async onSave() {
-      // console.log(this.user_data);
-      // Kiểm tra dữ liệu trước khi ghi
-      const isDataValid = await this.checkFormData();
-      if (!isDataValid) {
-        // Dừng quá trình lưu dữ liệu nếu dữ liệu không hợp lệ
-        return;
-      }
-
-      // Bắt đầu hiển thị biểu tượng loading
-      this.isLoading = true;
-      const current = new Date();
-      // console.log(current);
-      this.user_data.updatedAt = current;
-
-      let data = new FormData();
-      data.append("_id", this.user_data._id);
-      data.append("matinh", this.user_data.matinh);
-      data.append("tentinh", this.user_data.tentinh);
-      data.append("mahuyen", this.user_data.mahuyen);
-      data.append("tenhuyen", this.user_data.tenhuyen);
-      data.append("maxa", this.user_data.maxa);
-      data.append("tenxa", this.user_data.tenxa);
-      data.append("madaily", this.user_data.madaily);
-      data.append("tendaily", this.user_data.tendaily);
-      data.append("diachi", this.user_data.diachi);
-      data.append("cccd", this.user_data.cccd);
-      data.append("sodienthoai", this.user_data.sodienthoai);
-      data.append("email", this.user_data.email);
-      data.append("name", this.user_data.name);
-      if (this.selectedFile) {
-        data.append("avatar", this.selectedFile, this.selectedFile.name);
-        data.append("avatarOld", this.user_data.avatar);
-      } else {
-        data.append("avatar", this.user_data.avatar);
-      }
-      data.append("active", this.user_data.active);
-      data.append("updatedAt", this.user_data.updatedAt);
-      data.append("updatedBy", this.user.username);
-      data.append("ghichu", this.user_data.ghichu);
-
-      try {
-        const response = await this.$store.dispatch(
-          "modules/users/updateUser",
-          data
-        );
-
-        if (response.success == true) {
-          this.isLoading = false;
-          Swal.fire({
-            title: "Cập nhật thành công",
-          });
-          this.fetchDataUsers();
-          this.isActive = false;
+      const result = await Swal.fire({
+        title: `Xác nhận tạo mới người dùng ?`,
+        showDenyButton: true,
+        confirmButtonText: "Xác nhận tạo",
+        denyButtonText: `Hủy tạo`,
+      });
+      if (result.isConfirmed) {
+        // console.log(this.user_data);
+        // Kiểm tra dữ liệu trước khi ghi
+        const isDataValid = await this.checkFormData();
+        if (!isDataValid) {
+          // Dừng quá trình lưu dữ liệu nếu dữ liệu không hợp lệ
+          return;
         }
-      } catch (error) {
-        console.log(error);
-        const Toast = Swal.mixin({
-          toast: true,
-          position: "top-end",
-          showConfirmButton: false,
-          timer: 2000,
-          timerProgressBar: true,
-          didOpen: (toast) => {
-            toast.addEventListener("mouseenter", Swal.stopTimer);
-            toast.addEventListener("mouseleave", Swal.resumeTimer);
-          },
-        });
-        Toast.fire({
-          icon: "error",
-          title: `Lỗi! Không thể cập nhật`,
-        });
+
+        // Bắt đầu hiển thị biểu tượng loading
+        this.isLoading = true;
+        const current = new Date();
+        // console.log(current);
+        this.user_data.updatedAt = current;
+
+        let data = new FormData();
+        data.append("_id", this.user_data._id);
+        data.append("matinh", this.user_data.matinh);
+        data.append("tentinh", this.user_data.tentinh);
+        data.append("mahuyen", this.user_data.mahuyen);
+        data.append("tenhuyen", this.user_data.tenhuyen);
+        data.append("maxa", this.user_data.maxa);
+        data.append("tenxa", this.user_data.tenxa);
+        data.append("madaily", this.user_data.madaily);
+        data.append("tendaily", this.user_data.tendaily);
+        data.append("diachi", this.user_data.diachi);
+        data.append("cccd", this.user_data.cccd);
+        data.append("sodienthoai", this.user_data.sodienthoai);
+        data.append("email", this.user_data.email);
+        data.append("name", this.user_data.name);
+        if (this.selectedFile) {
+          data.append("avatar", this.selectedFile, this.selectedFile.name);
+          data.append("avatarOld", this.user_data.avatar);
+        } else {
+          data.append("avatar", this.user_data.avatar);
+        }
+        data.append("active", this.user_data.active);
+        data.append("updatedAt", this.user_data.updatedAt);
+        data.append("updatedBy", this.user.username);
+        data.append("ghichu", this.user_data.ghichu);
+
+        try {
+          const response = await this.$store.dispatch(
+            "modules/users/updateUser",
+            data
+          );
+
+          if (response.success == true) {
+            this.isLoading = false;
+            Swal.fire({
+              title: "Cập nhật thành công",
+            });
+            this.fetchDataUsers();
+            this.isActive = false;
+          }
+        } catch (error) {
+          console.log(error);
+          const Toast = Swal.mixin({
+            toast: true,
+            position: "top-end",
+            showConfirmButton: false,
+            timer: 2000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+              toast.addEventListener("mouseenter", Swal.stopTimer);
+              toast.addEventListener("mouseleave", Swal.resumeTimer);
+            },
+          });
+          Toast.fire({
+            icon: "error",
+            title: `Lỗi! Không thể cập nhật`,
+          });
+        }
       }
     },
 

@@ -24,13 +24,13 @@ const store = new Vuex.Store({
   actions: {},
   modules: {
     users: {
-      // namespaced: true, // Enable namespace for authentic store
+      namespaced: true, // Enable namespace for authentic store
       state: state1,
       mutations: mutations1,
       actions: actions1,
     },
     danhmucs: {
-      // namespaced: true, // Enable namespace for authentic store
+      namespaced: true, // Enable namespace for authentic store
       state: state2,
       mutations: mutations2,
       actions: actions2,
