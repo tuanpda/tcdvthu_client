@@ -134,10 +134,19 @@ export default {
 
         // encode để tránh lỗi Unicode trong URL
         const fileName = `${sobienlai}_${hoten}`;
-        this.pdfSrc = `http://27.73.37.94:4042/bienlaidientu/${fileName}.pdf`;
+        let pdfUrl = `http://27.73.37.94:4042/bienlaidientu/${fileName}.pdf`;
         // console.log(this.pdfSrc);
 
         // this.pdfSrc = `http://27.73.37.94:4042/bienlaidientu/0000003_Th%C3%A1i%20B%C3%A1%20Long.pdf`;
+
+        if (window.innerWidth < 768) {
+          // Nếu là mobile, mở tab mới
+          window.open(pdfUrl, "_blank");
+        } else {
+          // Nếu không phải mobile, hiển thị trong iframe
+          this.viewXacnhan = true;
+          this.pdfSrc = pdfUrl;
+        }
       } else {
         const Toast = Swal.mixin({
           toast: true,
