@@ -236,7 +236,7 @@ export default {
           });
           Toast.fire({
             icon: "error",
-            title: `Không tìm thấy hồ sơ`,
+            title: `Không tìm thấy dữ liệu biên lai`,
           });
         }
       } catch (error) {

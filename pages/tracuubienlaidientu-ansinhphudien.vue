@@ -133,9 +133,27 @@ export default {
         const hoten = res.data.hs.hoten;
 
         // encode để tránh lỗi Unicode trong URL
-        const fileName = `${sobienlai}_${hoten}`.replace(/\s+/g, "%20");
+        const fileName = `${sobienlai}_${hoten}`;
         this.pdfSrc = `http://27.73.37.94:4042/bienlaidientu/${fileName}.pdf`;
+        // console.log(this.pdfSrc);
+
         // this.pdfSrc = `http://27.73.37.94:4042/bienlaidientu/0000003_Th%C3%A1i%20B%C3%A1%20Long.pdf`;
+      } else {
+        const Toast = Swal.mixin({
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 2000,
+          timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.addEventListener("mouseenter", Swal.stopTimer);
+            toast.addEventListener("mouseleave", Swal.resumeTimer);
+          },
+        });
+        Toast.fire({
+          icon: "error",
+          title: `Không tìm thấy biên lai khớp thông tin`,
+        });
       }
     },
   },
