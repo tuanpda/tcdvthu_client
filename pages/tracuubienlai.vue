@@ -1,91 +1,177 @@
 <template>
-  <div>
-    <section class="hero is-success is-fullheight">
-      <div class="hero-body">
-        <div>
-          <button @click="logout">logout</button>
+  <div class="custom-background column">
+    <div style="padding: 2rem">
+      <div
+        class="container box is-flex is-align-items-center is-justify-content-space-between"
+      >
+        <!-- User Info -->
+        <div v-if="user" class="is-flex is-align-items-center">
+          <!-- Avatar -->
+          <figure class="image is-48x48 mr-3">
+            <img
+              class="is-rounded"
+              :src="
+                user.avatar || `https://i.pravatar.cc/48?u=${user.username}`
+              "
+              alt="Avatar"
+            />
+          </figure>
+
+          <!-- Name + Email -->
+          <div>
+            <p class="has-text-weight-semibold">{{ user.username }}</p>
+            <p class="is-size-7 has-text-grey">{{ user.email }}</p>
+          </div>
         </div>
 
-        <div class="container has-text-centered">
-          <div class="column">
-            <div class="box"></div>
-            <div class="box">
-              <div style="margin-top: 20px">
-                <div class="table_wrapper">
-                  <table
-                    class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth"
-                  >
-                    <thead style="font-weight: bold">
-                      <tr style="font-size: small; background-color: #faf0e6">
-                        <td rowspan="2" style="text-align: center; width: 3%">
-                          STT
-                        </td>
-                        <td rowspan="2" style="text-align: center">_ID</td>
-                        <td style="text-align: center">Trạng thái</td>
-                        <td style="text-align: center">Xem chi tiết</td>
-                        <td rowspan="2" style="text-align: center">
-                          Mã xác nhận
-                        </td>
-                        <td rowspan="2" style="text-align: center">
-                          In Biên lai
-                        </td>
-                        <td rowspan="2" style="text-align: center">Số hồ sơ</td>
-                        <td rowspan="2" style="text-align: center">
-                          Mã đại lý
-                        </td>
-                        <td rowspan="2" style="text-align: center">
-                          Tên đại lý
-                        </td>
-                        <td rowspan="2" style="text-align: center">
-                          Loại hình
-                        </td>
-                        <td rowspan="2" style="text-align: center">
-                          Kỳ kê khai
-                        </td>
-                        <td rowspan="2" style="text-align: center">
-                          Ngày kê khai
-                        </td>
-                        <td rowspan="2" style="text-align: center">
-                          Mã số BHXH
-                        </td>
-                        <td rowspan="2" style="text-align: center">Họ tên</td>
-                        <td rowspan="2" style="text-align: center">
-                          Ngày sinh
-                        </td>
-                        <td rowspan="2" style="text-align: center">
-                          Giới tính
-                        </td>
-                        <td rowspan="2" style="text-align: center">CCCD</td>
-                        <td rowspan="2" style="text-align: center">
-                          Điện thoại
-                        </td>
-                        <td rowspan="2" style="text-align: center">
-                          Phương án
-                        </td>
-                        <td rowspan="2" style="text-align: center">Số tiền</td>
-                        <td rowspan="2" style="text-align: center">Từ ngày</td>
-                        <td rowspan="2" style="text-align: center">Số tháng</td>
-                        <td rowspan="2" style="text-align: center">
-                          Mức tiền đóng
-                        </td>
-                        <td rowspan="2" style="text-align: center">Từ tháng</td>
-                        <td rowspan="2" style="text-align: center">
-                          Đối tượng
-                        </td>
-                        <td rowspan="2" style="text-align: center">
-                          Mô tả lỗi
-                        </td>
-                      </tr>
-                    </thead>
-                  </table>
-                </div>
-                <!-- Phân trang -->
+        <!-- Logout Button -->
+        <button class="button is-small is-danger" @click="logout">
+          <span class="icon">
+            <i class="fas fa-sign-out-alt"></i>
+          </span>
+          <span>Logout</span>
+        </button>
+      </div>
+
+      <div class="container">
+        <!-- Box chứa input lọc -->
+        <div class="box">
+          <div class="columns">
+            <div class="column">
+              <label class="label">Nhóm tham gia</label>
+              <div class="select is-small is-fullwidth">
+                <select @change="handleChange">
+                  <option selected disabled>- Chọn loại hình -</option>
+                  <option value="">Không chọn</option>
+                  <option value="BI">Bảo hiểm y tế</option>
+                  <option value="AR">Bảo hiểm y tế - HGĐ</option>
+                  <option value="IS">Bảo hiểm xã hội tự nguyện</option>
+                </select>
               </div>
             </div>
+            <div class="column">
+              <label class="label">Ngày biên lai (từ)</label
+              ><input
+                v-model="ngaybienlaitu"
+                type="date"
+                class="input is-small"
+              />
+            </div>
+            <div class="column">
+              <label class="label">Ngày biên lai (đến)</label
+              ><input
+                v-model="ngaybienlaiden"
+                type="date"
+                class="input is-small"
+              />
+            </div>
+            <div class="column">
+              <label class="label">Mã số BHXH</label
+              ><input
+                v-model="masobhxh"
+                type="text"
+                class="input is-small"
+                placeholder="Số hồ sơ đã nạp"
+              />
+            </div>
+            <div class="column">
+              <label class="label">Họ tên</label
+              ><input
+                v-model="hoten"
+                type="text"
+                class="input is-small"
+                placeholder="Số hồ sơ đã nạp"
+              />
+            </div>
+          </div>
+          <hr class="navbar-divider" />
+          <footer class="has-text-right">
+            <button @click="viewBienlai" class="button is-success is-small">
+              <span class="icon"><i class="fas fa-search"></i></span>
+              <span>Tra cứu Biên lai</span>
+            </button>
+          </footer>
+        </div>
+
+        <!-- Box chứa bảng dữ liệu -->
+        <div class="box">
+          <div class="table_wrapper">
+            <table
+              class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth"
+            >
+              <thead style="font-weight: bold">
+                <tr style="font-size: small; background-color: #faf0e6">
+                  <td style="text-align: center; width: 3%">STT</td>
+                  <td style="text-align: center">_ID</td>
+                  <td style="text-align: center">Số biên lai</td>
+                  <td style="text-align: center">Xem</td>
+                  <td style="text-align: center">Ngày biên lai</td>
+                  <td style="text-align: center">Họ tên</td>
+                  <td style="text-align: center">Mã số BHXH</td>
+                  <td style="text-align: center">CCCD</td>
+                  <td style="text-align: center">Ngày sinh</td>
+                  <td style="text-align: center">Giới tính</td>
+                  <td style="text-align: center">Loại hình</td>
+                  <td style="text-align: center">Số tiền</td>
+                </tr>
+              </thead>
+              <tbody>
+                <tr
+                  v-for="(item, index) in dataBienlai"
+                  :key="index"
+                  style="font-size: small"
+                >
+                  <td style="text-align: center; vertical-align: middle">
+                    {{ index + 1 }}
+                  </td>
+                  <td style="text-align: center">
+                    {{ item._id }}
+                  </td>
+                  <td style="text-align: center; font-weight: 500">
+                    {{ item.sobienlai }}
+                  </td>
+                  <td style="text-align: center">
+                    <a @click="inBienLaiDientu(item)">
+                      <span
+                        style="color: #ff69b4"
+                        class="icon is-small is-left"
+                      >
+                        <i class="fas fa-print"></i>
+                      </span>
+                    </a>
+                  </td>
+
+                  <td style="text-align: center; font-weight: 500">
+                    {{ item.ngaybienlai }}
+                  </td>
+                  <td style="">
+                    {{ item.hoten }}
+                  </td>
+                  <td style="text-align: center">
+                    {{ item.masobhxh }}
+                  </td>
+                  <td style="text-align: center">
+                    {{ item.cccd }}
+                  </td>
+                  <td style="text-align: center">
+                    {{ item.ngaysinh }}
+                  </td>
+                  <td style="text-align: center">
+                    {{ item.gioitinh }}
+                  </td>
+                  <td style="text-align: center">
+                    {{ item.loaihinh }}
+                  </td>
+                  <td style="text-align: center; font-weight: 500; color: red">
+                    {{ item.sotien | formatNumber }}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
-    </section>
+    </div>
   </div>
 </template>
 
@@ -97,21 +183,95 @@ export default {
 
   data() {
     return {
-      cccd: "",
-      masobhxh: "",
-      sobienlai: "",
-      viewXacnhan: false,
-      data: {},
+      dataBienlai: [],
       pdfSrc: "", // đường dẫn file PDF
+
+      // pagi
+      currentPage: 1,
+      totalPages: 1,
+
+      maloaihinh: "",
+      ngaybienlaitu: "",
+      ngaybienlaiden: "",
+      masobhxh: "",
+      hoten: "",
     };
+  },
+
+  computed: {
+    user() {
+      return this.$store.state.modules.users.user.user || {};
+    },
   },
 
   methods: {
     async viewBienlai() {
+      try {
+        const res = await this.$axios.get(
+          "/api/kekhai/search-bienlai-dientu-bhxh",
+          {
+            params: {
+              loaihinh: this.maloaihinh,
+              ngaybienlaitu: this.ngaybienlaitu,
+              ngaybienlaiden: this.ngaybienlaiden,
+              masobhxh: this.masobhxh,
+              hoten: this.hoten,
+            },
+          }
+        );
+        // console.log(res);
+        if (res.status == 200 && res.data.hs.length > 0) {
+          this.dataBienlai = res.data.hs;
+        } else {
+          const Toast = Swal.mixin({
+            toast: true,
+            position: "top-end",
+            showConfirmButton: false,
+            timer: 2000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+              toast.addEventListener("mouseenter", Swal.stopTimer);
+              toast.addEventListener("mouseleave", Swal.resumeTimer);
+            },
+          });
+          Toast.fire({
+            icon: "error",
+            title: `Không tìm thấy hồ sơ`,
+          });
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+    async logout() {
+      // console.log("logout");
+
+      try {
+        await this.$axios.$post("/api/auth/logout");
+
+        // ✅ Cập nhật store: xóa user trong module 'users'
+        this.$store.commit("modules/users/setUser", {});
+
+        // ✅ Điều hướng về trang login
+        this.$router.push("/login");
+      } catch (error) {
+        console.error("Logout error:", error);
+      }
+    },
+
+    async handleChange(event) {
+      const selectedValue = event.target.value; // Lấy giá trị của option được chọn
+      // console.log("Selected value:", selectedValue);
+      this.maloaihinh = selectedValue;
+      // console.log(this.maloaihinh);
+    },
+
+    async inBienLaiDientu(data) {
       const res = await this.$axios.post("/api/auth/view-bienlai-people", {
-        cccd: this.cccd,
-        masobhxh: this.masobhxh,
-        sobienlai: this.sobienlai,
+        cccd: data.cccd,
+        masobhxh: data.masobhxh,
+        sobienlai: data.sobienlai,
       });
 
       // console.log(res.data);
@@ -126,94 +286,34 @@ export default {
         // encode để tránh lỗi Unicode trong URL
         const fileName = `${sobienlai}_${hoten}`.replace(/\s+/g, "%20");
         this.pdfSrc = `http://27.73.37.94:4042/bienlaidientu/${fileName}.pdf`;
-        // this.pdfSrc = `http://27.73.37.94:4042/bienlaidientu/0000003_Th%C3%A1i%20B%C3%A1%20Long.pdf`;
-      }
-    },
+        // console.log(this.pdfSrc);
 
-    async logout() {
-      console.log("logout");
-
-      try {
-        await this.$axios.$post("/api/auth/logout");
-
-        // ✅ Cập nhật store: xóa user trong module 'users'
-        this.$store.commit("modules/users/setUser", {});
-
-        // ✅ Điều hướng về trang login
-        this.$router.push("/login");
-      } catch (error) {
-        console.error("Logout error:", error);
+        // ✅ Mở ra tab mới
+        window.open(this.pdfSrc, "_blank");
       }
     },
   },
 };
 </script>
 
-<style scoped>
-.hero.is-success {
+<style scoped lang="css">
+@import "@/assets/customCss/common.css";
+@import "@/assets/customCss/footerTable.css";
+
+.custom-background {
+  min-height: 100vh;
   background: #d3d3d3;
   background-image: url("../assets/images/login2.jpg");
   background-size: cover;
-}
-
-.hero .nav,
-.hero.is-success .nav {
-  -webkit-box-shadow: none;
-  box-shadow: none;
+  background-position: center;
+  background-repeat: no-repeat;
+  padding-top: 3rem;
 }
 
 .box {
-  margin-top: 5rem;
-  /* background-color: transparent; */
+  margin-top: 2rem;
   border: 5px solid white;
 }
 
-.avatar {
-  margin-top: -70px;
-  padding-bottom: 20px;
-}
-
-.avatar img {
-  height: 128px;
-  width: 128px;
-  padding: 5px;
-  background: #fff;
-  border-radius: 50%;
-  -webkit-box-shadow: 0 2px 3px rgba(10, 10, 10, 0.1),
-    0 0 0 1px rgba(10, 10, 10, 0.1);
-  box-shadow: 0 2px 3px rgba(10, 10, 10, 0.1), 0 0 0 1px rgba(10, 10, 10, 0.1);
-}
-
-p.subtitle {
-  padding-top: 1rem;
-}
-
-.centered-image {
-  margin: 0 auto;
-  display: block;
-}
-
-.forgotpas {
-  color: #800000;
-  font-weight: 600;
-  font-size: 13px;
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  transition: color 0.3s; /* Thời gian chuyển tiếp khi thay đổi màu */
-}
-
-.forgotpas:hover {
-  color: #ffcc00; /* Màu vàng khi di chuột */
-}
-
-.pdf-frame {
-  width: 100%;
-  height: 700px;
-  border: none;
-}
-
-@media (max-width: 768px) {
-  .pdf-frame {
-    height: 400px; /* Hoặc bất kỳ chiều cao phù hợp */
-  }
-}
+/* (giữ nguyên các phần khác như avatar, table_wrapper, pdf-frame...) */
 </style>

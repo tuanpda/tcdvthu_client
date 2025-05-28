@@ -695,7 +695,7 @@ export default {
         name: "",
         password: "",
         role: 4, // nomal user
-        avatar: "http://ansinhbhxh.online:4042/avatar/default-image.jpg",
+        avatar: "http://27.73.37.94:4042/avatar/default-image.jpg",
         active: 0,
         // createdBy: this.$auth.user.username,
         createdAt: null,
