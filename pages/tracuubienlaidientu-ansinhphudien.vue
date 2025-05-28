@@ -21,7 +21,7 @@
             </div>
             <div class="box" style="margin-top: 10px">
               <div style="margin-bottom: 10px">
-                <span style="font-weight: bold; font-size: 15px; color: #dc3545"
+                <span style="font-weight: bold; font-size: 12px; color: #dc3545"
                   >HỆ THỐNG TRA CỨU BIÊN LAI ĐIỆN TỬ</span
                 >
               </div>

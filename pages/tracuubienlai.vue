@@ -169,6 +169,66 @@
               </tbody>
             </table>
           </div>
+          <!-- Phân trang -->
+          <div v-if="dataBienlai.length > 0" style="margin-top: 10px">
+            <nav
+              class="pagination is-centered is-rounded"
+              role="navigation"
+              aria-label="pagination"
+            >
+              <!-- Nút trang đầu tiên -->
+              <button
+                :disabled="currentPage === 1"
+                @click="goToPage(1)"
+                class="pagination-previous button is-info is-light is-small"
+              >
+                Đầu tiên
+              </button>
+
+              <!-- Nút Previous -->
+              <button
+                :disabled="currentPage === 1"
+                @click="goToPreviousPage"
+                class="pagination-previous button is-info is-light is-small"
+              >
+                Trang trước
+              </button>
+
+              <!-- Nút Next -->
+              <button
+                :disabled="currentPage === totalPages"
+                @click="goToNextPage"
+                class="pagination-next button is-danger is-light is-small"
+              >
+                Trang tiếp
+              </button>
+
+              <!-- Nút trang cuối cùng -->
+              <button
+                :disabled="currentPage === totalPages"
+                @click="goToPage(totalPages)"
+                class="pagination-next button is-danger is-light is-small"
+              >
+                Cuối cùng
+              </button>
+
+              <ul class="pagination-list">
+                <!-- Hiển thị các nút phân trang -->
+                <li v-for="page in visiblePages" :key="page">
+                  <button
+                    :class="[
+                      'pagination-link',
+                      { 'is-current': page === currentPage },
+                      'is-small',
+                    ]"
+                    @click="goToPage(page)"
+                  >
+                    {{ page }}
+                  </button>
+                </li>
+              </ul>
+            </nav>
+          </div>
         </div>
       </div>
     </div>
@@ -202,9 +262,48 @@ export default {
     user() {
       return this.$store.state.modules.users.user.user || {};
     },
+
+    visiblePages() {
+      const pages = [];
+      const maxVisiblePages = 5; // Số lượng trang hiển thị tối đa
+
+      // Xác định phạm vi của các trang hiển thị
+      let startPage = Math.max(
+        1,
+        this.currentPage - Math.floor(maxVisiblePages / 2)
+      );
+      let endPage = Math.min(this.totalPages, startPage + maxVisiblePages - 1);
+
+      if (endPage - startPage < maxVisiblePages - 1) {
+        startPage = Math.max(1, endPage - maxVisiblePages + 1);
+      }
+
+      for (let i = startPage; i <= endPage; i++) {
+        pages.push(i);
+      }
+
+      return pages;
+    },
   },
 
   methods: {
+    // pagi
+    goToPreviousPage() {
+      if (this.currentPage > 1) {
+        this.viewBienlai(this.currentPage - 1);
+      }
+    },
+
+    goToNextPage() {
+      if (this.currentPage < this.totalPages) {
+        this.viewBienlai(this.currentPage + 1);
+      }
+    },
+
+    goToPage(page) {
+      this.viewBienlai(page); // Di chuyển đến trang được chỉ định
+    },
+
     async viewBienlai() {
       try {
         const res = await this.$axios.get(
@@ -299,6 +398,10 @@ export default {
 <style scoped lang="css">
 @import "@/assets/customCss/common.css";
 @import "@/assets/customCss/footerTable.css";
+
+.pagination {
+  margin-top: 1em;
+}
 
 .custom-background {
   min-height: 100vh;
