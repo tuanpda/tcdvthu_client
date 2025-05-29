@@ -13,8 +13,8 @@ export default async function ({ store, redirect, req, app }) {
     } else {
       console.log('Có cookie:', cookie);
         try {
-          await app.$axios.$get("http://localhost:1552/api/users/auth/user");
-          // console.log('API trả về:', res);
+          await app.$axios.$get("http://27.73.37.94:1552/api/users/auth/user");
+          console.log('API trả về:', res);
           await store.dispatch("fetchUsersLogin");
           const user = store.state.user.user;
           console.log(user);
