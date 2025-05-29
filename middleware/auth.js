@@ -11,7 +11,7 @@ export default async function ({ store, redirect, req, app }) {
     
 
     // Nếu user chưa có trong store thì fetch lại từ API
-    if (!store.state.user || !store.state.user._id) {
+    if (!store.state.user.user || !store.state.user.user._id) {
       try {
         const res = await app.$axios.$get("/api/users/auth/user");
         await store.dispatch("fetchUsersLogin");
