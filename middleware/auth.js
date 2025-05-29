@@ -9,12 +9,12 @@ export default async function ({ store, redirect, req, app }) {
     console.log('fuck');
     
 
-    try {
-  const res = await app.$axios.$get("/api/users/auth/user");
-  console.log('API trả về:', res);
-} catch (error) {
-  console.error('Lỗi khi gọi API:', error);
-}
+//     try {
+//   const res = await app.$axios.$get("/api/users/auth/user");
+//   console.log('API trả về:', res);
+// } catch (error) {
+//   console.error('Lỗi khi gọi API:', error);
+// }
     
     
   } else {
