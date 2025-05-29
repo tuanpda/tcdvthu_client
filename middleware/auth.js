@@ -15,16 +15,19 @@ export default async function ({ store, redirect, req, app }) {
         try {
           const res = await app.$axios.$get("http://localhost:1552/api/users/auth/user");
           console.log('API trả về:', res.user);
-          await store.dispatch("fetchUsersLogin");
-          const user = store.state.user.user;
-          console.log(user);
+          const res_dispa = await store.dispatch("fetchUsersLogin", res.user);
+          console.log(res_dispa);
+          
 
-          if (user.role === 9) {
-              console.log('check');
-              return redirect("/tracuubienlai");
-            } else {
-              return redirect("/");
-            }
+          // const user = store.state.user.user;
+          // console.log(user);
+
+          // if (user.role === 9) {
+          //     console.log('check');
+          //     return redirect("/tracuubienlai");
+          //   } else {
+          //     return redirect("/");
+          //   }
           
         } catch (error) {
           console.error('Lỗi khi gọi API:', error);
