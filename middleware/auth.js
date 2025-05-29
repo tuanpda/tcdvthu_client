@@ -4,9 +4,15 @@ export default async function ({ store, redirect, req, app }) {
   // console.log(req);
   // console.log(req.headers.cookie);
   // console.log('Middleware chạy ở:', process.server ? 'Server' : 'Client');
-  if (req && req.headers.cookie===''||req.headers.cookie==='undefined') {
-    console.log('kooo');
-    
+  if (process.server) {
+    const cookie = req && req.headers && req.headers.cookie;
+
+    if (!cookie) {
+      console.log('Không có cookie');
+      // redirect('/login'); // nếu muốn chuyển hướng
+    } else {
+      console.log('Có cookie:', cookie);
+    }
   }
   // if (req && req.headers) {
   //   console.log('Cookies nhận được:', req.headers.cookie);
