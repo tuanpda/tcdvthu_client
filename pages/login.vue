@@ -109,10 +109,10 @@ export default {
           username: this.username,
           password: this.password,
         });
-        console.log("hceck");
+        // console.log(res);
 
         // lấy thông tin này đem vào để gọi me
-        // const item = await this.$axios.$get("/api/users/auth/user");
+        const item = await this.$axios.$get("/api/users/auth/user");
         // console.log(item.user);
 
         // Gọi commit vào module auth
