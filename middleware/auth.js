@@ -4,8 +4,13 @@ export default async function ({ store, redirect, req, app }) {
   // console.log(req);
   // console.log(req.headers.cookie);
   console.log('Middleware chạy ở:', process.server ? 'Server' : 'Client');
-if (req && req.headers) {
+  if (req && req.headers) {
     console.log('Cookies nhận được:', req.headers.cookie);
+    console.log('fuck');
+    const res = await app.$axios.$get("/api/users/auth/user");
+    console.log(res);
+    
+    
   } else {
     console.log('Không có req hoặc req.headers');
   }
