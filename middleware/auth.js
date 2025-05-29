@@ -28,9 +28,6 @@ export default async function ({ store, redirect, req, app }) {
     }
     
     
-  } else {
-    console.log('Không có req hoặc req.headers');
-    return redirect("/login");
   }
   // if (req && req.headers && req.headers.cookie) {
   //   console.log(req.headers.cookie);
