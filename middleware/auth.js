@@ -15,12 +15,10 @@ export default async function ({ store, redirect, req, app }) {
         try {
           const res = await app.$axios.$get("http://localhost:1552/api/users/auth/user");
           console.log('API trả về:', res.user);
-          const res_dispa = await store.dispatch("fetchUsersLogin", res.user);
-          console.log(res_dispa);
-          
+          store.commit("setUser", res.user);         
 
-          // const user = store.state.user.user;
-          // console.log(user);
+          const user = store.state.user.user;
+          console.log(user);
 
           // if (user.role === 9) {
           //     console.log('check');
