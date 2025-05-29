@@ -12,21 +12,19 @@ export default async function ({ store, redirect, req, app }) {
       redirect('/login'); // nếu muốn chuyển hướng
     } else {
       console.log('Có cookie:', cookie);
-      const parsed = cookieparser.parse(cookie);
-      const token = parsed.token;
         try {
-          await app.$axios.$get("http://27.73.37.94:1552/api/users/auth/user");
+          await app.$axios.$get("http://localhost:1552/api/users/auth/user");
           console.log('API trả về:', res);
-          await store.dispatch("fetchUsersLogin");
-          const user = store.state.user.user;
-          console.log(user);
+          // await store.dispatch("fetchUsersLogin");
+          // const user = store.state.user.user;
+          // console.log(user);
 
-          if (user.role === 9) {
-              console.log('check');
-              return redirect("/tracuubienlai");
-            } else {
-              return redirect("/");
-            }
+          // if (user.role === 9) {
+          //     console.log('check');
+          //     return redirect("/tracuubienlai");
+          //   } else {
+          //     return redirect("/");
+          //   }
           
         } catch (error) {
           console.error('Lỗi khi gọi API:', error);
