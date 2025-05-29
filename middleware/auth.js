@@ -7,8 +7,14 @@ export default async function ({ store, redirect, req, app }) {
   if (req && req.headers) {
     console.log('Cookies nhận được:', req.headers.cookie);
     console.log('fuck');
-    const res = await app.$axios.$get("/api/users/auth/user");
-    console.log(res);
+    
+
+    try {
+  const res = await app.$axios.$get("/api/users/auth/user");
+  console.log('API trả về:', res);
+} catch (error) {
+  console.error('Lỗi khi gọi API:', error);
+}
     
     
   } else {
