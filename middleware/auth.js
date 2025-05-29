@@ -3,20 +3,22 @@ import cookieparser from "cookieparser";
 export default async function ({ store, redirect, req, app }) {
   // console.log(req);
   // console.log(req.headers.cookie);
-  if (req && req.headers && req.headers.cookie) {
-    console.log(req.headers.cookie);
-    console.log('fuck');
-          try {
-        const res = await app.$axios.$get("/api/users/auth/user");
-        await store.dispatch("fetchUsersLogin");
-      } catch (e) {
-        return redirect("/login");
-      }
-    console.log(store.state.user.user);
-  } else {
-    console.log('req.headers.cookie không tồn tại');
-    return redirect("/login");
-  }
+  console.log('Middleware chạy ở:', process.server ? 'Server' : 'Client');
+
+  // if (req && req.headers && req.headers.cookie) {
+  //   console.log(req.headers.cookie);
+  //   console.log('fuck');
+  //         try {
+  //       const res = await app.$axios.$get("/api/users/auth/user");
+  //       await store.dispatch("fetchUsersLogin");
+  //     } catch (e) {
+  //       return redirect("/login");
+  //     }
+  //   console.log(store.state.user.user);
+  // } else {
+  //   console.log('req.headers.cookie không tồn tại');
+  //   return redirect("/login");
+  // }
 
     //   const parsed = cookieparser.parse(req.headers.cookie);
     // const token = parsed.token;
