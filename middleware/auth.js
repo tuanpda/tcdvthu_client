@@ -1,6 +1,8 @@
 import cookieparser from "cookieparser";
 
 export default async function ({ store, redirect, req, app }) {
+  console.log(process.server);
+  
   if (process.server && req && req.headers.cookie) {
     const parsed = cookieparser.parse(req.headers.cookie);
     const token = parsed.token;
