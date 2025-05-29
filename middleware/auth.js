@@ -9,7 +9,7 @@ export default async function ({ store, redirect, req, app }) {
 
     if (!cookie) {
       console.log('Không có cookie');
-      // redirect('/login'); // nếu muốn chuyển hướng
+      redirect('/login'); // nếu muốn chuyển hướng
     } else {
       console.log('Có cookie:', cookie);
     }
