@@ -3,22 +3,34 @@ import cookieparser from "cookieparser";
 export default async function ({ store, redirect, req, app }) {
   // console.log(req);
   // console.log(req.headers.cookie);
-  console.log('Middleware chạy ở:', process.server ? 'Server' : 'Client');
+  // console.log('Middleware chạy ở:', process.server ? 'Server' : 'Client');
   if (req && req.headers) {
     console.log('Cookies nhận được:', req.headers.cookie);
     console.log('fuck');
     
 
     try {
-  const res = await app.$axios.$get("http://localhost:1552/api/users/auth/user");
-  console.log('API trả về:', res);
-} catch (error) {
-  console.error('Lỗi khi gọi API:', error);
-}
+      const res = await app.$axios.$get("http://localhost:1552/api/users/auth/user");
+      // console.log('API trả về:', res);
+      await store.dispatch("fetchUsersLogin");
+      const user = store.state.user.user;
+      console.log(user);
+
+      if (user.role === 9) {
+          console.log('check');
+          return redirect("/tracuubienlai");
+        } else {
+          return redirect("/");
+        }
+      
+    } catch (error) {
+      console.error('Lỗi khi gọi API:', error);
+    }
     
     
   } else {
     console.log('Không có req hoặc req.headers');
+    return redirect("/login");
   }
   // if (req && req.headers && req.headers.cookie) {
   //   console.log(req.headers.cookie);
