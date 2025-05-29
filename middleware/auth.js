@@ -18,7 +18,7 @@ export default async function ({ store, redirect, req, app }) {
           store.commit("setUser", res.user);         
 
           const user = store.state.user;
-          // console.log(user);
+          console.log(user.role);
 
           if (user.role === 9) {
               console.log('check');
