@@ -5,6 +5,9 @@ export default async function ({ store, redirect, req, app }) {
     const parsed = cookieparser.parse(req.headers.cookie);
     const token = parsed.token;
 
+    console.log(token);
+    
+
     // Nếu user chưa có trong store thì fetch lại từ API
     if (!store.state.user || !store.state.user._id) {
       try {
