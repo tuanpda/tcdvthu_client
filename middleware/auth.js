@@ -5,33 +5,35 @@ export default async function ({ store, redirect, req, app }) {
     const parsed = cookieparser.parse(req.headers.cookie);
     const token = parsed.token;
 
-    // console.log(store.state.modules.users);
     // Nếu user chưa có trong store thì fetch lại từ API
-    if (!store.state.modules.users.user.user) {
+    if (!store.state.user || !store.state.user._id) {
       try {
         const res = await app.$axios.$get("/api/users/auth/user");
-        await store.dispatch("modules/users/fetchUsersLogin", res.user);
+        await store.dispatch("fetchUsersLogin");
       } catch (e) {
         return redirect("/login");
       }
     }
 
-    const user = store.state.modules.users.user.user;
+    const user = store.state.user.user;
+
+    console.log(user);
+    
 
     if (!token) {
-      // console.log("❌ Không có token, chuyển về login");
       return redirect("/login");
-    } else  {
-      if(user.role===9){
+    } else {
+      if (user.role === 9) {
+        console.log('hhjk');
+        
         return redirect("/tracuubienlai");
-      }else{
+      } else {
         return redirect("/");
       }
-      
     }
-    
   }
 }
+
 
 // export default async function ({ store, redirect, req }) {
 //   if (process.server && req && req.headers.cookie) {

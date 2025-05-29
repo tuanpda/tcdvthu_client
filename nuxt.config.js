@@ -81,8 +81,6 @@ export default {
   build: {},
 
   router: {
-    middleware: ["auth"],
-
     // Thêm route catch-all
     extendRoutes(routes, resolve) {
       routes.push({

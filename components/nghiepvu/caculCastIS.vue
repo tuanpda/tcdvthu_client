@@ -1817,7 +1817,7 @@ export default {
 
   computed: {
     user() {
-      return this.$store.state.modules.users.user.user || {};
+      return this.$store.state.user.user || {};
     },
 
     isDisabled_Xaphuong() {

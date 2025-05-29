@@ -116,10 +116,12 @@ export default {
         // console.log(item.user);
 
         // Gọi commit vào module auth
+
         const comitLogin = await this.$store.dispatch(
-          "modules/users/fetchUsersLogin",
+          "fetchUsersLogin",
           item.user
         );
+
         // console.log(comitLogin);
         if (comitLogin.success == true && item.user.role === 9) {
           this.$router.push("/tracuubienlai");

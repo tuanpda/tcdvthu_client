@@ -353,7 +353,7 @@ export default {
   computed: {
     // Truy xuất dữ liệu từ module users
     user() {
-      return this.$store.state.modules.users.user.user; // Truy cập state của module users
+      return this.$store.state.user.user || {};
     },
   },
 
@@ -379,7 +379,7 @@ export default {
         await this.$axios.$post("/api/auth/logout");
 
         // ✅ Cập nhật store: xóa user trong module 'users'
-        this.$store.commit("modules/users/setUser", {});
+        this.$store.commit("setUser", {});
 
         // ✅ Điều hướng về trang login
         this.$router.push("/login");

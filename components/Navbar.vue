@@ -380,8 +380,12 @@ export default {
 
   computed: {
     user() {
-      return this.$store.state.modules.users.user.user;
+      return this.$store.state.user.user || {};
     },
+  },
+
+  mounted() {
+    // console.log(this.user.user);
   },
 
   methods: {
@@ -402,7 +406,7 @@ export default {
         await this.$axios.$post("/api/auth/logout");
 
         // ✅ Cập nhật store: xóa user trong module 'users'
-        this.$store.commit("modules/users/setUser", {});
+        this.$store.commit("setUser", {});
 
         // ✅ Điều hướng về trang login
         this.$router.push("/login");

@@ -15,11 +15,13 @@ export default {
     Footer,
   },
 
+  middleware: "auth",
+
   async mounted() {
-    if (!this.$store.state.modules.users.user.user) {
+    if (!this.$store.state.user) {
       try {
         const res = await this.$axios.$get("/api/users/auth/user");
-        await this.$store.dispatch("modules/users/fetchUsersLogin", res.user);
+        await this.$store.dispatch("fetchUsersLogin", res.user);
       } catch (e) {
         console.error("❌ Lỗi khi lấy user từ client:", e);
         this.$router.push("/login");

@@ -9,27 +9,27 @@
 import Navbar from "~/components/admin/Navbar";
 import Footer from "~/components/Footer";
 export default {
-  // name: "default-admin",
+  middleware: "auth",
   components: {
     Navbar,
     Footer,
   },
 
   async mounted() {
-    const user = this.$store.state.modules.users.user.user;
+    const user = this.$store.state.user;
 
     // Nếu chưa có user, gọi lại API
     if (!user) {
       try {
         const res = await this.$axios.$get("/api/users/auth/user");
-        await this.$store.dispatch("modules/users/fetchUsersLogin", res.user);
+        await this.$store.dispatch("fetchUsersLogin", res.user);
       } catch (e) {
         return this.$router.push("/login");
       }
     }
 
     // Kiểm tra quyền
-    const role = this.$store.state.modules.users.user.user?.role;
+    const role = this.$store.state.user?.role;
     if (role !== 1) {
       console.warn("🚫 Không đủ quyền vào trang admin");
       this.$router.push("/unauthorized"); // hoặc /, hoặc hiển thị lỗi gì đó

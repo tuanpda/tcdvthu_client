@@ -500,11 +500,10 @@ export default {
 
   computed: {
     user() {
-      return this.$store.state.modules.users.user.user; // Truy cập state của module users
+      return this.$store.state.user;
     },
 
     // load data from the store
-    // ...mapState("modules/users", ["users"]),
     ...mapState("modules/danhmucs", ["dm_Tinhs"]),
     // ...mapState("modules/danhmucs", ["dm_Quanhuyens"]),
 
@@ -567,7 +566,6 @@ export default {
   },
 
   methods: {
-    // ...mapActions("modules/users", ["getUsers"]),
     ...mapActions("modules/danhmucs", ["getdmTinhs"]),
     // ...mapActions("modules/danhmucs", ["getdmQuanhuyens"]),
     async fetchDataUsers() {
@@ -871,10 +869,7 @@ export default {
         data.append("ghichu", this.user_data.ghichu);
 
         try {
-          const response = await this.$store.dispatch(
-            "modules/users/updateUser",
-            data
-          );
+          const response = await this.$store.dispatch("updateUser", data);
 
           if (response.success == true) {
             this.isLoading = false;

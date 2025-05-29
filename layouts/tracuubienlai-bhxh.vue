@@ -10,26 +10,45 @@
 <script>
 import Footer from "~/components/Footer";
 export default {
+  components: {
+    Footer,
+  },
   name: "TracuuBienLaiLayout",
+  middleware: "auth",
 
-  async mounted() {
-    const user = this.$store.state.modules.users.user.user;
+  computed: {
+    user() {
+      return this.$store.state.user || {};
+    },
+    isTracuu() {
+      return this.user.role === 9;
+    },
+  },
 
+  computed: {
+    user() {
+      return this.$store.state.user.user || {};
+    },
+    role() {
+      return this.user.role;
+    },
+  },
+
+  async created() {
     // Nếu chưa có user, gọi lại API
-    if (!user) {
+    if (!this.user || !this.user._id) {
       try {
         const res = await this.$axios.$get("/api/users/auth/user");
-        await this.$store.dispatch("modules/users/fetchUsersLogin", res.user);
+        await this.$store.dispatch("fetchUsersLogin", res.user);
       } catch (e) {
         return this.$router.push("/login");
       }
     }
 
     // Kiểm tra quyền
-    const role = this.$store.state.modules.users.user.user?.role;
-    if (role !== 9) {
+    if (this.role !== 9) {
       console.warn("🚫 Bạn không được vào trang này!");
-      this.$router.push("/unauthorized"); // hoặc /, hoặc hiển thị lỗi gì đó
+      this.$router.push("/unauthorized");
     }
   },
 };
