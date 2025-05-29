@@ -1,43 +1,43 @@
 import cookieparser from "cookieparser";
 
 export default async function ({ store, redirect, req, app }) {
-  console.log(req);
+  // console.log(req);
   console.log(req.headers.cookie);
   
-  if (req && req.headers.cookie) {
-    const parsed = cookieparser.parse(req.headers.cookie);
-    const token = parsed.token;
+  // if (req && req.headers.cookie) {
+  //   const parsed = cookieparser.parse(req.headers.cookie);
+  //   const token = parsed.token;
 
-    console.log(token);
+  //   console.log(token);
     
 
-    // Nếu user chưa có trong store thì fetch lại từ API
-    if (!store.state.user.user || !store.state.user.user._id) {
-      try {
-        const res = await app.$axios.$get("/api/users/auth/user");
-        await store.dispatch("fetchUsersLogin");
-      } catch (e) {
-        return redirect("/login");
-      }
-    }
+  //   // Nếu user chưa có trong store thì fetch lại từ API
+  //   if (!store.state.user.user || !store.state.user.user._id) {
+  //     try {
+  //       const res = await app.$axios.$get("/api/users/auth/user");
+  //       await store.dispatch("fetchUsersLogin");
+  //     } catch (e) {
+  //       return redirect("/login");
+  //     }
+  //   }
 
-    const user = store.state.user.user;
+  //   const user = store.state.user.user;
 
-    console.log(user);
+  //   console.log(user);
     
 
-    if (!token) {
-      return redirect("/login");
-    } else {
-      if (user.role === 9) {
-        console.log('hhjk');
+  //   if (!token) {
+  //     return redirect("/login");
+  //   } else {
+  //     if (user.role === 9) {
+  //       console.log('hhjk');
         
-        return redirect("/tracuubienlai");
-      } else {
-        return redirect("/");
-      }
-    }
-  }
+  //       return redirect("/tracuubienlai");
+  //     } else {
+  //       return redirect("/");
+  //     }
+  //   }
+  // }
 }
 
 
