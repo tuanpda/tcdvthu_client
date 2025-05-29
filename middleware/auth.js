@@ -6,6 +6,10 @@ export default async function ({ store, redirect, req, app }) {
       const parsed = cookieparser.parse(req.headers.cookie);
     const token = parsed.token;
     console.log(token);
+    console.log('----------');
+    console.log(store.state.user.user);
+    
+    
     
   
   // if (req && req.headers.cookie) {
