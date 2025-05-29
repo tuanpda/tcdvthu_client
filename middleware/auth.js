@@ -17,7 +17,7 @@ export default async function ({ store, redirect, req, app }) {
           console.log('API trả về:', res.user);
           store.commit("setUser", res.user);         
 
-          const user = store.state.user.user;
+          const user = store.state.user;
           console.log(user);
 
           // if (user.role === 9) {
