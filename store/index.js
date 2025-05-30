@@ -89,7 +89,7 @@ export default () =>
       async fetchUsersLogin({ commit }) {
         try {
           const response = await this.$axios.get("/api/users/auth/user");
-          // console.log(response.data);
+          console.log(response.data);
           
           commit("setUser", response.data);
           return {
