@@ -65,6 +65,16 @@ export default () =>
     },
 
     actions: {
+      async nuxtServerInit({ commit }, { app }) {
+        try {
+          const res = await app.$axios.$get("/api/users/auth/user");
+          console.log("✅ nuxtServerInit - user lấy được từ API:", res.user);
+          commit("setUser", res.user); // hoặc res nếu không có .user
+        } catch (error) {
+          console.error("nuxtServerInit: Không thể lấy user từ token:", error);
+        }
+      },
+
       // Lấy tất cả người dùng
       async getUsers({ commit }) {
         try {
