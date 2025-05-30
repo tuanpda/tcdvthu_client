@@ -89,9 +89,9 @@ export default () =>
       async fetchUsersLogin({ commit }) {
         try {
           const response = await this.$axios.get("/api/users/auth/user");
-          console.log(response.data);
+          console.log(response.data.user);
           
-          commit("setUser", response.data);
+          commit("setUser", response.data.user);
           return {
             success: true,
             message: "Fetched user success!",
