@@ -24,6 +24,8 @@ export default async function ({ store, redirect, req, app }) {
               console.log('check');
               return redirect("/tracuubienlai");
             } else {
+              console.log('check index');
+              
               return redirect("/");
             }
           
