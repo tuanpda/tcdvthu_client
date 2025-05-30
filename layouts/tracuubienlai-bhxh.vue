@@ -18,20 +18,15 @@ export default {
 
   computed: {
     user() {
-      return this.$store.state.user || {};
-    },
-    isTracuu() {
-      return this.user.role === 9;
-    },
-  },
-
-  computed: {
-    user() {
       return this.$store.state.user.user || {};
     },
     role() {
       return this.user.role;
     },
+  },
+
+  mounted() {
+    console.log(this.user);
   },
 
   async created() {
