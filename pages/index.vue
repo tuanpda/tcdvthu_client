@@ -318,7 +318,7 @@ export default {
   },
 
   mounted() {
-    // console.log(this.user);
+    console.log(this.user);
 
     const user = this.user;
     if (user) {
