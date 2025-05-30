@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@nuxtjs/axios": "^5.13.6",
-    "chart.js": "^4.4.9",
+    "chart.js": "^2.9.4",
     "cookieparser": "^0.1.0",
     "core-js": "^3.25.3",
     "exceljs": "^4.4.0",

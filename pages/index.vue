@@ -208,31 +208,10 @@
 
       <div class="columns" style="padding-left: 50px; padding-right: 50px">
         <div class="column is-4">
-          <div class="box has-text-centered">
-            <span
-              style="
-                font-size: 60px;
-                font-weight: 700;
-                font-family: 'Roboto', sans-serif;
-                color: #f1aeb5;
-              "
-            >
-              {{ reportHoso.tong_AR }}
-            </span>
-            <hr class="navbar-divider" />
-            <span
-              style="
-                font-size: 60px;
-                font-weight: 700;
-                font-family: 'Roboto', sans-serif;
-                color: #d63384;
-              "
-            >
-              AR
-            </span>
-          </div>
+          <CharLoaiHinh v-if="madailyChart == 1" />
+          <CharLoaiHinh v-else="madailyChart == 1" :madaily="madaly" />
         </div>
-        <div class="column is-4">
+        <!-- <div class="column is-4">
           <div class="box has-text-centered">
             <span
               style="
@@ -281,16 +260,22 @@
               IS
             </span>
           </div>
-        </div>
+        </div> -->
       </div>
     </div>
   </div>
 </template>
-font-size: 32px; font-weight: 700; font-family: 'Roboto', sans-serif;
 
 <script>
+import CharLoaiHinh from "~/components/CharLoaiHinh.vue";
+import CharLoaiHinhDaiLy from "~/components/CharLoaiHinhDaiLy.vue";
+
 export default {
   name: "IndexPage",
+  components: {
+    CharLoaiHinh,
+    CharLoaiHinhDaiLy,
+  },
   data() {
     return {
       showNotification: true, // Để xác định liệu thông báo có hiển thị hay không
@@ -299,6 +284,9 @@ export default {
       currentTime: "",
       greeting: "",
       reportHoso: {},
+
+      madaly: "",
+      madailyChart: 0,
     };
   },
 
@@ -324,6 +312,12 @@ export default {
     if (user) {
       this.role = user.role;
       // console.log(this.role);
+      if (user.role === 1 || user.role === 2) {
+        this.madailyChart = 1;
+      } else {
+        this.madailyChart = 2;
+        this.madaly = user.madaily;
+      }
 
       this.report();
     } else {

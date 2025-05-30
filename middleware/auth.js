@@ -11,7 +11,8 @@ export default async function ({ store, redirect, req, app }) {
       console.log('Không có cookie');
       redirect('/login'); // nếu muốn chuyển hướng
     } else {
-      console.log('Có cookie:', cookie);
+      // console.log('Có cookie:', cookie);
+      console.log('Có cookie:');
         try {
           const res = await app.$axios.$get("http://localhost:1552/api/users/auth/user");
           // console.log('API trả về:', res.user);
