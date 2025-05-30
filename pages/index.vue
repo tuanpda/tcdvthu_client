@@ -318,7 +318,7 @@ export default {
   },
 
   mounted() {
-    console.log(this.$store.state.user);
+    // console.log(this.$store.state.user);
 
     const user = this.user;
     if (user) {
