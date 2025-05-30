@@ -353,7 +353,7 @@ export default {
   computed: {
     // Truy xuất dữ liệu từ module users
     user() {
-      return this.$store.state.user.user || {};
+      return this.$store.state.user || {};
     },
   },
 

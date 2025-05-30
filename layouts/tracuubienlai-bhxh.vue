@@ -18,15 +18,11 @@ export default {
 
   computed: {
     user() {
-      return this.$store.state.user.user || {};
+      return this.$store.state.user || {};
     },
     role() {
       return this.user.role;
     },
-  },
-
-  mounted() {
-    console.log(this.user);
   },
 
   async created() {

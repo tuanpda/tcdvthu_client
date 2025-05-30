@@ -18,18 +18,13 @@ export default async function ({ store, redirect, req, app }) {
           store.commit("setUser", res.user);         
 
           const user = store.state.user;
-          console.log(user.role);
+          // console.log(user.role);
 
           if (user.role === 9) {
-              console.log('check');
+              // console.log('check');
               return redirect("/tracuubienlai");
             } else {
-              console.log('check index');
-              // const res = await app.$axios.$get("http://localhost:1552/api/users/auth/user");
-              // console.log('API trả về:', res.user);
-              // store.commit("setUser", res.user);
-              console.log(user);
-              
+              // console.log('check index');
               return redirect("/");
             }
           

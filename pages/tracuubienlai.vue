@@ -261,7 +261,7 @@ export default {
 
   computed: {
     user() {
-      return this.$store.state.user.user || {};
+      return this.$store.state.user || {};
     },
 
     visiblePages() {
@@ -285,10 +285,6 @@ export default {
 
       return pages;
     },
-  },
-
-  mounted() {
-    console.log(this.user);
   },
 
   methods: {
