@@ -8,7 +8,7 @@
     <hr class="navbar-divider" />
 
     <canvas
-      ref="chartThang"
+      ref="chartThangDaily"
       style="max-height: 400px; max-width: 400px; margin: auto"
     ></canvas>
   </div>
@@ -32,15 +32,29 @@ export default {
   },
 
   mounted() {
-    this.report();
+    if (this.madaily) {
+      this.report();
+    }
+  },
+
+  watch: {
+    madaily(newVal) {
+      if (newVal) {
+        this.report();
+      }
+    },
   },
 
   methods: {
     async report() {
+      console.log("jhj");
+
       try {
         const res = await this.$axios.get(
           `/api/kekhai/baocao-loaihinh-kekhai-theo-thang-nam-daily?nam=${this.currentYear}&thang=${this.month}&madaily=${this.madaily}`
         );
+        console.log(res);
+
         if (res.status === 200) {
           this.chartData = res.data.data;
           this.renderChart();
@@ -51,11 +65,16 @@ export default {
     },
 
     renderChart() {
+      if (!this.$refs.chartThangDaily) {
+        console.warn("Canvas chưa sẵn sàng.");
+        return;
+      }
+
       if (this.chartInstance) {
         this.chartInstance.destroy();
       }
 
-      const ctx = this.$refs.chartThang.getContext("2d");
+      const ctx = this.$refs.chartThangDaily.getContext("2d");
 
       // Tính tổng số lượng theo loại hình
       const tongTheoLoai = {};

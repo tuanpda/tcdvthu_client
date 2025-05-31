@@ -1923,7 +1923,8 @@ export default {
           muchuongbhyt: "",
           madoituong: "",
           tendoituong: "",
-          tuthang: "", // kiểu date
+          tuthang: "",
+          denthang: "",
           tylengansachdiaphuong: 0,
           tyledong: 0,
           muctiendong: 0,

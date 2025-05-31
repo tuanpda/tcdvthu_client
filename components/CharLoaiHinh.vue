@@ -26,6 +26,7 @@ export default {
       month: new Date().getMonth() + 1,
     };
   },
+
   mounted() {
     this.report();
   },
@@ -36,6 +37,7 @@ export default {
         const res = await this.$axios.get(
           `/api/kekhai/baocao-loaihinh-kekhai-theo-thang-nam?nam=${this.currentYear}&thang=${this.month}`
         );
+        // console.log(res);
         if (res.status === 200) {
           this.chartData = res.data.data;
           this.renderChart();

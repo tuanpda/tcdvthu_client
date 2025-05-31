@@ -2217,6 +2217,7 @@ export default {
           tylenngansachdp: this.tylenngansachdp,
           hotrokhac: this.hotrokhac,
           tungay: "",
+          denngay: "",
           phuongthucdong: this.phuongthucdong,
           maphuongthucdong: "",
           tenphuongthucdong: "",

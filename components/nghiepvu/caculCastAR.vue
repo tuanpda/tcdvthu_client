@@ -2169,6 +2169,7 @@ export default {
           madoituong: "",
           tendoituong: "",
           tuthang: "",
+          denthang: "",
           nguoithu: 0,
           tylengansachdiaphuong: 0,
           tyledong: 0,

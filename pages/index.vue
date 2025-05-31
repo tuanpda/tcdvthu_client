@@ -190,7 +190,7 @@
           <div class="box has-text-centered">
             <span
               style="
-                font-size: 40px;
+                font-size: 60px;
                 font-weight: 700;
                 font-family: 'Roboto', sans-serif;
                 color: #6610f2;
@@ -209,58 +209,15 @@
       <div class="columns" style="padding-left: 50px; padding-right: 50px">
         <div class="column is-4">
           <CharLoaiHinh v-if="madailyChart == 1" />
-          <CharLoaiHinh v-else="madailyChart == 1" :madaily="madaly" />
-        </div>
-        <!-- <div class="column is-4">
-          <div class="box has-text-centered">
-            <span
-              style="
-                font-size: 60px;
-                font-weight: 700;
-                font-family: 'Roboto', sans-serif;
-                color: #f1aeb5;
-              "
-            >
-              {{ reportHoso.tong_BI }}
-            </span>
-            <hr class="navbar-divider" />
-            <span
-              style="
-                font-size: 60px;
-                font-weight: 700;
-                font-family: 'Roboto', sans-serif;
-                color: #0d6efd;
-              "
-            >
-              BI
-            </span>
-          </div>
+          <CharLoaiHinhDaiLy v-else :key="madaily" :madaily="madaily" />
         </div>
         <div class="column is-4">
-          <div class="box has-text-centered">
-            <span
-              style="
-                font-size: 60px;
-                font-weight: 700;
-                font-family: 'Roboto', sans-serif;
-                color: #f1aeb5;
-              "
-            >
-              {{ reportHoso.tong_IS }}
-            </span>
-            <hr class="navbar-divider" />
-            <span
-              style="
-                font-size: 60px;
-                font-weight: 700;
-                font-family: 'Roboto', sans-serif;
-                color: #fd7e14;
-              "
-            >
-              IS
-            </span>
-          </div>
-        </div> -->
+          <CharTongTienThuTheoThang v-if="madailyChart == 1" />
+          <CharTienTheoDaiLyThu v-else :key="madaily" :madaily="madaily" />
+        </div>
+        <div class="column is-4">
+          <CharOther />
+        </div>
       </div>
     </div>
   </div>
@@ -269,6 +226,9 @@
 <script>
 import CharLoaiHinh from "~/components/CharLoaiHinh.vue";
 import CharLoaiHinhDaiLy from "~/components/CharLoaiHinhDaiLy.vue";
+import CharTongTienThuTheoThang from "~/components/CharTongTienThuTheoThang.vue";
+import CharTienTheoDaiLyThu from "~/components/CharTienTheoDaiLyThu.vue";
+import CharOther from "~/components/CharOther.vue";
 
 export default {
   name: "IndexPage",
@@ -285,7 +245,7 @@ export default {
       greeting: "",
       reportHoso: {},
 
-      madaly: "",
+      madaily: "",
       madailyChart: 0,
     };
   },
@@ -316,7 +276,7 @@ export default {
         this.madailyChart = 1;
       } else {
         this.madailyChart = 2;
-        this.madaly = user.madaily;
+        this.madaily = user.madaily;
       }
 
       this.report();
