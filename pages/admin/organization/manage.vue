@@ -326,11 +326,14 @@ export default {
       sortKey: "ttqt",
       currentPage: 1,
       itemsPerPage: 10,
+
+      dm_Tinhs: [],
     };
   },
 
   mounted() {
     this.fetchDataOrg();
+    this.fetchDatadmTinh();
     const user = this.user;
     this.form.createdBy = user.username;
   },
@@ -347,7 +350,7 @@ export default {
     },
 
     // load data from the store
-    ...mapState("modules/danhmucs", ["dm_Tinhs"]),
+    // ...mapState("modules/danhmucs", ["dm_Tinhs"]),
     // ...mapState("modules/danhmucs", ["dm_Quanhuyens"]),
 
     isDisabled_Huyenxa() {
@@ -404,17 +407,31 @@ export default {
 
   created() {
     // this.getUsers(); // Gọi action để lấy dữ liệu từ Vuex
-    this.getdmTinhs();
+    // this.getdmTinhs();
     // this.getdmQuanhuyens();
   },
 
   methods: {
-    ...mapActions("modules/danhmucs", ["getdmTinhs"]),
+    // ...mapActions("modules/danhmucs", ["getdmTinhs"]),
     // ...mapActions("modules/danhmucs", ["getdmQuanhuyens"]),
     async fetchDataOrg() {
       try {
         const res = await this.$axios.get(`/api/tochucdvt/all-org`);
         this.org_data = res.data;
+      } catch (error) {
+        console.log(error);
+        Swal.fire({
+          title: "Lỗi",
+          text: "Lỗi trong quá trình tải dữ liệu từ máy chủ",
+        });
+      }
+    },
+
+    async fetchDatadmTinh() {
+      try {
+        const res = await this.$axios.get(`/api/danhmucs/dmtinh`);
+        this.dm_Tinhs = res.data;
+        // console.log(this.dm_Tinhs);
       } catch (error) {
         console.log(error);
         Swal.fire({

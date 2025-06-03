@@ -38,16 +38,32 @@
                   </div>
                 </div>
                 <div class="field" style="padding-top: 10px">
-                  <div class="control has-icons-left">
+                  <div
+                    class="control has-icons-left has-icons-right"
+                    style="position: relative"
+                  >
                     <input
+                      :type="showPassword ? 'text' : 'password'"
                       v-model="password"
                       class="input"
-                      type="password"
                       placeholder="Mật khẩu"
                       autocomplete="current-password"
                     />
+                    <!-- Icon khóa bên trái -->
                     <span class="icon is-small is-left">
                       <i class="fas fa-lock"></i>
+                    </span>
+                    <!-- Icon con mắt bên phải -->
+                    <span
+                      class="icon is-small is-right"
+                      @click="togglePassword"
+                      style="cursor: pointer; z-index: 10; pointer-events: auto"
+                    >
+                      <i
+                        :class="
+                          showPassword ? 'fas fa-eye-slash' : 'fas fa-eye'
+                        "
+                      ></i>
                     </span>
                   </div>
                 </div>
@@ -91,10 +107,15 @@ export default {
     return {
       username: "",
       password: "",
+      showPassword: false,
     };
   },
 
   methods: {
+    togglePassword() {
+      this.showPassword = !this.showPassword;
+    },
+
     async signIn() {
       try {
         // await this.$auth.loginWith("custom", {

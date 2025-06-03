@@ -47,13 +47,12 @@ export default {
 
   methods: {
     async report() {
-      console.log("jhj");
-
       try {
         const res = await this.$axios.get(
           `/api/kekhai/baocao-loaihinh-kekhai-theo-thang-nam-daily?nam=${this.currentYear}&thang=${this.month}&madaily=${this.madaily}`
         );
-        console.log(res);
+
+        // console.log(res);
 
         if (res.status === 200) {
           this.chartData = res.data.data;

@@ -1894,7 +1894,8 @@ export default {
           maphuongan: "",
           tenphuongan: "",
           info_nguoithu: this.nguoithu,
-          nguoithu: 0,
+          nguoithu: "",
+          manguoithu: 0,
           tienluongcs: this.luongcoso,
           tylensnnht: 0,
           tylensdp: 0,
@@ -2009,61 +2010,105 @@ export default {
       this.items[index].tenphuongan = tenphuongan;
     },
 
-    // người thứ ?
+    // Tính số tiền phải nạp cho một dòng (index)
+    tinhSoTien(index) {
+      const item = this.items[index];
+      const heSo = {
+        1: 1,
+        2: 0.7,
+        3: 0.6,
+        4: 0.5,
+        default: 0.4,
+      };
+
+      const soThang = parseInt(item.maphuongthucdong) || 0;
+      const nguoiThu = parseInt(item.manguoithu) || 0;
+
+      const cast = this.luongcoso * 0.045 * soThang;
+      const tyLe = heSo[nguoiThu] ?? heSo.default;
+
+      item.sotien = Math.round(cast * tyLe); // làm tròn nếu muốn
+    },
+
+    // Khi thay đổi người thứ
     async nguoithuChange(e, index) {
       const manguoithu = e.target.value;
       const nguoithu = e.target.options[e.target.selectedIndex].text;
-      // console.log(this.items[index]);
 
-      // this.items[index].nguoithu = manguoithu;
-      // console.log(nguoithu);
+      const item = this.items[index];
+      item.manguoithu = manguoithu;
+      item.nguoithu = nguoithu;
 
-      this.items[index].manguoithu = manguoithu; // lưu mã người thứ
-      this.items[index].nguoithu = nguoithu; // lưu tên người thứ (nếu cần hiển thị riêng)
-
-      const cast =
-        this.luongcoso * 0.045 * parseInt(this.items[index].maphuongthucdong);
-      if (this.items[index].manguoithu === "1") {
-        this.items[index].sotien = cast;
-      } else if (this.items[index].manguoithu === "2") {
-        this.items[index].sotien = cast * 0.7;
-      } else if (this.items[index].manguoithu === "3") {
-        this.items[index].sotien = cast * 0.6;
-      } else if (this.items[index].manguoithu === "4") {
-        this.items[index].sotien = cast * 0.5;
-      } else {
-        this.items[index].sotien = cast * 0.4;
-      }
-      // console.log(this.items[index].sotien);
+      this.tinhSoTien(index);
     },
 
-    // phương thức đóng
+    // Khi thay đổi phương thức đóng
     async phuongthucdChange(e, index) {
       const maphuongthucdong = e.target.value;
       const tenphuongthucdong = e.target.options[e.target.selectedIndex].text;
-      this.items[index].maphuongthucdong = maphuongthucdong;
-      this.items[index].tenphuongthucdong = tenphuongthucdong;
 
-      // tính số tiền phải nạp
-      // console.log(typeof(this.luongcoso));
-      //   console.log(typeof this.items[index].nguoithu);
-      //   console.log(this.items[index].nguoithu);
-      const cast =
-        this.luongcoso * 0.045 * parseInt(this.items[index].maphuongthucdong);
-      if (this.items[index].nguoithu === "1") {
-        this.items[index].sotien = cast;
-      } else if (this.items[index].nguoithu === "2") {
-        this.items[index].sotien = cast * 0.7;
-      } else if (this.items[index].nguoithu === "3") {
-        this.items[index].sotien = cast * 0.6;
-      } else if (this.items[index].nguoithu === "4") {
-        this.items[index].sotien = cast * 0.5;
-      } else {
-        this.items[index].sotien = cast * 0.4;
-      }
+      const item = this.items[index];
+      item.maphuongthucdong = maphuongthucdong;
+      item.tenphuongthucdong = tenphuongthucdong;
 
-      // console.log(this.items[index]);
+      this.tinhSoTien(index);
     },
+
+    // người thứ ?
+    // async nguoithuChange(e, index) {
+    //   const manguoithu = e.target.value;
+    //   const nguoithu = e.target.options[e.target.selectedIndex].text;
+    //   // console.log(this.items[index]);
+
+    //   // this.items[index].nguoithu = manguoithu;
+    //   // console.log(nguoithu);
+
+    //   this.items[index].manguoithu = manguoithu; // lưu mã người thứ
+    //   this.items[index].nguoithu = nguoithu; // lưu tên người thứ (nếu cần hiển thị riêng)
+
+    //   const cast =
+    //     this.luongcoso * 0.045 * parseInt(this.items[index].maphuongthucdong);
+    //   if (this.items[index].manguoithu === "1") {
+    //     this.items[index].sotien = cast;
+    //   } else if (this.items[index].manguoithu === "2") {
+    //     this.items[index].sotien = cast * 0.7;
+    //   } else if (this.items[index].manguoithu === "3") {
+    //     this.items[index].sotien = cast * 0.6;
+    //   } else if (this.items[index].manguoithu === "4") {
+    //     this.items[index].sotien = cast * 0.5;
+    //   } else {
+    //     this.items[index].sotien = cast * 0.4;
+    //   }
+    //   // console.log(this.items[index].sotien);
+    // },
+
+    // // phương thức đóng
+    // async phuongthucdChange(e, index) {
+    //   const maphuongthucdong = e.target.value;
+    //   const tenphuongthucdong = e.target.options[e.target.selectedIndex].text;
+    //   this.items[index].maphuongthucdong = maphuongthucdong;
+    //   this.items[index].tenphuongthucdong = tenphuongthucdong;
+
+    //   // tính số tiền phải nạp
+    //   // console.log(typeof(this.luongcoso));
+    //   //   console.log(typeof this.items[index].nguoithu);
+    //   //   console.log(this.items[index].nguoithu);
+    //   const cast =
+    //     this.luongcoso * 0.045 * parseInt(this.items[index].maphuongthucdong);
+    //   if (this.items[index].nguoithu === "1") {
+    //     this.items[index].sotien = cast;
+    //   } else if (this.items[index].nguoithu === "2") {
+    //     this.items[index].sotien = cast * 0.7;
+    //   } else if (this.items[index].nguoithu === "3") {
+    //     this.items[index].sotien = cast * 0.6;
+    //   } else if (this.items[index].nguoithu === "4") {
+    //     this.items[index].sotien = cast * 0.5;
+    //   } else {
+    //     this.items[index].sotien = cast * 0.4;
+    //   }
+
+    //   // console.log(this.items[index]);
+    // },
 
     // tỉnh thành phố
     async provinceChange(e, index) {

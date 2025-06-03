@@ -1,10 +1,10 @@
 <template>
   <div>
-    <button @click="exportExcel" class="button is-small is-success">
+    <button @click="exportExcel" class="button is-small is-primary">
       <span class="icon">
         <i class="fas fa-file-download"></i>
       </span>
-      <span>Xuất Execl</span>
+      <span>Xuất File VNPT</span>
     </button>
   </div>
 </template>
@@ -412,6 +412,7 @@ export default {
         row.getCell(23).value = item.tothon; // Cột V
 
         row.getCell(24).value = item.sothang; // Cột X
+        row.getCell(25).value = `${item.madaily} - ${item.tennguoitao}`; // Cột Y
         row.getCell(26).value = item.ngaysinh; // Cột Z
         if (item.gioitinh == "Nam") {
           row.getCell(27).value = "1"; // Cột AA

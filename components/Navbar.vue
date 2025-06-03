@@ -157,6 +157,15 @@
                 </span>
                 &ensp; Quản lý lao động
               </nuxt-link>
+              <nuxt-link
+                to="/nhanviendailythu/tracuuhanthe"
+                class="navbar-item"
+              >
+                <span style="color: #3850b7" class="icon is-small is-left">
+                  <i class="fas fa-server"></i>
+                </span>
+                &ensp; Tra cứu hạn thẻ
+              </nuxt-link>
             </div>
           </div>
 
@@ -186,6 +195,15 @@
                   <i class="fas fa-search"></i>
                 </span>
                 &ensp; Tìm kiếm & Phân loại hồ sơ
+              </nuxt-link>
+              <nuxt-link
+                to="/nhanviendailythu/xuatfiledayivan"
+                class="navbar-item"
+              >
+                <span style="color: #3850b7" class="icon is-small is-left">
+                  <i class="fas fa-cloud-download-alt"></i>
+                </span>
+                &ensp; Xuất file đẩy Ivan
               </nuxt-link>
             </div>
           </div>

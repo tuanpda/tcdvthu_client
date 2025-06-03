@@ -61,7 +61,6 @@
             <div class="select is-small is-fullwidth">
               <select @change="handleChange">
                 <option selected disabled>- Chọn loại hình -</option>
-                <option value="">Không chọn</option>
                 <option value="BI">Bảo hiểm y tế</option>
                 <option value="AR">Bảo hiểm y tế - HGĐ</option>
                 <option value="IS">Bảo hiểm xã hội tự nguyện</option>
@@ -149,24 +148,24 @@
         </div>
         <hr class="navbar-divider" />
         <footer class="has-text-right">
-          <button @click="filterData(1)" class="button is-success is-small">
-            <span class="icon">
-              <i class="fas fa-search"></i>
-            </span>
-            <span>Tìm kiếm hồ sơ</span>
-          </button>
-          <button class="button is-small is-danger">
-            <span class="icon">
-              <i class="fa fa-refresh"></i>
-            </span>
-            <span>Refresh</span>
-          </button>
-          <button @click="exportToExcel" class="button is-small is-info">
-            <span class="icon">
-              <i class="far fa-file-excel"></i>
-            </span>
-            <span>Xuất Execl</span>
-          </button>
+          <div class="buttons is-right">
+            <button @click="filterData(1)" class="button is-success is-small">
+              <span class="icon">
+                <i class="fas fa-search"></i>
+              </span>
+              <span>Tìm kiếm hồ sơ</span>
+            </button>
+
+            <button class="button is-small is-danger">
+              <span class="icon">
+                <i class="fa fa-refresh"></i>
+              </span>
+              <span>Refresh</span>
+            </button>
+
+            <ExportExcel_Viettel :data_execl="data_kekhai" />
+            <ExportExcel_Vnpt :data_execl="data_kekhai" />
+          </div>
         </footer>
       </div>
 
@@ -177,15 +176,20 @@
           >
             <thead style="font-weight: bold">
               <tr style="font-size: small; background-color: #faf0e6">
+                <td rowspan="2" style="text-align: center">
+                  <input
+                    type="checkbox"
+                    v-model="selectAll"
+                    @change="toggleAll"
+                  />
+                </td>
                 <td rowspan="2" style="text-align: center; width: 3%">STT</td>
                 <td rowspan="2" style="text-align: center">_ID</td>
                 <td style="text-align: center">Trạng thái</td>
-                <td style="text-align: center">Xem chi tiết</td>
-                <td rowspan="2" style="text-align: center">Gửi hồ sơ</td>
-                <td rowspan="2" style="text-align: center">In Biên lai</td>
                 <td rowspan="2" style="text-align: center">Số hồ sơ</td>
                 <td rowspan="2" style="text-align: center">Mã đại lý</td>
                 <td rowspan="2" style="text-align: center">Tên đại lý</td>
+                <td rowspan="2" style="text-align: center">Họ tên</td>
                 <td rowspan="2" style="text-align: center">Loại hình</td>
                 <td rowspan="2" style="text-align: center">Kỳ kê khai</td>
                 <td rowspan="2" style="text-align: center">Ngày kê khai</td>
@@ -211,12 +215,21 @@
                 v-for="(item, index) in data_kekhai"
                 :key="index"
               >
+                <td style="text-align: center">
+                  <input
+                    class=""
+                    type="checkbox"
+                    v-model="selectedItems"
+                    :value="item"
+                  />
+                </td>
+
                 <td style="text-align: center">{{ index + 1 }}</td>
                 <td style="">{{ item._id }}</td>
                 <td style="text-align: center">
                   <template v-if="item.trangthai == 0"
                     ><span style="font-weight: 700; color: #00947e"
-                      >Đã lên cổng</span
+                      >Đã phê duyệt</span
                     ></template
                   >
                   <template v-else-if="item.status_hosoloi == 1">
@@ -226,66 +239,14 @@
                   </template>
                   <template v-else="item.status_hosoloi == 1">
                     <span style="font-weight: 800; color: #6f42c1"
-                      >Chưa đẩy</span
+                      >Chưa phê duyệt</span
                     >
-                  </template>
-                </td>
-                <td style="text-align: center">
-                  <template v-if="item.status_hosoloi == 1">
-                    <a @click="vieweditHs(item)">
-                      <span
-                        style="color: #0d6efd"
-                        class="icon is-small is-left"
-                      >
-                        <i class="fas fa-file-alt"></i>
-                      </span>
-                    </a>
-                  </template>
-                  <template v-else>
-                    <span></span>
-                  </template>
-                </td>
-                <td style="text-align: center">
-                  <template v-if="item.trangthai == 1">
-                    <button
-                      @click="guiDulieuLenCongBhxhvn(item)"
-                      class="button is-small is-success"
-                      :disabled="
-                        item.isSent || !isRoleSent || item.status_hosoloi == 1
-                      "
-                    >
-                      <span class="icon is-small" v-if="!item.isSent">
-                        <i
-                          class="fas fa-spell-check"
-                          style="color: #ffd863"
-                        ></i>
-                      </span>
-                      <span v-if="!item.isSent">Gửi</span>
-                      <span v-else>Đã gửi</span>
-                    </button>
-                  </template>
-                  <template v-else>
-                    <span style="color: tomato; font-weight: 800"></span>
-                  </template>
-                </td>
-                <td style="text-align: center">
-                  <template v-if="item.trangthai == 0">
-                    <a @click="xemBienLai(item)">
-                      <span
-                        style="color: #ff69b4"
-                        class="icon is-small is-left"
-                      >
-                        <i class="fas fa-print"></i>
-                      </span>
-                    </a>
-                  </template>
-                  <template v-else>
-                    <span style="font-weight: 800; color: red"></span>
                   </template>
                 </td>
                 <td style="text-align: center">{{ item.sohoso }}</td>
                 <td style="text-align: center">{{ item.madaily }}</td>
                 <td style="text-align: left">{{ item.tendaily }}</td>
+                <td style="text-align: left">{{ item.tennguoitao }}</td>
                 <td style="text-align: center">{{ item.maloaihinh }}</td>
                 <td style="text-align: center">{{ item.kykekhai }}</td>
                 <td style="text-align: center">{{ item.ngaykekhai }}</td>
@@ -674,6 +635,9 @@ export default {
       selectedItem: {},
 
       editKey: 0,
+
+      selectedItems: [], // chứa danh sách các dòng đã được chọn
+      selectAll: false,
     };
   },
 
@@ -688,6 +652,12 @@ export default {
   //     this.isDiemthu = true;
   //   }
   // },
+
+  watch: {
+    selectedItems(newVal) {
+      this.selectAll = newVal.length === this.data_kekhai.length;
+    },
+  },
 
   mounted() {
     const user = this.user;
@@ -760,6 +730,16 @@ export default {
   },
 
   methods: {
+    toggleAll() {
+      if (this.selectAll) {
+        // Lấy toàn bộ các dòng, không lọc gì nữa
+        this.selectedItems = [...this.data_kekhai];
+        console.log(this.selectedItems);
+      } else {
+        this.selectedItems = [];
+      }
+    },
+
     handleClick(item) {
       if (item.status_hosoloi !== 1) return;
       this.vieweditHs(item);
@@ -970,18 +950,6 @@ export default {
           // console.log(combinedData);
 
           if (response.data.data.maLoi == 0) {
-            // ghi dữ liệu biên lai
-            const ghibienlai = await this.$axios.post(
-              `/api/kekhai/ghidulieubienlai`,
-              combinedData
-            );
-
-            // lưu biên lai vào máy chủ
-            await this.inBienLaiDientu(combinedData);
-
-            // console.log("ghidulieubienlai");
-            // console.log(ghibienlai);
-
             const result = await this.$axios.post(
               `/api/kekhai/saveresponsefrombhvntodb`,
               combinedData
@@ -1035,70 +1003,60 @@ export default {
       // const mst = parts[parts.length - 1]; // 2902141757
       // this.matochuc_mst = mst;
       // Xây dựng đường dẫn API dựa trên mã số thuế
-
-      if (this.user.role == 2) {
-        // const res = await this.$axios.get(
-        //   `/api/kekhai/kykekhai-search-series-pagi-nvcty?kykekhai=${this.kykekhai}&page=${page}`
-        // );
-        try {
-          // const res = await this.$axios.get(
-          //   `/api/kekhai/kykekhai-search-hoso?kykekhai=${this.kykekhai}&dotkekhai=${this.dotkekhai}&ngaykekhai=${this.ngaykekhaitu}&ngaykekhaiden=${this.ngaykekhaiden}&sohoso=${this.sohoso}&masobhxh=${this.masobhxh}&hoten=${this.hoten}&tendaily=${this.diemthu}&maloaihinh=${this.maloaihinh}&page=${page}`
-          // );
-          // tạm thời bỏ điểm thu ra code ngày 07/5/2025
-          const res = await this.$axios.get(
-            `/api/kekhai/kykekhai-search-hoso?kykekhai=${this.kykekhai}&dotkekhai=${this.dotkekhai}&ngaykekhai=${this.ngaykekhaitu}&ngaykekhaiden=${this.ngaykekhaiden}&sohoso=${this.sohoso}&masobhxh=${this.masobhxh}&hoten=${this.hoten}&maloaihinh=${this.maloaihinh}&page=${page}`
-          );
-          // console.log(res);
-          if (res.data.results.length > 0) {
-            this.data_kekhai = res.data.results;
-            this.totalPages = res.data.info.pages;
-            this.currentPage = page;
-          } else {
-            this.data_kekhai = [];
-            const Toast = Swal.mixin({
-              toast: true,
-              position: "top-end",
-              showConfirmButton: false,
-              timer: 2000,
-              timerProgressBar: true,
-              didOpen: (toast) => {
-                toast.addEventListener("mouseenter", Swal.stopTimer);
-                toast.addEventListener("mouseleave", Swal.resumeTimer);
-              },
-            });
-            Toast.fire({
-              icon: "error",
-              title: `Không tìm thấy hồ sơ`,
-            });
-          }
-        } catch (error) {
-          this.data_kekhai = [];
-          const Toast = Swal.mixin({
-            toast: true,
-            position: "top-end",
-            showConfirmButton: false,
-            timer: 2000,
-            timerProgressBar: true,
-            didOpen: (toast) => {
-              toast.addEventListener("mouseenter", Swal.stopTimer);
-              toast.addEventListener("mouseleave", Swal.resumeTimer);
-            },
-          });
-          Toast.fire({
-            icon: "error",
-            title: `Có lỗi xảy ra`,
-          });
-        }
+      if (this.maloaihinh == "") {
+        this.data_kekhai = [];
+        const Toast = Swal.mixin({
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 2000,
+          timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.addEventListener("mouseenter", Swal.stopTimer);
+            toast.addEventListener("mouseleave", Swal.resumeTimer);
+          },
+        });
+        Toast.fire({
+          icon: "error",
+          title: `Bắt buộc phải chọn mã loại hình`,
+        });
       } else {
-        try {
-          const res = await this.$axios.get(
-            `/api/kekhai/kykekhai-search-hoso-diemthu?kykekhai=${this.kykekhai}&dotkekhai=${this.dotkekhai}&ngaykekhai=${this.ngaykekhaitu}&ngaykekhaiden=${this.ngaykekhaiden}&sohoso=${this.sohoso}&masobhxh=${this.masobhxh}&hoten=${this.hoten}&madaily=${this.madaily}&maloaihinh=${this.maloaihinh}&page=${page}`
-          );
-          if (res.data.results.length > 0) {
-            this.data_kekhai = res.data.results;
-            this.totalPages = res.data.info.pages;
-            this.currentPage = page;
-          } else {
+        if (this.user.role == 2) {
+          // const res = await this.$axios.get(
+          //   `/api/kekhai/kykekhai-search-series-pagi-nvcty?kykekhai=${this.kykekhai}&page=${page}`
+          // );
+          try {
+            // const res = await this.$axios.get(
+            //   `/api/kekhai/kykekhai-search-hoso?kykekhai=${this.kykekhai}&dotkekhai=${this.dotkekhai}&ngaykekhai=${this.ngaykekhaitu}&ngaykekhaiden=${this.ngaykekhaiden}&sohoso=${this.sohoso}&masobhxh=${this.masobhxh}&hoten=${this.hoten}&tendaily=${this.diemthu}&maloaihinh=${this.maloaihinh}&page=${page}`
+            // );
+            // tạm thời bỏ điểm thu ra code ngày 07/5/2025
+            const res = await this.$axios.get(
+              `/api/kekhai/kykekhai-search-hoso-daguilencong?kykekhai=${this.kykekhai}&dotkekhai=${this.dotkekhai}&ngaykekhai=${this.ngaykekhaitu}&ngaykekhaiden=${this.ngaykekhaiden}&sohoso=${this.sohoso}&masobhxh=${this.masobhxh}&hoten=${this.hoten}&maloaihinh=${this.maloaihinh}&page=${page}`
+            );
+            // console.log(res);
+            if (res.data.results.length > 0) {
+              this.data_kekhai = res.data.results;
+              this.totalPages = res.data.info.pages;
+              this.currentPage = page;
+            } else {
+              this.data_kekhai = [];
+              const Toast = Swal.mixin({
+                toast: true,
+                position: "top-end",
+                showConfirmButton: false,
+                timer: 2000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                  toast.addEventListener("mouseenter", Swal.stopTimer);
+                  toast.addEventListener("mouseleave", Swal.resumeTimer);
+                },
+              });
+              Toast.fire({
+                icon: "error",
+                title: `Không tìm thấy hồ sơ`,
+              });
+            }
+          } catch (error) {
             this.data_kekhai = [];
             const Toast = Swal.mixin({
               toast: true,
@@ -1113,26 +1071,54 @@ export default {
             });
             Toast.fire({
               icon: "error",
-              title: `Không tìm thấy hồ sơ`,
+              title: `Có lỗi xảy ra`,
             });
           }
-        } catch (error) {
-          this.data_kekhai = [];
-          const Toast = Swal.mixin({
-            toast: true,
-            position: "top-end",
-            showConfirmButton: false,
-            timer: 2000,
-            timerProgressBar: true,
-            didOpen: (toast) => {
-              toast.addEventListener("mouseenter", Swal.stopTimer);
-              toast.addEventListener("mouseleave", Swal.resumeTimer);
-            },
-          });
-          Toast.fire({
-            icon: "error",
-            title: `Có lỗi xảy ra`,
-          });
+        } else {
+          try {
+            const res = await this.$axios.get(
+              `/api/kekhai/kykekhai-search-hoso-diemthu-daguilencong?kykekhai=${this.kykekhai}&dotkekhai=${this.dotkekhai}&ngaykekhai=${this.ngaykekhaitu}&ngaykekhaiden=${this.ngaykekhaiden}&sohoso=${this.sohoso}&masobhxh=${this.masobhxh}&hoten=${this.hoten}&madaily=${this.madaily}&maloaihinh=${this.maloaihinh}&page=${page}`
+            );
+            if (res.data.results.length > 0) {
+              this.data_kekhai = res.data.results;
+              this.totalPages = res.data.info.pages;
+              this.currentPage = page;
+            } else {
+              this.data_kekhai = [];
+              const Toast = Swal.mixin({
+                toast: true,
+                position: "top-end",
+                showConfirmButton: false,
+                timer: 2000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                  toast.addEventListener("mouseenter", Swal.stopTimer);
+                  toast.addEventListener("mouseleave", Swal.resumeTimer);
+                },
+              });
+              Toast.fire({
+                icon: "error",
+                title: `Không tìm thấy hồ sơ`,
+              });
+            }
+          } catch (error) {
+            this.data_kekhai = [];
+            const Toast = Swal.mixin({
+              toast: true,
+              position: "top-end",
+              showConfirmButton: false,
+              timer: 2000,
+              timerProgressBar: true,
+              didOpen: (toast) => {
+                toast.addEventListener("mouseenter", Swal.stopTimer);
+                toast.addEventListener("mouseleave", Swal.resumeTimer);
+              },
+            });
+            Toast.fire({
+              icon: "error",
+              title: `Có lỗi xảy ra`,
+            });
+          }
         }
       }
     },
@@ -1614,352 +1600,6 @@ export default {
       this.isActive_fix = false;
       this.selectedItem = null;
       this.filterData(1);
-    },
-
-    async inBienLaiDientu(data) {
-      // console.log(data);
-
-      // const res = await this.$axios(
-      //   `/api/kekhai/bienlaidientu?_id_hskk=${item._id}&hosoIdentity=${item.hosoIdentity}`
-      // );
-      // // console.log(res.data[0]);
-      // let data = res.data[0];
-      // bỏ đoạn này do in biên lai khi gửi lên cổng code ngày 08/5/2025
-
-      const doc = new jsPDF({
-        orientation: "l",
-        format: "a5",
-      });
-
-      // Kích thước trang PDF
-      const pageWidth = doc.internal.pageSize.getWidth();
-      const pageHeight = doc.internal.pageSize.getHeight();
-
-      // Kích thước ảnh bạn muốn (ví dụ: 100mm x 70mm)
-      const imageWidth = 100; // Chiều rộng của ảnh
-      const imageHeight = 70; // Chiều cao của ảnh
-
-      // Tính tọa độ để ảnh nằm chính giữa trang
-      const x = (pageWidth - imageWidth) / 2; // Căn giữa theo chiều ngang
-      const y = (pageHeight - imageHeight) / 2; // Căn giữa theo chiều dọc
-
-      // Thêm ảnh vào PDF
-      doc.addImage(backgroundImage, "PNG", x, y, imageWidth, imageHeight);
-
-      // add the font to jsPDF
-      doc.addFont("OpenSans-Bold-normal.ttf", "OpenSans-Bold", "bold");
-      doc.setFont("OpenSans-Bold", "bold");
-      doc.setFontSize(12);
-      doc.setTextColor("#04368c");
-      doc.text(`BẢO HIỂM XÃ HỘI LIÊN HUYỆN DIỄN CHÂU - NGHI LỘC`, 60, 10, {
-        align: "center",
-        fontWeight: "bold",
-      });
-
-      doc.setFontSize(12);
-      doc.setTextColor("ff0000");
-      doc.text(`CÔNG TY TNHH ASXH PHỦ DIỄN`, 60, 17, {
-        align: "center",
-        fontWeight: "bold",
-      });
-
-      doc.addFont("OpenSans-Bold-normal.ttf", "OpenSans-Bold", "bold");
-      doc.setFont("OpenSans-Bold", "bold");
-      doc.setFontSize(10);
-      doc.setTextColor("#04368c");
-      doc.text(`Mẫu số: C45-BB `, 173, 11, {
-        align: "center",
-        fontWeight: "bold",
-      });
-
-      doc.addFont(
-        "OpenSans_SemiCondensed-Italic-normal.ttf",
-        "OpenSans_SemiCondensed-Italic-normal",
-        "italic"
-      );
-      doc.setFont("OpenSans_SemiCondensed-Italic-normal", "italic");
-      doc.setFontSize(9);
-      doc.setTextColor("#04368c");
-      doc.text(`(Ban hành kèm theo Thông tư số 107/2017/TT-BTC `, 175, 15, {
-        align: "center",
-        fontWeight: "bold",
-      });
-      doc.text(`ngày 10/10/2017 của Bộ Tài chính) `, 175, 19, {
-        align: "center",
-        fontWeight: "bold",
-      });
-
-      doc.addFont(
-        "OpenSans-ExtraBold-normal.ttf",
-        "OpenSans-ExtraBold-normal",
-        "bold"
-      );
-      doc.setFont("OpenSans-ExtraBold-normal", "bold");
-      doc.setFontSize(20);
-      doc.setTextColor("#dc143c");
-      doc.text(`BIÊN LAI THU TIỀN `, 105, 35, {
-        align: "center",
-        fontWeight: "bold",
-      });
-
-      doc.addFont(
-        "OpenSans_SemiCondensed-Italic-normal.ttf",
-        "OpenSans_SemiCondensed-Italic-normal",
-        "italic"
-      );
-      doc.setFont("OpenSans_SemiCondensed-Italic-normal", "italic");
-      doc.setFontSize(9);
-      doc.setTextColor("#00008b");
-      doc.text(
-        `Do ASXH Phủ Diễn tổ chức được Bảo hiểm xã hội uỷ quyền thu phát hành. `,
-        105,
-        41,
-        {
-          align: "center",
-          fontWeight: "bold",
-        }
-      );
-
-      doc.setFontSize(9);
-      doc.setTextColor("#00008b");
-      doc.text(`Ngày: `, 155, 50, {
-        fontWeight: "bold",
-      });
-      doc.text(`${data.ngaybienlai}`, 165, 50, {
-        fontWeight: "bold",
-      });
-
-      // const dateTimeString = data.ngaybienlai;
-      // // Tách chuỗi ngày tháng theo định dạng
-      // const parts = dateTimeString.split(" ")[0].split("-"); // Lấy phần ngày và tách theo dấu "-"
-      // // Lấy giá trị năm
-      // const year = parts[2];
-
-      const year = data.ngaybienlai.split("-")[2].split(" ")[0];
-
-      doc.text(`Ký hiệu: `, 155, 55, {
-        fontWeight: "bold",
-      });
-      doc.text(`${data.maloaihinh}-${data.maDaiLy}-${year}`, 165, 55, {
-        fontWeight: "bold",
-      });
-
-      doc.text(`Số: `, 155, 60, {
-        fontWeight: "bold",
-      });
-      doc.text(`${data.sobienlai}`, 165, 60, {
-        fontWeight: "bold",
-      });
-
-      doc.addImage(qrcode, "PNG", 165, 25, 15, 15);
-      //font-times-new-roman-normal
-      const toadoXInfo = 10;
-      const toadoYInfo = 60;
-      doc.addFont(
-        "Times New Roman Bold-normal.ttf",
-        "Times New Roman Bold-normal",
-        "bold"
-      );
-      doc.setFont("Times New Roman Bold-normal", "bold");
-      doc.setFontSize(12);
-      doc.setTextColor("#04368c");
-      doc.text(`Họ và tên người nộp:`, toadoXInfo, toadoYInfo, {
-        fontWeight: "bold",
-      });
-      doc.text(
-        `${data.hoTen} - Mã số BHXH: ${data.maSoBhxh}`,
-        toadoXInfo + 43,
-        toadoYInfo,
-        {
-          fontWeight: "bold",
-        }
-      );
-
-      const diachi = data.tenquanhuyen + "; " + data.tentinh;
-      // data.tothon + "; " +
-
-      doc.text(`Địa chỉ: `, toadoXInfo, toadoYInfo + 8, {
-        fontWeight: "bold",
-      });
-      doc.text(`${diachi}`, toadoXInfo + 16, toadoYInfo + 8, {
-        fontWeight: "bold",
-      });
-
-      var noidungText = "";
-
-      if (data.maloaihinh == "AR" || data.maloaihinh == "BI") {
-        noidungText = `Tiền đóng BHYT, phương thức đóng ${data.soThang} tháng, từ ngày ${data.tuNgay} đến ngày ${data.denNgay}`;
-      } else {
-        noidungText = `Đóng tiền tham gia BHXH Tự nguyện`;
-      }
-
-      doc.text(`Nội dung: `, toadoXInfo, toadoYInfo + 16, {
-        fontWeight: "bold",
-      });
-      doc.text(`${noidungText}`, toadoXInfo + 20, toadoYInfo + 16, {
-        fontWeight: "bold",
-      });
-
-      const formattedMoney = Number(data.soTien).toLocaleString("vi-VN");
-      // console.log(formattedMoney);
-
-      doc.text(`Số tiền thu: `, toadoXInfo, toadoYInfo + 24, {
-        fontWeight: "bold",
-      });
-      doc.text(`${formattedMoney}`, toadoXInfo + 24, toadoYInfo + 24, {
-        fontWeight: "bold",
-      });
-
-      doc.text(`(Loại tiền): VNĐ `, toadoXInfo + 100, toadoYInfo + 24, {
-        fontWeight: "bold",
-      });
-
-      // console.log(data.soTien);
-
-      let tienbangchuText = num2words(data.soTien);
-      let tienHoa = this.capitalizeFirstLetter(tienbangchuText);
-      tienHoa += "đồng./.";
-
-      // console.log(tienHoa);
-
-      doc.text(`(Viết bằng chữ: ${tienHoa}) `, toadoXInfo, toadoYInfo + 32, {
-        fontWeight: "bold",
-      });
-      // doc.text(`${tienHoa}`, toadoXInfo + 35, toadoYInfo + 32, {
-      //   fontWeight: "bold",
-      // });
-
-      doc.addFont(
-        "OpenSans-ExtraBold-normal.ttf",
-        "OpenSans-ExtraBold-normal",
-        "bold"
-      );
-      doc.setFont("OpenSans-ExtraBold-normal", "bold");
-      doc.setFontSize(13);
-      doc.setTextColor("#04368c");
-      doc.text(`NGƯỜI NỘP TIỀN`, toadoXInfo + 20, toadoYInfo + 43, {
-        fontWeight: "bold",
-      });
-
-      doc.text(`NGƯỜI THU TIỀN`, toadoXInfo + 120, toadoYInfo + 43, {
-        fontWeight: "bold",
-      });
-
-      doc.addFont(
-        "OpenSans-Regular-normal.ttf",
-        "OpenSans-Regular-normal",
-        "bold"
-      );
-      doc.setFont("OpenSans-Regular-normal", "bold");
-      doc.setFontSize(12);
-      doc.setTextColor("#dc143c");
-      // doc.text(
-      //   `Ký bởi: CÔNG TY TNHH ASXH PHỦ DIỄN`,
-      //   toadoXInfo + 100,
-      //   toadoYInfo + 53,
-      //   {
-      //     fontWeight: "bold",
-      //   }
-      // );
-      // doc.text(
-      //   `Ngày ký: 18/12/2024 15:15:09`,
-      //   toadoXInfo + 110,
-      //   toadoYInfo + 58,
-      //   {
-      //     fontWeight: "bold",
-      //   }
-      // );
-
-      doc.addFont(
-        "OpenSans-ExtraBold-normal.ttf",
-        "OpenSans-ExtraBold-normal",
-        "bold"
-      );
-      doc.setFont("OpenSans-ExtraBold-normal", "bold");
-      doc.setFontSize(11);
-      doc.setTextColor("#04368c");
-      doc.text(
-        `Nhân viên thu: ${this.user.name}`,
-        toadoXInfo + 107,
-        toadoYInfo + 70,
-        {
-          fontWeight: "bold",
-        }
-      );
-
-      doc.addFont(
-        "OpenSans_SemiCondensed-Italic-normal.ttf",
-        "OpenSans_SemiCondensed-Italic-normal",
-        "italic"
-      );
-      doc.setFont("OpenSans_SemiCondensed-Italic-normal", "italic");
-      doc.setFontSize(10);
-      doc.setTextColor("#04368c");
-      doc.text(`Mã xác nhận: `, toadoXInfo - 8, toadoYInfo + 58, {
-        fontWeight: "bold",
-      });
-
-      // console.log(data.maXacNhan);
-
-      doc.setFontSize(11);
-      doc.setTextColor("#dc143c");
-      doc.text(`${data.maXacNhan} `, toadoXInfo + 14, toadoYInfo + 58, {
-        fontWeight: "bold",
-      });
-
-      doc.setFontSize(10);
-      doc.setTextColor("#04368c");
-      doc.text(
-        `Sử dụng để tra cứu thông tin ghi nhận đóng trên Cổng thông tin điện tử`,
-        toadoXInfo - 8,
-        toadoYInfo + 62,
-        {
-          fontWeight: "bold",
-        }
-      );
-
-      doc.text(
-        `Người tham gia có thể sử dụng ứng dụng VSSID của Bảo hiểm Xã hội`,
-        toadoXInfo - 8,
-        toadoYInfo + 70,
-        {
-          fontWeight: "bold",
-        }
-      );
-      doc.text(
-        `Việt Nam để theo dõi quá trính đóng BHXH, sử dụng thay thế thẻ BHYT`,
-        toadoXInfo - 8,
-        toadoYInfo + 75,
-        {
-          fontWeight: "bold",
-        }
-      );
-      doc.text(
-        `https://baohiemxahoi.gov.vn/gioithieu/pages/tai-ung-dung-vssid.aspx`,
-        toadoXInfo - 8,
-        toadoYInfo + 80,
-        {
-          fontWeight: "bold",
-        }
-      );
-
-      // Lưu file PDF trên một tab mới
-      const tenbienlai = `${data.sobienlai}_${data.hoTen}`;
-      // doc.output("dataurlnewwindow");
-      // window.open(pdfURL, tenbienlai);
-      // doc.save("a4.pdf");
-
-      const pdfBlob = doc.output("blob");
-
-      const formData = new FormData();
-      formData.append("pdf", pdfBlob, `${tenbienlai}.pdf`);
-
-      // Gửi về backend
-      await this.$axios.post("/api/kekhai/upload-bienlai", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
     },
 
     async guiDulieuLenCongBhxhvn(data) {

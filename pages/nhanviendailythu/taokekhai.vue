@@ -273,6 +273,15 @@
             :loaihinh="loaihinh"
           />
         </div>
+        <div v-if="maloaihinh == 'IL'">
+          <!-- <ISTable :maloaihinh="maloaihinh" :loaihinh="loaihinh" /> -->
+          <ILTable
+            ref="ILTable"
+            v-if="maloaihinh === 'IL'"
+            :maloaihinh="maloaihinh"
+            :loaihinh="loaihinh"
+          />
+        </div>
       </div>
     </div>
   </div>
@@ -282,6 +291,7 @@
 import ArTable from "@/components/nghiepvu/caculCastAR";
 import BiTable from "@/components/nghiepvu/caculCastBI";
 import ISTable from "@/components/nghiepvu/caculCastIS";
+import ILTable from "@/components/nghiepvu/caculCastIL";
 import Swal from "sweetalert2";
 import createNumberMask from "text-mask-addons/dist/createNumberMask";
 const currencyMask = createNumberMask({
@@ -296,6 +306,7 @@ export default {
     ArTable,
     BiTable,
     ISTable,
+    ILTable,
   },
 
   data() {
@@ -356,6 +367,8 @@ export default {
         currentItems = this.$refs.BiTable.items || [];
       } else if (this.maloaihinh === "IS" && this.$refs.ISTable) {
         currentItems = this.$refs.ISTable.items || [];
+      } else if (this.maloaihinh === "IL" && this.$refs.ILTable) {
+        currentItems = this.$refs.ILTable.items || [];
       }
 
       if (currentItems.length > 0) {

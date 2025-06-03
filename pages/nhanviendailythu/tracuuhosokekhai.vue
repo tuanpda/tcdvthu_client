@@ -139,6 +139,7 @@
               <tr style="font-size: small; background-color: #faf0e6">
                 <td rowspan="2" style="text-align: center; width: 3%">STT</td>
                 <td rowspan="2" style="text-align: center">Điểm thu</td>
+                <td rowspan="2" style="text-align: center">Tên</td>
                 <td rowspan="2" style="text-align: center">Số hồ sơ</td>
                 <td rowspan="2" style="text-align: center">Mã loại hình</td>
                 <td rowspan="2" style="text-align: center">Tên loại hình</td>
@@ -166,12 +167,13 @@
               >
                 <td style="text-align: center">{{ index + 1 }}</td>
                 <td style="">{{ item.tendaily }}</td>
+                <td style="">{{ item.tennguoitao }}</td>
                 <td style="text-align: center">{{ item.sohoso }}</td>
                 <td style="text-align: center">{{ item.maloaihinh }}</td>
                 <td style="">{{ item.tenloaihinh }}</td>
                 <td style="text-align: center">{{ item.dotkekhai }}</td>
                 <td style="text-align: center">{{ item.kykekhai }}</td>
-                <td style="text-align: right">{{ item.ngaykekhai }}</td>
+                <td style="text-align: center">{{ item.ngaykekhai }}</td>
                 <td style="text-align: center">{{ item.so_luong }}</td>
                 <!-- <td style="text-align: center">{{ item.trangthai }}</td> -->
                 <td style="text-align: center">
@@ -1249,7 +1251,7 @@ export default {
         nextInvoice = String(nextNumber).padStart(7, "0");
       }
 
-      console.log(nextInvoice);
+      // console.log(nextInvoice);
     },
 
     async guiDulieuLenCongBhxhvn(data) {

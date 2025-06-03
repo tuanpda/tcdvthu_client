@@ -2243,7 +2243,8 @@ export default {
           madoituong: "",
           tendoituong: "",
           tuthang: currentMonthYear, // kiểu string
-          nguoithu: 0,
+          nguoithu: "",
+          manguoithu: 0,
           tylengansachdiaphuong: 0,
           tyledong: 0,
           muctiendong: 0,
@@ -2477,8 +2478,119 @@ export default {
       }
     },
 
-    // Đối tượng đóng - IS - TÍNH TIỀN LUÔN
+    tinhTienPhaiDong(madoituong, muctiendong, maphuongthucdong, tuthang) {
+      // console.log("Từ tháng đã nhập vào:", tuthang);
+      const denthang = this.tinhDenThang(tuthang, maphuongthucdong);
+      // console.log("Đến tháng:", denthang);
+
+      // Parse tháng/năm bắt đầu và kết thúc
+      // const [startMonth, startYear] = tuthang.split("/").map(Number);
+      // const [endMonth, endYear] = denthang.split("/").map(Number);
+
+      // let thangTrong2025 = 0;
+      // let thangNgoai2025 = 0;
+
+      // let month = startMonth;
+      // let year = startYear;
+
+      // while (year < endYear || (year === endYear && month <= endMonth)) {
+      //   if (year === 2025) {
+      //     thangTrong2025++;
+      //   } else {
+      //     thangNgoai2025++;
+      //   }
+
+      //   month++;
+      //   if (month > 12) {
+      //     month = 1;
+      //     year++;
+      //   }
+      // }
+
+      // console.log(`Số tháng trong năm 2025: ${thangTrong2025}`);
+      // console.log(`Số tháng ngoài năm 2025: ${thangNgoai2025}`);
+
+      // Tính tiền
+      const tyleDong = this.tyledongbhyt / 100;
+      const castMucdong = muctiendong * tyleDong;
+      const castSubTwhotro = this.chuanngheo * tyleDong;
+
+      // Tìm tỷ lệ hỗ trợ trung ương theo mã đối tượng
+      const doituong = this.doituongdong.find(
+        (d) => d.madoituong === madoituong
+      );
+      const tyleHotroTW = doituong ? doituong.tylehotro : 0;
+      const hotroTW = castSubTwhotro * (tyleHotroTW / 100);
+
+      let tienCanNap = 0;
+
+      // if (thangNgoai2025 === 0) {
+      //   // ✅ Trường hợp chỉ trong năm 2025
+      //   const castDiaphuonght =
+      //     this.chuanngheo * tyleDong * (this.tylediaphuonghotroIs / 100);
+      //   const castDiaphuonghtKhac =
+      //     this.chuanngheo * tyleDong * (this.tylehotrokhacIs / 100);
+
+      //   tienCanNap =
+      //     (castMucdong - hotroTW - castDiaphuonght - castDiaphuonghtKhac) *
+      //     parseFloat(maphuongthucdong);
+      // } else {
+      //   // ✅ Trường hợp có tháng ngoài 2025
+      //   // Trong năm 2025: hỗ trợ địa phương = 20%
+      //   const castDiaphuonght_2025 =
+      //     this.chuanngheo * tyleDong * (this.tylediaphuonghotroIs / 100);
+      //   const castDiaphuonghtKhac =
+      //     this.chuanngheo * tyleDong * (this.tylehotrokhacIs / 100);
+
+      //   const tienTrong2025 =
+      //     (castMucdong - hotroTW - castDiaphuonght_2025 - castDiaphuonghtKhac) *
+      //     thangTrong2025;
+
+      //   const tienNgoai2025 =
+      //     (castMucdong - hotroTW - 0 - castDiaphuonghtKhac) * thangNgoai2025;
+      //   // tức là đoạn này cho phép là this.tylediaphuonghotroIs = 0 (không còn được hỗ trợ)
+      //   // khi nào cần điều chỉnh thì chỉnh
+
+      //   tienCanNap = tienTrong2025 + tienNgoai2025;
+      // }
+
+      const castDiaphuonght =
+        this.chuanngheo * tyleDong * (this.tylediaphuonghotroIs / 100);
+      const castDiaphuonghtKhac =
+        this.chuanngheo * tyleDong * (this.tylehotrokhacIs / 100);
+
+      tienCanNap =
+        (castMucdong - hotroTW - castDiaphuonght - castDiaphuonghtKhac) *
+        parseFloat(maphuongthucdong);
+      // tức là đoạn này cho phép là this.tylediaphuonghotroIs = 0 (không còn được hỗ trợ)
+
+      // console.log("Tiền cần nạp:", tienCanNap);
+      return tienCanNap;
+    },
+
     async doituongChange(e, index) {
+      const madoituong = e.target.value;
+      const tendoituong = e.target.options[e.target.selectedIndex].text;
+      this.items[index].madoituong = madoituong;
+      this.items[index].tendoituong = tendoituong;
+
+      const maphuongthucdong = this.items[index].maphuongthucdong;
+      const tuthang = this.items[index].tuthang;
+
+      const muctiendong = parseFloat(
+        this.items[index].muctiendong.replace(/,/g, "")
+      );
+
+      this.items[index].sotien = this.tinhTienPhaiDong(
+        madoituong,
+        muctiendong,
+        maphuongthucdong,
+        tuthang
+      );
+    },
+
+    // Đối tượng đóng - IS - TÍNH TIỀN LUÔN
+    async doituongChange1(e, index) {
       const madoituong = e.target.value;
       const tendoituong = e.target.options[e.target.selectedIndex].text;
       this.items[index].madoituong = madoituong;
@@ -2674,8 +2786,47 @@ export default {
       // }
     },
 
-    // phương thức đóng
     async phuongthucdChange(e, index) {
+      // console.log(this.items[index].madoituong);
+
+      const maphuongthucdong = e.target.value;
+      const tenphuongthucdong = e.target.options[e.target.selectedIndex].text;
+      this.items[index].maphuongthucdong = maphuongthucdong;
+      this.items[index].tenphuongthucdong = tenphuongthucdong;
+      this.items[index].sothang = 0;
+
+      const madoituong = this.items[index].madoituong;
+
+      const muctiendong = parseFloat(
+        this.items[index].muctiendong.replace(/,/g, "")
+      );
+
+      if (maphuongthucdong == "D1LNCT" || maphuongthucdong == "D1LNVS") {
+        this.checkDong1lanchocacnamvesauVaConthieu = true;
+        if (maphuongthucdong == "D1LNCT") {
+          this.NCT = true;
+          this.NVS = false;
+        }
+        if (maphuongthucdong == "D1LNVS") {
+          this.NVS = true;
+          this.NCT = false;
+        }
+      } else {
+        this.checkDong1lanchocacnamvesauVaConthieu = false;
+      }
+
+      const tuthang = this.items[index].tuthang;
+
+      this.items[index].sotien = this.tinhTienPhaiDong(
+        madoituong,
+        muctiendong,
+        maphuongthucdong,
+        tuthang
+      );
+    },
+
+    // phương thức đóng
+    async phuongthucdChange1(e, index) {
       // console.log(e);
       // console.log(index);
 
