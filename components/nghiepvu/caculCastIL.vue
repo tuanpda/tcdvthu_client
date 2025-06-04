@@ -1531,12 +1531,7 @@
                         {{ formatISODateToDMY(item.ngaysinh) }}
                       </td>
                       <td style="text-align: center">
-                        <template v-if="item.gioitinh == 0">
-                          <span>Nữ</span>
-                        </template>
-                        <template v-else>
-                          <span>Nam</span>
-                        </template>
+                        {{ item.gioitinh }}
                       </td>
                       <td style="text-align: center; font-weight: 500">
                         {{ item.cccd }}
