@@ -831,9 +831,6 @@
                     </div>
                     <div style="flex-grow: 1">
                       <input
-                        @blur="
-                          checkAlertSodienthoai(datanhaphosomodal.dienthoai)
-                        "
                         v-model="datanhaphosomodal.dienthoai"
                         class="input is-small"
                         type="number"
