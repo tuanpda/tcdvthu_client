@@ -14,7 +14,7 @@ export default async function ({ store, redirect, req, app }) {
       // console.log('Có cookie:', cookie);
       console.log('Có cookie:');
         try {
-          const res = await app.$axios.$get("http://localhost:1552/api/users/auth/user");
+          const res = await app.$axios.$get("http://14.224.148.17:1552/api/users/auth/user");
           // console.log('API trả về:', res.user);
           store.commit("setUser", res.user);         
 
