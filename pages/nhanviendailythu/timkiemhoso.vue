@@ -1217,38 +1217,38 @@ export default {
       }
     },
 
-    async inBienLaiDientu(item) {
-      try {
-        const res = await this.$axios.get(
-          `/api/kekhai/view-item-bienlai?hosoIdentity=${item.hosoIdentity}`
-        );
+    // async inBienLaiDientu(item) {
+    //   try {
+    //     const res = await this.$axios.get(
+    //       `/api/kekhai/view-item-bienlai?hosoIdentity=${item.hosoIdentity}`
+    //     );
 
-        const hs = res.data.hs;
-        if (hs && hs.sobienlai && hs.hoten) {
-          const fileName = `${hs.sobienlai}_${encodeURIComponent(
-            hs.hoten
-          )}.pdf`;
-          const pdfUrl = `http://27.73.37.94:4042/bienlaidientu/${fileName}`;
-          // console.log(pdfUrl);
+    //     const hs = res.data.hs;
+    //     if (hs && hs.sobienlai && hs.hoten) {
+    //       const fileName = `${hs.sobienlai}_${encodeURIComponent(
+    //         hs.hoten
+    //       )}.pdf`;
+    //       const pdfUrl = `http://27.73.37.94:4042/bienlaidientu/${fileName}`;
+    //       // console.log(pdfUrl);
 
-          window.open(pdfUrl, "_blank");
-        } else {
-          console.warn("Thiếu thông tin số biên lai hoặc họ tên!");
-          this.$swal.fire({
-            icon: "error",
-            title: "Lỗi",
-            text: "Không lấy được thông tin biên lai.",
-          });
-        }
-      } catch (error) {
-        console.error("Lỗi khi gọi API:", error);
-        this.$swal.fire({
-          icon: "error",
-          title: "Lỗi",
-          text: "Không thể kết nối đến máy chủ.",
-        });
-      }
-    },
+    //       window.open(pdfUrl, "_blank");
+    //     } else {
+    //       console.warn("Thiếu thông tin số biên lai hoặc họ tên!");
+    //       this.$swal.fire({
+    //         icon: "error",
+    //         title: "Lỗi",
+    //         text: "Không lấy được thông tin biên lai.",
+    //       });
+    //     }
+    //   } catch (error) {
+    //     console.error("Lỗi khi gọi API:", error);
+    //     this.$swal.fire({
+    //       icon: "error",
+    //       title: "Lỗi",
+    //       text: "Không thể kết nối đến máy chủ.",
+    //     });
+    //   }
+    // },
 
     async inBienLaiDientu(data) {
       // console.log(data);

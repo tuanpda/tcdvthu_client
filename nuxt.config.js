@@ -55,11 +55,10 @@ export default {
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {
     // Workaround to avoid enforcing hard-coded localhost:3000: https://github.com/nuxt-community/axios-module/issues/308
-    // baseURL: "/",
-    // baseURL: "http://192.168.160.7:2612", // máy chủ nhân hoà
-    // baseURL: "http://14.224.129.177:1552", // máy chủ tuanpda
-    baseURL: "http://27.73.37.94:1552", // máy chủ phủ diễn
+    // baseURL: "",
+    // baseURL: "http://27.73.37.94:1552", // máy chủ phủ diễn
     // baseURL: "http://localhost:1552",
+    baseURL: "http://14.224.148.17:1552",
     credentials: true,
   },
 
